@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Cached simulation data (large, regeneratable)
+results/data_*.pkl
+results/sweep_results.json
+
+# Claude Code internal
+.claude/
