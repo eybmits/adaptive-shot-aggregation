@@ -1,6 +1,7 @@
 """Nature-quality phase diagram — smooth contourf with phase boundary."""
 import numpy as np
 import pickle
+import argparse
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -13,10 +14,54 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from qrc_budget import (
     QuantumReservoir, run_reservoir_pipeline, ev_training,
-    grouped_trajectory_training, mackey_glass, compute_rho_ev, OUT_DIR
+    grouped_trajectory_training_legacy, grouped_trajectory_training_narma_fix,
+    mackey_glass, narma10,
+    compute_rho_ev, OUT_DIR
 )
 
-CACHE_FILE = os.path.join(OUT_DIR, 'data_phase.pkl')
+parser = argparse.ArgumentParser(description="Plot phase diagram.")
+parser.add_argument(
+    '--narma-fix', action='store_true',
+    help='Use NARMA-10 G-Traj fix (std-aware selection + guarded calibration).'
+)
+parser.add_argument('--seeds', type=int, default=5, help='Number of random seeds per grid point.')
+parser.add_argument('--cache-file', type=str, default=None, help='Optional cache file path.')
+parser.add_argument('--output', type=str, default=None, help='Optional output pdf path.')
+parser.add_argument(
+    '--shots-list', type=str, default=None,
+    help='Comma-separated shot counts, e.g. "10,20,30,40".'
+)
+parser.add_argument(
+    '--sigma-list', type=str, default=None,
+    help='Comma-separated sigmas, e.g. "0.0,0.01,0.03,0.05".'
+)
+args = parser.parse_args()
+
+USE_NARMA_FIX = bool(args.narma_fix)
+n_seeds = int(args.seeds)
+
+
+def _parse_int_list(raw, default):
+    if not raw:
+        return default
+    return [int(x.strip()) for x in raw.split(',') if x.strip()]
+
+
+def _parse_float_list(raw, default):
+    if not raw:
+        return default
+    return [float(x.strip()) for x in raw.split(',') if x.strip()]
+
+CACHE_FILE = (
+    args.cache_file
+    if args.cache_file
+    else os.path.join(OUT_DIR, 'data_phase_narma_fix.pkl' if USE_NARMA_FIX else 'data_phase.pkl')
+)
+OUT_PATH = (
+    args.output
+    if args.output
+    else os.path.join(OUT_DIR, 'fig_phase_narma_fix.pdf' if USE_NARMA_FIX else 'fig_phase.pdf')
+)
 
 # --- Style (same as other paper figures) ---
 def setup_style():
@@ -67,7 +112,11 @@ def lorenz_x(n_steps, rng, dt=0.02, warmup=2000):
 def mg_series(n_steps, rng):
     return mackey_glass(n_steps, tau=17, rng=rng)
 
-def run_one(series_func, n_shots, sigma, S, seed=0):
+def narma_series(n_steps, rng):
+    _, y = narma10(n_steps, rng=rng)
+    return y
+
+def run_one(dataset_name, series_func, n_shots, sigma, S, seed=0):
     rng = np.random.default_rng(seed)
     T = S // n_shots
     if T < 60: return None
@@ -77,17 +126,20 @@ def run_one(series_func, n_shots, sigma, S, seed=0):
     sf = run_reservoir_pipeline(inputs, res, n_shots, sigma,
                                  rng=np.random.default_rng(seed + 1000))
     ev, yp_ev, yt = ev_training(sf, targets, 30, 0.7)
-    gt, yp_gt, _, k = grouped_trajectory_training(sf, targets, 30, 0.7)
+    if USE_NARMA_FIX and dataset_name == 'NARMA-10':
+        gt, yp_gt, _, k = grouped_trajectory_training_narma_fix(sf, targets, 30, 0.7)
+    else:
+        gt, yp_gt, _, k = grouped_trajectory_training_legacy(sf, targets, 30, 0.7)
     return {'ev': ev, 'gt': gt, 'gap': ev - gt}
 
 # Full paper grid
-shots_list = [10, 15, 20, 25, 30, 40, 50]
-sigma_list = [0.0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.10]
-n_seeds = 5
+shots_list = _parse_int_list(args.shots_list, [10, 15, 20, 25, 30, 40, 50])
+sigma_list = _parse_float_list(args.sigma_list, [0.0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.10])
 
 ds_configs = {
     'Mackey-Glass': {'func': mg_series, 'S': 20000},
     'Lorenz': {'func': lorenz_x, 'S': 30000},
+    'NARMA-10': {'func': narma_series, 'S': 50000},
 }
 
 
@@ -112,7 +164,7 @@ def compute_data():
                 rho_grid[i, j] = rho
                 evs, gts = [], []
                 for seed in range(n_seeds):
-                    r = run_one(func, n_shots, sigma, S, seed)
+                    r = run_one(ds_name, func, n_shots, sigma, S, seed)
                     if r is None: continue
                     evs.append(r['ev']); gts.append(r['gt'])
                 if not evs: continue
@@ -142,6 +194,8 @@ def load_or_compute():
     return data
 
 
+mode_label = 'narma_fix' if USE_NARMA_FIX else 'legacy'
+print(f"Mode: {mode_label} | seeds={n_seeds}")
 all_data = load_or_compute()
 
 # --- Plot: Nature-quality contourf phase diagram ---
@@ -152,9 +206,9 @@ plt.rcParams.update({
     'axes.spines.right': True,
 })
 
-fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.0),
-                         gridspec_kw={'wspace': 0.08, 'left': 0.08,
-                                      'right': 0.88, 'top': 0.95, 'bottom': 0.16})
+fig, axes = plt.subplots(1, 3, figsize=(10.0, 3.0),
+                         gridspec_kw={'wspace': 0.08, 'left': 0.06,
+                                      'right': 0.90, 'top': 0.95, 'bottom': 0.16})
 
 # Shared color scale
 all_gaps = []
@@ -212,12 +266,15 @@ for col, (ds_name, data) in enumerate(all_data.items()):
     cs = ax.contour(Sf, Nf, gap_lin, levels=[0.005], colors='none')
     segs = cs.allsegs[0] if cs.allsegs else []
     # Keep only segments that span most of the σ range (skip small islands)
-    wide_segs = [s for s in segs if (s[:, 0].max() - s[:, 0].min()) > 0.4 * (sigma_arr[-1] - sigma_arr[0])]
+    wide_segs = [
+        s for s in segs
+        if len(s) > 1 and (s[:, 0].max() - s[:, 0].min()) > 0.4 * (sigma_arr[-1] - sigma_arr[0])
+    ]
     if wide_segs:
         longest = max(wide_segs, key=lambda s: len(s))
         ax.plot(longest[:, 0], longest[:, 1], color='black', lw=1.0, zorder=4)
-    elif segs:
-        longest = max(segs, key=lambda s: len(s))
+    elif any(len(s) > 1 for s in segs):
+        longest = max([s for s in segs if len(s) > 1], key=lambda s: len(s))
         ax.plot(longest[:, 0], longest[:, 1], color='black', lw=1.0, zorder=4)
 
     # rho_EV iso-contours (ρ = α/d × (S/N - t0))
@@ -255,13 +312,12 @@ for col, (ds_name, data) in enumerate(all_data.items()):
 
 
 # Shared colorbar
-cbar_ax = fig.add_axes([0.90, 0.16, 0.015, 0.79])
+cbar_ax = fig.add_axes([0.92, 0.16, 0.012, 0.79])
 cb = fig.colorbar(im_last, cax=cbar_ax)
 cb.set_label(r'Gap (NRMSE$_{\mathrm{EV}}$ $-$ NRMSE$_{\mathrm{G\text{-}Traj}}$)',
              fontsize=7)
 cb.ax.tick_params(labelsize=6)
 
-path = os.path.join(OUT_DIR, 'fig_phase.pdf')
-fig.savefig(path, dpi=300)
-print(f"Saved {path}")
+fig.savefig(OUT_PATH, dpi=300)
+print(f"Saved {OUT_PATH}")
 plt.close(fig)

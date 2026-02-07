@@ -467,15 +467,23 @@ def trajectory_training(shot_features, targets, t0, alpha, ridge_lambda=RIDGE_LA
     return score, y_pred_test, y_test
 
 
-def grouped_trajectory_training(shot_features, targets, t0, alpha,
-                                 group_size=None, ridge_lambda=RIDGE_LAMBDA):
+def grouped_trajectory_training(
+    shot_features, targets, t0, alpha, group_size=None,
+    ridge_lambda=RIDGE_LAMBDA, std_objective_weight=0.0,
+    calibrate_amplitude=False, calibration_std_weight=None,
+    calibration_blends=(0.0, 0.3, 0.5, 0.7, 1.0), calibration_max_scale=2.0,
+    candidate_group_sizes=None, calibration_max_val_nrmse_rel_increase=0.08
+):
     """
-    Improved trajectory training: average K shots into groups before training.
+    Grouped trajectory training with optional std-aware model selection.
 
-    This balances the noise-reduction benefit of averaging with the
-    sample-multiplication benefit of trajectory-level stacking.
+    If `group_size` is None, K is selected on a validation split using the
+    aggregated (group-averaged) validation prediction, i.e. the same inference
+    mode used at test time.
 
-    If group_size is None, automatically selects the best K via validation.
+    Optional amplitude calibration uses validation data only:
+      y_cal = a * y_pred + b
+    where `a` is bounded and blended to avoid over-correction.
     """
     n_shots, T, d = shot_features.shape
 
@@ -487,88 +495,183 @@ def grouped_trajectory_training(shot_features, targets, t0, alpha,
     if train_end >= T or len(y_test) < 2:
         return np.inf, np.array([]), np.array([]), 1
 
+    if calibration_std_weight is None:
+        calibration_std_weight = std_objective_weight
+
+    def _safe_std(x):
+        return max(np.std(x), 1e-10)
+
+    def _group_features(k):
+        return [
+            np.mean(shot_features[g * k:(g + 1) * k], axis=0)
+            for g in range(n_shots // k)
+        ]
+
+    def _fit_model(group_feats, start_idx, end_idx):
+        X_train_list = [gf[start_idx:end_idx] for gf in group_feats]
+        X_train = np.vstack(X_train_list)
+        y_train = np.concatenate([targets[start_idx:end_idx] for _ in group_feats])
+        if len(X_train) < 2:
+            return None, None
+        scaler = StandardScaler()
+        X_train_s = scaler.fit_transform(X_train)
+        ridge = Ridge(alpha=ridge_lambda, fit_intercept=True)
+        ridge.fit(X_train_s, y_train)
+        return scaler, ridge
+
+    def _predict_aggregated(group_feats, scaler, ridge, start_idx, end_idx):
+        if end_idx <= start_idx:
+            return np.array([])
+        preds = []
+        for gf in group_feats:
+            X = gf[start_idx:end_idx]
+            preds.append(ridge.predict(scaler.transform(X)))
+        return np.mean(preds, axis=0)
+
+    def _objective(y_true, y_pred, std_weight):
+        if len(y_true) < 2 or len(y_pred) != len(y_true):
+            return np.inf
+        obj = nrmse(y_true, y_pred)
+        if std_weight > 0:
+            sr = _safe_std(y_pred) / _safe_std(y_true)
+            obj += std_weight * (np.log(max(sr, 1e-6)) ** 2)
+        return obj
+
+    # Candidate group sizes
+    if candidate_group_sizes is None:
+        default_candidates = [1, 2, 4, 5, 10, n_shots]
+        candidates = sorted({
+            int(k) for k in default_candidates
+            if int(k) > 0 and int(k) <= n_shots and (n_shots % int(k) == 0)
+        })
+    else:
+        candidates = sorted({
+            int(k) for k in candidate_group_sizes
+            if int(k) > 0 and int(k) <= n_shots and (n_shots % int(k) == 0)
+        })
+    if not candidates:
+        candidates = [1, n_shots]
+
     # Auto-select K if not specified
     if group_size is None:
-        # Candidate group sizes: divisors of n_shots
-        candidates = [k for k in [1, 2, 4, 5, 10, n_shots] if n_shots % k == 0 and k <= n_shots]
-        if not candidates:
-            candidates = [1, n_shots]
-
-        # Use validation split within training set to pick K
         val_split = usable_start + int(0.7 * (train_end - usable_start))
+        y_val = targets[val_split:train_end]
 
         best_k = candidates[0]
-        best_val_err = np.inf
+        best_obj = np.inf
 
         for k in candidates:
-            n_groups = n_shots // k
-            if n_groups < 1:
+            group_feats = _group_features(k)
+            scaler, ridge = _fit_model(group_feats, usable_start, val_split)
+            if scaler is None:
                 continue
-
-            X_tr, y_tr = [], []
-            X_val, y_val_list = [], []
-            for g in range(n_groups):
-                gf = np.mean(shot_features[g*k:(g+1)*k], axis=0)
-                X_tr.append(gf[usable_start:val_split])
-                y_tr.append(targets[usable_start:val_split])
-                X_val.append(gf[val_split:train_end])
-                y_val_list.append(targets[val_split:train_end])
-
-            X_tr = np.vstack(X_tr)
-            y_tr = np.concatenate(y_tr)
-            X_val = np.vstack(X_val)
-            y_val = np.concatenate(y_val_list)
-
-            if len(X_tr) < 2 or len(X_val) < 2:
-                continue
-
-            scaler = StandardScaler()
-            X_tr_s = scaler.fit_transform(X_tr)
-            X_val_s = scaler.transform(X_val)
-
-            ridge = Ridge(alpha=ridge_lambda, fit_intercept=True)
-            ridge.fit(X_tr_s, y_tr)
-            pred = ridge.predict(X_val_s)
-            err = np.mean((y_val - pred)**2)
-
-            if err < best_val_err:
-                best_val_err = err
+            y_val_pred = _predict_aggregated(
+                group_feats, scaler, ridge, val_split, train_end
+            )
+            obj = _objective(y_val, y_val_pred, std_objective_weight)
+            if obj < best_obj:
+                best_obj = obj
                 best_k = k
 
         group_size = best_k
 
-    # Train with selected K
-    n_groups = n_shots // group_size
+    # Train final grouped model on full train window
+    group_feats = _group_features(group_size)
+    scaler, ridge = _fit_model(group_feats, usable_start, train_end)
+    if scaler is None:
+        return np.inf, np.array([]), np.array([]), group_size
 
-    X_train_list = []
-    y_train_list = []
-    for g in range(n_groups):
-        group_feats = np.mean(
-            shot_features[g*group_size:(g+1)*group_size], axis=0)
-        X_train_list.append(group_feats[usable_start:train_end])
-        y_train_list.append(targets[usable_start:train_end])
+    y_pred_test = _predict_aggregated(group_feats, scaler, ridge, train_end, T)
+    if len(y_pred_test) != len(y_test):
+        return np.inf, np.array([]), np.array([]), group_size
 
-    X_train = np.vstack(X_train_list)
-    y_train = np.concatenate(y_train_list)
+    # Optional validation-based affine amplitude calibration
+    if calibrate_amplitude:
+        val_split = usable_start + int(0.7 * (train_end - usable_start))
+        y_val = targets[val_split:train_end]
 
-    scaler = StandardScaler()
-    X_train_s = scaler.fit_transform(X_train)
+        cal_scaler, cal_ridge = _fit_model(group_feats, usable_start, val_split)
+        if cal_scaler is not None and len(y_val) >= 2:
+            y_val_pred = _predict_aggregated(
+                group_feats, cal_scaler, cal_ridge, val_split, train_end
+            )
+            if len(y_val_pred) == len(y_val):
+                raw_scale = _safe_std(y_val) / _safe_std(y_val_pred)
+                raw_scale = np.clip(
+                    raw_scale, 1.0 / max(calibration_max_scale, 1.0), calibration_max_scale
+                )
 
-    ridge = Ridge(alpha=ridge_lambda, fit_intercept=True)
-    ridge.fit(X_train_s, y_train)
+                blend_candidates = sorted({
+                    float(b) for b in calibration_blends
+                    if 0.0 <= float(b) <= 1.0
+                })
+                if not blend_candidates:
+                    blend_candidates = [0.0]
+                if blend_candidates[0] > 0.0:
+                    blend_candidates = [0.0] + blend_candidates
 
-    # Predict: average across group predictions
-    preds = []
-    for g in range(n_groups):
-        group_feats = np.mean(
-            shot_features[g*group_size:(g+1)*group_size], axis=0)
-        X_test_g = scaler.transform(group_feats[train_end:])
-        preds.append(ridge.predict(X_test_g))
+                best_a, best_b = 1.0, 0.0
+                base_val_nrmse = nrmse(y_val, y_val_pred)
+                best_cal_obj = _objective(y_val, y_val_pred, calibration_std_weight)
 
-    y_pred_test = np.mean(preds, axis=0)
+                for blend in blend_candidates:
+                    a = 1.0 + blend * (raw_scale - 1.0)
+                    b = np.mean(y_val) - a * np.mean(y_val_pred)
+                    y_val_cal = a * y_val_pred + b
+                    cal_val_nrmse = nrmse(y_val, y_val_cal)
+                    if (
+                        calibration_max_val_nrmse_rel_increase is not None
+                        and cal_val_nrmse
+                        > base_val_nrmse * (1.0 + calibration_max_val_nrmse_rel_increase)
+                    ):
+                        continue
+                    obj = _objective(y_val, y_val_cal, calibration_std_weight)
+                    if obj < best_cal_obj:
+                        best_cal_obj = obj
+                        best_a, best_b = a, b
+
+                y_pred_test = best_a * y_pred_test + best_b
+
     score = nrmse(y_test, y_pred_test)
-
     return score, y_pred_test, y_test, group_size
+
+
+def grouped_trajectory_training_legacy(
+    shot_features, targets, t0, alpha, group_size=None, ridge_lambda=RIDGE_LAMBDA
+):
+    """Legacy grouped trajectory training (paper baseline)."""
+    n_shots = shot_features.shape[0]
+    legacy_candidates = [
+        k for k in [1, 2, 4, 5, 10, n_shots]
+        if n_shots % k == 0 and k <= n_shots
+    ]
+    return grouped_trajectory_training(
+        shot_features, targets, t0, alpha,
+        group_size=group_size,
+        ridge_lambda=ridge_lambda,
+        std_objective_weight=0.0,
+        calibrate_amplitude=False,
+        candidate_group_sizes=legacy_candidates,
+    )
+
+
+def grouped_trajectory_training_narma_fix(
+    shot_features, targets, t0, alpha, group_size=None, ridge_lambda=RIDGE_LAMBDA
+):
+    """NARMA-10 fix: std-aware K selection + guarded amplitude calibration."""
+    n_shots = shot_features.shape[0]
+    return grouped_trajectory_training(
+        shot_features, targets, t0, alpha,
+        group_size=group_size,
+        ridge_lambda=ridge_lambda,
+        std_objective_weight=0.2,
+        calibrate_amplitude=True,
+        calibration_std_weight=1.2,
+        calibration_blends=(0.0, 0.3, 0.5, 0.7, 1.0),
+        calibration_max_scale=2.0,
+        candidate_group_sizes=[k for k in range(1, n_shots + 1) if n_shots % k == 0],
+        calibration_max_val_nrmse_rel_increase=0.08,
+    )
 
 
 # =============================================================================
@@ -637,9 +740,14 @@ def run_single_experiment(n_shots, sigma, S, benchmark='mackey_glass',
     )
 
     # Grouped trajectory training (auto-K)
-    nrmse_gtraj, y_pred_gtraj, y_test_gtraj, best_k = grouped_trajectory_training(
-        shot_features, targets, t0, alpha
-    )
+    if benchmark == 'narma10':
+        nrmse_gtraj, y_pred_gtraj, y_test_gtraj, best_k = grouped_trajectory_training_narma_fix(
+            shot_features, targets, t0, alpha
+        )
+    else:
+        nrmse_gtraj, y_pred_gtraj, y_test_gtraj, best_k = grouped_trajectory_training_legacy(
+            shot_features, targets, t0, alpha
+        )
 
     gap = nrmse_ev - nrmse_traj
     gap_g = nrmse_ev - nrmse_gtraj

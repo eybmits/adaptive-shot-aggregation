@@ -9,6 +9,7 @@ __pycache__/
 # Cached simulation data (large, regeneratable)
 results/data_*.pkl
 results/sweep_results.json
+results/*.png
 
 # Claude Code internal
 .claude/

@@ -10,11 +10,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from qrc_budget import (
     QuantumReservoir, run_reservoir_pipeline, ev_training,
-    trajectory_training, grouped_trajectory_training, mackey_glass,
-    compute_rho_ev, OUT_DIR
+    trajectory_training, grouped_trajectory_training_legacy,
+    grouped_trajectory_training_narma_fix, mackey_glass,
+    narma10, compute_rho_ev, OUT_DIR
 )
 
-CACHE_FILE = os.path.join(OUT_DIR, 'data_benchmarks.pkl')
+# Cache with NARMA-10 fix enabled in the benchmark panel.
+CACHE_FILE = os.path.join(OUT_DIR, 'data_benchmarks_narma_fix.pkl')
 
 # --- Style ---
 COLORS = {
@@ -74,7 +76,41 @@ def lorenz_x(n_steps, rng, dt=0.02, warmup=2000):
     out = xs[warmup:]
     return (out - out.min()) / (out.max() - out.min() + 1e-10)
 
-def run_dataset(series_func, n_shots, sigma, S, n_seeds=8):
+def narma_series(n_steps, rng):
+    _, y = narma10(n_steps, rng=rng)
+    return y
+
+
+def select_trace_window(y_true, window):
+    """Select a high-variance window for clearer short-time visualization."""
+    n = len(y_true)
+    if window is None or window <= 0 or window >= n:
+        return 0, n
+    best_s = 0
+    best_var = -np.inf
+    for s in range(0, n - window + 1):
+        v = np.var(y_true[s:s + window])
+        if v > best_var:
+            best_var = v
+            best_s = s
+    return best_s, best_s + window
+
+
+def resolve_trace_interval(y_true, cfg):
+    """
+    Resolve trace interval from config.
+    If explicit start/end is provided, use it; otherwise use high-variance window.
+    """
+    n = len(y_true)
+    if 'trace_start' in cfg and 'trace_end' in cfg:
+        s = int(max(0, cfg['trace_start']))
+        e = int(min(n, cfg['trace_end']))
+        if e > s:
+            return s, e
+    return select_trace_window(y_true, cfg.get('trace_window', None))
+
+
+def run_dataset(dataset_name, series_func, n_shots, sigma, S, n_seeds=8):
     all_results = []
     for seed in range(n_seeds):
         rng = np.random.default_rng(seed)
@@ -86,7 +122,14 @@ def run_dataset(series_func, n_shots, sigma, S, n_seeds=8):
                                      rng=np.random.default_rng(seed + 1000))
         ev, yp_ev, yt = ev_training(sf, targets, 30, 0.7)
         tr, yp_tr, _ = trajectory_training(sf, targets, 30, 0.7)
-        gt, yp_gt, _, k = grouped_trajectory_training(sf, targets, 30, 0.7)
+        if dataset_name == 'NARMA-10':
+            gt, yp_gt, _, k = grouped_trajectory_training_narma_fix(
+                sf, targets, 30, 0.7
+            )
+        else:
+            gt, yp_gt, _, k = grouped_trajectory_training_legacy(
+                sf, targets, 30, 0.7
+            )
         all_results.append({
             'ev': ev, 'traj': tr, 'gtraj': gt,
             'yp_ev': yp_ev, 'yp_tr': yp_tr, 'yp_gt': yp_gt,
@@ -103,11 +146,13 @@ def compute_data():
          'S': 20000, 'N': 40, 'sigma': 0.03},
         {'name': 'Lorenz attractor', 'func': lorenz_x,
          'S': 30000, 'N': 40, 'sigma': 0.0},
+        {'name': 'NARMA-10', 'func': narma_series,
+         'S': 50000, 'N': 60, 'sigma': 0.03},
     ]
     all_data = {}
     for cfg in configs:
         print(f"\n  Running {cfg['name']}...")
-        results = run_dataset(cfg['func'], cfg['N'], cfg['sigma'], cfg['S'], n_seeds=8)
+        results = run_dataset(cfg['name'], cfg['func'], cfg['N'], cfg['sigma'], cfg['S'], n_seeds=8)
         all_data[cfg['name']] = {'results': results, 'cfg': {k: v for k, v in cfg.items() if k != 'func'}}
     return all_data
 
@@ -135,11 +180,12 @@ def make_figure1():
     configs = [
         {'name': 'Mackey-Glass', 'S': 20000, 'N': 40, 'sigma': 0.03},
         {'name': 'Lorenz attractor', 'S': 30000, 'N': 40, 'sigma': 0.0},
+        {'name': 'NARMA-10', 'S': 50000, 'N': 60, 'sigma': 0.03, 'trace_start': 60, 'trace_end': 120},
     ]
 
-    fig = plt.figure(figsize=(7.2, 4.4))
-    gs = gridspec.GridSpec(2, 3, hspace=0.55, wspace=0.45,
-                           left=0.08, right=0.97, top=0.96, bottom=0.10)
+    fig = plt.figure(figsize=(7.2, 6.4))
+    gs = gridspec.GridSpec(3, 3, hspace=0.55, wspace=0.45,
+                           left=0.08, right=0.97, top=0.97, bottom=0.07)
 
     for row, cfg in enumerate(configs):
         results = all_data[cfg['name']]['results']
@@ -151,14 +197,21 @@ def make_figure1():
         # --- Time trace ---
         ax = fig.add_subplot(gs[row, 0])
         r0 = results[0]
-        x = np.arange(len(r0['yt']))
-        ax.plot(x, r0['yt'], color=COLORS['true'], lw=1.8, label='True', zorder=4)
-        if len(r0['yp_tr']) == len(x):
-            ax.plot(x, r0['yp_tr'], color=COLORS['traj'], lw=0.9, alpha=0.5, label='Traj', zorder=1)
-        if len(r0['yp_ev']) == len(x):
-            ax.plot(x, r0['yp_ev'], color=COLORS['ev'], lw=1.2, ls='--', alpha=0.85, label='EV', zorder=3)
-        if len(r0['yp_gt']) == len(x):
-            ax.plot(x, r0['yp_gt'], color=COLORS['gtraj'], lw=1.2, alpha=0.9, label='G-Traj', zorder=2)
+        full_x = np.arange(len(r0['yt']))
+        s, e = resolve_trace_interval(r0['yt'], cfg)
+        x = full_x[s:e]
+        y_true = r0['yt'][s:e]
+        yp_tr = r0['yp_tr'][s:e]
+        yp_ev = r0['yp_ev'][s:e]
+        yp_gt = r0['yp_gt'][s:e]
+
+        ax.plot(x, y_true, color=COLORS['true'], lw=1.8, label='True', zorder=4)
+        if len(yp_tr) == len(x):
+            ax.plot(x, yp_tr, color=COLORS['traj'], lw=0.9, alpha=0.5, label='Traj', zorder=1)
+        if len(yp_ev) == len(x):
+            ax.plot(x, yp_ev, color=COLORS['ev'], lw=1.2, ls='--', alpha=0.85, label='EV', zorder=3)
+        if len(yp_gt) == len(x):
+            ax.plot(x, yp_gt, color=COLORS['gtraj'], lw=1.2, alpha=0.9, label='G-Traj', zorder=2)
         ax.set_xlabel('Test time step')
         ax.set_ylabel(cfg['name'])
         ax.legend(frameon=True, fancybox=False, edgecolor='#999999',
