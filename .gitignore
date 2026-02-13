@@ -5,6 +5,7 @@ __pycache__/
 
 # macOS
 .DS_Store
+**/.DS_Store
 
 # Cached simulation data (large, regeneratable)
 results/data_*.pkl
