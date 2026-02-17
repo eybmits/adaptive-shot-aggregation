@@ -10,6 +10,8 @@ import shutil
 from pathlib import Path
 from statistics import mean, pstdev
 
+from ieee_plot_style import OURS_LABEL, TRAJ_LABEL
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -134,9 +136,9 @@ def main() -> None:
                 "",
                 "## Hardware Results (from table)",
                 f"- EV: `{mean(ev):.3f} ± {pstdev(ev):.3f}`",
-                f"- Traj: `{mean(traj):.3f} ± {pstdev(traj):.3f}`",
-                f"- G-Traj: `{mean(gtraj):.3f} ± {pstdev(gtraj):.3f}`",
-                f"- Gap EV-GTraj: `{mean(gap):+.3f}`",
+                f"- {TRAJ_LABEL}: `{mean(traj):.3f} ± {pstdev(traj):.3f}`",
+                f"- {OURS_LABEL}: `{mean(gtraj):.3f} ± {pstdev(gtraj):.3f}`",
+                f"- Gap EV-{OURS_LABEL}: `{mean(gap):+.3f}`",
                 f"- Mode best_k: `{max(set(best_k), key=best_k.count)}`",
                 "",
             ]

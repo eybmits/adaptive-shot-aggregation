@@ -23,6 +23,7 @@ from qrc_budget import (
     mackey_glass,
     trajectory_training,
 )
+from ieee_plot_style import OURS_LABEL, TRAJ_LABEL, TRAJ_TICK_LABEL
 
 
 COLORS = {
@@ -276,11 +277,11 @@ def _make_single_row_plot(
 
     ax_ts.plot(x, y_true, color=COLORS["true"], lw=1.8, label="True", zorder=4)
     if len(yp_tr) == len(x):
-        ax_ts.plot(x, yp_tr, color=COLORS["traj"], lw=0.9, alpha=0.5, label="Traj", zorder=1)
+        ax_ts.plot(x, yp_tr, color=COLORS["traj"], lw=0.9, alpha=0.5, label=TRAJ_LABEL, zorder=1)
     if len(yp_ev) == len(x):
         ax_ts.plot(x, yp_ev, color=COLORS["ev"], lw=1.2, ls="--", alpha=0.85, label="EV", zorder=3)
     if len(yp_gt) == len(x):
-        ax_ts.plot(x, yp_gt, color=COLORS["gtraj"], lw=1.2, alpha=0.9, label="G-Traj", zorder=2)
+        ax_ts.plot(x, yp_gt, color=COLORS["gtraj"], lw=1.2, alpha=0.9, label=OURS_LABEL, zorder=2)
     ax_ts.set_xlabel("Test time step")
     ax_ts.set_ylabel("Mackey-Glass")
     ax_ts.legend(
@@ -306,7 +307,7 @@ def _make_single_row_plot(
     )
 
     # NRMSE bars panel.
-    methods = ["EV", "Traj", "G-Traj"]
+    methods = ["EV", TRAJ_TICK_LABEL, OURS_LABEL]
     means = [summary["ev"]["mean"], summary["traj"]["mean"], summary["gtraj"]["mean"]]
     stds = [summary["ev"]["std"], summary["traj"]["std"], summary["gtraj"]["std"]]
     colors = [COLORS["ev"], COLORS["traj"], COLORS["gtraj"]]
@@ -431,9 +432,9 @@ def main() -> None:
 
     print("=== Reconstructed Hardware Summary (NRMSE) ===")
     print(f"EV     : {summary['ev']['mean']:.3f} +/- {summary['ev']['std']:.3f}")
-    print(f"Traj   : {summary['traj']['mean']:.3f} +/- {summary['traj']['std']:.3f}")
-    print(f"G-Traj : {summary['gtraj']['mean']:.3f} +/- {summary['gtraj']['std']:.3f}")
-    print(f"Gap EV-GTraj: {summary['ev']['mean'] - summary['gtraj']['mean']:+.3f}")
+    print(f"{TRAJ_LABEL}: {summary['traj']['mean']:.3f} +/- {summary['traj']['std']:.3f}")
+    print(f"{OURS_LABEL}: {summary['gtraj']['mean']:.3f} +/- {summary['gtraj']['std']:.3f}")
+    print(f"Gap EV-{OURS_LABEL}: {summary['ev']['mean'] - summary['gtraj']['mean']:+.3f}")
     print(f"Wrote: {outdir / args.outfile}")
     print(f"Wrote: {(outdir / args.outfile).with_suffix('.png')}")
     print(f"Wrote: {outdir / args.reconstructed_table}")

@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 
+from ieee_plot_style import OURS_LABEL, TRAJ_LABEL
+
 
 def parse_seed(path: Path) -> int:
     # fig_hardware_mg_seed_07.png -> 7
@@ -43,8 +45,8 @@ def load_nrmse_table(table_csv: Path) -> dict[str, list[float]]:
         raise ValueError(f"Empty table: {table_csv}")
     return {
         "EV": [float(r["nrmse_ev"]) for r in rows],
-        "Traj": [float(r["nrmse_traj"]) for r in rows],
-        "G-Traj": [float(r["nrmse_gtraj"]) for r in rows],
+        TRAJ_LABEL: [float(r["nrmse_traj"]) for r in rows],
+        OURS_LABEL: [float(r["nrmse_gtraj"]) for r in rows],
     }
 
 
@@ -70,7 +72,7 @@ def make_collage(
 
     # Panel 1: aggregated NRMSE boxplot over all seeds.
     ax0 = axes.ravel()[0]
-    labels = ["EV", "Traj", "G-Traj"]
+    labels = ["EV", TRAJ_LABEL, OURS_LABEL]
     data = [nrmse_data[k] for k in labels]
     bplot = ax0.boxplot(
         data,
