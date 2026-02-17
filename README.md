@@ -100,3 +100,6 @@ results/
 - Cache files (`results/data_*.pkl`) are used for fast rerender iteration.
 - Hardware rerender commands do not submit jobs to IBM hardware.
 - `results/camera_ready/MANIFEST.md` and `results/camera_ready/SHA256SUMS.txt` track camera-ready package contents.
+
+## License
+This repository is licensed under the MIT License. See `LICENSE`.
