@@ -105,7 +105,7 @@ Using the current benchmark cache (`data_benchmarks_narma_fix.pkl`):
 
 ---
 
-## 3.2 Figure 2: Universal collapse (gap vs \(\rho_{EV}\))
+## 3.2 Figure 2: Empirical collapse (gap vs \(\rho_{EV}\))
 **File:** `/Users/superposition/Coding/qrc_budget/results/fig_collapse.pdf`
 
 ### What this figure shows
@@ -140,7 +140,7 @@ Dataset-level mean gaps in this collapse set:
 - Small negative outliers exist near high-\(\rho\) regimes, but the global behavior remains positive and decaying.
 
 ### Fairness point
-This collapse figure is used as the **global scaling statement** across datasets/configurations. Its value is in consistent cross-task structure under one protocol and one order parameter.
+This collapse figure is used as the **within-setup scaling statement** across datasets/configurations. Its value is in consistent cross-task structure under one protocol and one order parameter, not in claiming architecture-agnostic universality.
 
 ---
 
@@ -192,6 +192,13 @@ The NARMA stabilization is introduced exactly where pathology appears. It is a t
 
 This separation is methodologically clean: practical stabilization for task validity, plus global regime analysis for theory-facing claims.
 
+### 4.4 External-validity boundary is explicit
+Current evidence is intentionally narrow in architecture/backend breadth:
+- one circuit family (depth-5 random reservoir with ring-CNOT entanglers),
+- one hardware backend (`ibm_marrakesh`) in the hardware section.
+
+Therefore, any quoted crossover scale in \(\rho_{EV}\) (including values around \(\rho_{EV}\approx 3\) when referenced) is treated as an empirical marker of this setup, not as a universal constant. The power-law fit is a within-family regularity; cross-family and cross-backend universality remains open.
+
 ---
 
 ## 5. Additional Evidence for NARMA Stabilization (supplementary)
@@ -203,6 +210,46 @@ From `data_narma_fix_compare_s8.pkl` (N=60, sigma=0.03, S=50000, 8 seeds):
 
 Key point: the fix improves or preserves NRMSE while substantially restoring variance fidelity relative to old grouped behavior.
 
+### 5.1 Small-\(\rho_{EV}\) architecture ablation (single operating point)
+To directly test the reviewer-facing scope question without a full matrix sweep per architecture, we run a single matched low-\(\rho_{EV}\) operating point:
+- dataset: Mackey-Glass,
+- budget and noise: \(S=20000\), \(N_{\text{shots}}=40\), \(\sigma=0.02\),
+- protocol constants: \(t_0=30\), \(\alpha=0.7\), \(L=20\),
+- resulting \(\rho_{EV}=1.365<3\),
+- 8 seeds per architecture, same split-ensemble training pipeline with automatic \(K\)-selection.
+
+Operating-point ablation table (`results/table_small_rho_architecture_claim.csv`):
+
+| Circuit | Depth | Entangler | \(\rho_{EV}\) | NRMSE_EV | NRMSE_Split | \(\Delta\) (= EV - Split) | \(\Delta\) std | \(\Delta>0\) seed fraction | \(K_{\text{mode}}\) |
+|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| Ring CNOT | 5 | Ring | 1.365 | 0.5842 | 0.4280 | +0.1562 | 0.1081 | 1.00 | 10 |
+| Linear CNOT | 5 | Chain | 1.365 | 0.4728 | 0.3439 | +0.1289 | 0.0524 | 1.00 | 10 |
+| All-to-all CZ | 5 | All-to-all | 1.365 | 0.5465 | 0.3668 | +0.1797 | 0.0671 | 1.00 | 10 |
+| Ring CNOT | 2 | Ring | 1.365 | 0.5991 | 0.3774 | +0.2217 | 0.2231 | 1.00 | 10 |
+| Ring CNOT | 10 | Ring | 1.365 | 0.5919 | 0.4578 | +0.1340 | 0.0901 | 0.75 | 10 |
+
+Strong tested-scope claim:
+- At this low-\(\rho_{EV}\) operating point, split-ensemble is better than EV in mean NRMSE for all tested architecture variants (\(\Delta>0\) in all rows).
+- This is architecture-robust evidence in the tested set (entangler family and depth), while still not a proof of universal behavior over all possible circuit constructions.
+
+### 5.2 Crossover sensitivity of \(\rho_{EV}\) across architectures
+To quantify how sensitive the reported crossover scale is, we ran a multi-\(\rho\) sweep for five architecture variants (ring/chain/all-to-all at depth 5, plus ring at depth 2 and 10), then estimated smoothed \(\Delta(\rho_{EV})\) curves and extracted two markers:
+- \(\rho^\star_{\Delta=0}\): where the smoothed gap reaches zero,
+- \(\rho^\star_{\Delta=0.02}\): practical crossover where gain shrinks to \(\Delta=0.02\).
+
+Artifacts:
+- table: `results/table_crossover_sensitivity.csv`
+- plot: `results/fig_crossover_sensitivity_ieee.pdf`
+
+Summary (5 seeds, shots=`8,10,15,20,25,30,40,50`, sigma=`0,0.02,0.05`):
+- \(\rho^\star_{\Delta=0}\) range: `4.48` to `4.75`
+- \(\rho^\star_{\Delta=0.02}\) range: `3.91` to `4.12`
+- low-\(\rho\) robustness (\(\rho<3\)): mean gap remains positive for every variant (`0.076` to `0.116`), with positive-point fraction `1.000` for all variants.
+
+Interpretation:
+- The crossover scale is not a fixed constant and shifts with architecture/depth.
+- The low-\(\rho\) advantage of split-ensemble remains intact across tested variants.
+
 ---
 
 ## 6. Paper-ready claim set
@@ -210,9 +257,11 @@ Key point: the fix improves or preserves NRMSE while substantially restoring var
 A defensible final claim set is:
 
 1. Under fixed-shot budgets, grouped trajectory learning consistently improves NRMSE over EV in sample-limited regimes.
-2. The improvement follows an empirical power-law decay with \(\rho_{EV}\), supporting \(\rho_{EV}\) as an operational regime variable.
+2. Within the tested circuit family/protocol, the improvement follows an empirical power-law decay with \(\rho_{EV}\), supporting \(\rho_{EV}\) as an operational regime variable.
 3. For NARMA-10, naive grouped/trajectory variants can be variance-pathological; a guarded grouped protocol is required for fair evaluation.
 4. With this correction, NARMA-10 remains consistent with the main hypothesis: grouped training yields non-trivial error reductions without collapsing fully to a mean-line solution.
+5. We do not claim universality of a specific crossover value (for example near \(\rho_{EV}\approx 3\)); that scale is currently setup-dependent.
+6. In a matched low-\(\rho_{EV}\) operating-point ablation (\(\rho_{EV}=1.365<3\), 8 seeds), split-ensemble achieves \(\Delta>0\) across all tested architecture variants (ring/chain/all-to-all entanglers, depth 2/5/10).
 
 ---
 
@@ -238,10 +287,31 @@ python /Users/superposition/Coding/qrc_budget/plot_phase.py
 python /Users/superposition/Coding/qrc_budget/plot_narma_fix.py --seeds 8
 ```
 
+- Circuit-family ablation (scope extension):
+```bash
+python /Users/superposition/Coding/qrc_budget/ablate_circuit_families.py --narma-fix --seeds 3
+```
+
+- Small-\(\rho_{EV}\) operating-point architecture table:
+```bash
+python /Users/superposition/Coding/qrc_budget/study_small_rho_split_ensemble.py --seeds 8 --S 20000 --n-shots 40 --sigma 0.02
+```
+
+- Crossover sensitivity plot/table across architectures:
+```bash
+python /Users/superposition/Coding/qrc_budget/plot_crossover_sensitivity.py --narma-fix --seeds 5 --shots-list "8,10,15,20,25,30,40,50" --sigma-list "0.0,0.02,0.05" --out-csv /Users/superposition/Coding/qrc_budget/results/table_crossover_sensitivity.csv --out-plot /Users/superposition/Coding/qrc_budget/results/fig_crossover_sensitivity_ieee.pdf
+```
+
 ---
 
 ## 8. Limitations and next concrete paper step
 
-The remaining practical step for maximal consistency is to publish a matched “all-figures narma-fix” sweep set (same seed budget and same protocol flags across all three figures), then freeze those artifacts as final camera-ready data products.
+Primary external-validity limitation:
+- full-grid collapse/phase analyses are still centered on the baseline circuit family (depth-5 random, ring-CNOT),
+- architecture breadth is currently demonstrated at a single low-\(\rho_{EV}\) operating point (ring/chain/all-to-all and depth variants),
+- one hardware backend (`ibm_marrakesh`),
+- one observed crossover scale in \(\rho_{EV}\), treated as non-universal.
+
+The remaining practical step for maximal consistency is to publish a matched “all-figures narma-fix” sweep set (same seed budget and same protocol flags across all three figures), then freeze those artifacts as final camera-ready data products. The next breadth extension should explicitly test whether the \(\rho_{EV}\) crossover location shifts under alternative circuit families and backends.
 
 The current report is already technically coherent and publication-usable, with explicit caveats and transparent metric controls.

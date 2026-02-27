@@ -54,6 +54,13 @@ def cnot():
                      [0,0,0,1],
                      [0,0,1,0]], dtype=complex)
 
+def cz():
+    """Two-qubit CZ gate."""
+    return np.array([[1,0,0,0],
+                     [0,1,0,0],
+                     [0,0,1,0],
+                     [0,0,0,-1]], dtype=complex)
+
 def apply_single_qubit_gate(state, gate, qubit, n_qubits):
     """Apply a single-qubit gate to a statevector."""
     N = 2 ** n_qubits
@@ -90,21 +97,43 @@ def apply_cnot(state, control, target, n_qubits):
     return state.reshape(N)
 
 
+def apply_cz(state, control, target, n_qubits):
+    """Apply CZ between control and target qubits."""
+    if control == target:
+        raise ValueError("control and target must be different for CZ.")
+    N = 2 ** n_qubits
+    state = state.reshape([2] * n_qubits)
+    idx = [slice(None)] * n_qubits
+    idx[control] = 1
+    idx[target] = 1
+    state[tuple(idx)] *= -1.0
+    return state.reshape(N)
+
+
 class QuantumReservoir:
     """
     6-qubit random-circuit quantum reservoir.
 
     Architecture:
       - Input encoding: single-qubit Ry rotations scaled by random input weights W
-      - Fixed reservoir unitary: ring of CNOTs + random single-qubit rotations
+      - Fixed reservoir unitary: configurable entangler family + random single-qubit rotations
       - Measurement: Pauli Z and X on all qubits (M = 2Q = 12 observables)
     """
 
-    def __init__(self, n_qubits=6, depth=1, rng=None):
+    ALLOWED_CIRCUIT_FAMILIES = ("ring_cnot", "line_cnot", "star_cnot", "all_to_all_cz")
+
+    def __init__(self, n_qubits=6, depth=1, rng=None, circuit_family="ring_cnot"):
         self.Q = n_qubits
         self.N = 2 ** n_qubits
         self.M = 2 * n_qubits  # Z and X measurements
         self.depth = depth
+        self.circuit_family = circuit_family
+
+        if self.circuit_family not in self.ALLOWED_CIRCUIT_FAMILIES:
+            raise ValueError(
+                f"Unknown circuit_family='{self.circuit_family}'. "
+                f"Expected one of {self.ALLOWED_CIRCUIT_FAMILIES}."
+            )
 
         if rng is None:
             rng = np.random.default_rng()
@@ -118,6 +147,23 @@ class QuantumReservoir:
         for _ in range(depth):
             layer_params = rng.uniform(0, 2 * np.pi, size=(n_qubits, 3))
             self.res_params.append(layer_params)
+        self.entangler_ops = self._build_entangler_ops()
+
+    def _build_entangler_ops(self):
+        """Return a fixed list of (op_name, control, target) entanglers for one layer."""
+        if self.circuit_family == "ring_cnot":
+            return [("cnot", i, (i + 1) % self.Q) for i in range(self.Q)]
+        if self.circuit_family == "line_cnot":
+            return [("cnot", i, i + 1) for i in range(self.Q - 1)]
+        if self.circuit_family == "star_cnot":
+            return [("cnot", 0, j) for j in range(1, self.Q)]
+        if self.circuit_family == "all_to_all_cz":
+            ops = []
+            for i in range(self.Q):
+                for j in range(i + 1, self.Q):
+                    ops.append(("cz", i, j))
+            return ops
+        raise ValueError(f"Unsupported circuit_family: {self.circuit_family}")
 
     def _initial_state(self):
         """Return |0...0> state."""
@@ -133,12 +179,15 @@ class QuantumReservoir:
         return state
 
     def _apply_reservoir_unitary(self, state):
-        """Apply fixed random circuit: ring CNOTs + random rotations."""
+        """Apply fixed random circuit family + random single-qubit rotations."""
         for layer_params in self.res_params:
-            # Ring of CNOTs
-            for i in range(self.Q):
-                j = (i + 1) % self.Q
-                state = apply_cnot(state, i, j, self.Q)
+            for op_name, control, target in self.entangler_ops:
+                if op_name == "cnot":
+                    state = apply_cnot(state, control, target, self.Q)
+                elif op_name == "cz":
+                    state = apply_cz(state, control, target, self.Q)
+                else:
+                    raise ValueError(f"Unsupported entangler op: {op_name}")
             # Random single-qubit rotations
             for i in range(self.Q):
                 state = apply_single_qubit_gate(state, rx(layer_params[i, 0]), i, self.Q)
@@ -686,7 +735,7 @@ def compute_rho_ev(S, n_shots, d=241, t0=30, alpha=0.7):
 
 def run_single_experiment(n_shots, sigma, S, benchmark='mackey_glass',
                           seed=0, eta=0.5, L=20, t0=30, alpha=0.7,
-                          grouped=False, G=2, depth=5):
+                          grouped=False, G=2, depth=5, circuit_family="ring_cnot"):
     """
     Run a single EV vs trajectory experiment.
 
@@ -721,7 +770,12 @@ def run_single_experiment(n_shots, sigma, S, benchmark='mackey_glass',
         raise ValueError(f"Unknown benchmark: {benchmark}")
 
     # Build reservoir
-    reservoir = QuantumReservoir(n_qubits=6, depth=depth, rng=rng)
+    reservoir = QuantumReservoir(
+        n_qubits=6,
+        depth=depth,
+        rng=rng,
+        circuit_family=circuit_family,
+    )
 
     # Run reservoir pipeline
     shot_features = run_reservoir_pipeline(

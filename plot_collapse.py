@@ -72,14 +72,14 @@ def _parse_float_list(raw, default):
     return [float(x.strip()) for x in raw.split(",") if x.strip()]
 
 
-def run_one(dataset_name, func, n_shots, sigma, S, seed, use_narma_fix):
+def run_one(dataset_name, func, n_shots, sigma, S, seed, use_narma_fix, circuit_family, depth=5):
     rng = np.random.default_rng(seed)
     T = S // n_shots
     if T < 60:
         return None
     series = func(T + 50, rng)
     inputs, targets = series[:-1][:T], series[1:][:T]
-    res = QuantumReservoir(n_qubits=6, depth=5, rng=rng)
+    res = QuantumReservoir(n_qubits=6, depth=int(depth), rng=rng, circuit_family=circuit_family)
     sf = run_reservoir_pipeline(inputs, res, n_shots, sigma, rng=np.random.default_rng(seed + 1000))
     ev, _, _ = ev_training(sf, targets, 30, 0.7)
     if use_narma_fix and dataset_name == "NARMA-10":
@@ -89,7 +89,7 @@ def run_one(dataset_name, func, n_shots, sigma, S, seed, use_narma_fix):
     return ev - gt
 
 
-def compute_data(shots_list, sigma_list, n_seeds, use_narma_fix):
+def compute_data(shots_list, sigma_list, n_seeds, use_narma_fix, circuit_family, depth=5):
     datasets = {
         "Mackey-Glass": (lambda n, rng: mackey_glass(n, tau=17, rng=rng), 20000),
         "Lorenz": (lorenz_x, 30000),
@@ -98,13 +98,23 @@ def compute_data(shots_list, sigma_list, n_seeds, use_narma_fix):
 
     all_rho, all_gap, all_label = [], [], []
     for ds_name, (func, S) in datasets.items():
-        print(f"Sweeping {ds_name}...")
+        print(f"Sweeping {ds_name} (family={circuit_family}, depth={depth})...")
         for n_shots in shots_list:
             for sigma in sigma_list:
                 rho = compute_rho_ev(S, n_shots)
                 gaps = []
                 for seed in range(n_seeds):
-                    g = run_one(ds_name, func, n_shots, sigma, S, seed, use_narma_fix)
+                    g = run_one(
+                        ds_name,
+                        func,
+                        n_shots,
+                        sigma,
+                        S,
+                        seed,
+                        use_narma_fix,
+                        circuit_family,
+                        depth=depth,
+                    )
                     if g is not None:
                         gaps.append(g)
                 if gaps:
@@ -118,7 +128,7 @@ def compute_data(shots_list, sigma_list, n_seeds, use_narma_fix):
     }
 
 
-def load_or_compute(cache_file, shots_list, sigma_list, n_seeds, use_narma_fix):
+def load_or_compute(cache_file, shots_list, sigma_list, n_seeds, use_narma_fix, circuit_family, depth=5):
     if os.path.exists(cache_file):
         print(f"Loading cached data from {cache_file}")
         with open(cache_file, "rb") as f:
@@ -130,6 +140,8 @@ def load_or_compute(cache_file, shots_list, sigma_list, n_seeds, use_narma_fix):
         sigma_list=sigma_list,
         n_seeds=n_seeds,
         use_narma_fix=use_narma_fix,
+        circuit_family=circuit_family,
+        depth=depth,
     )
     with open(cache_file, "wb") as f:
         pickle.dump(data, f)
@@ -234,6 +246,14 @@ def main() -> None:
     parser.add_argument("--png", action="store_true", help="Also export PNG alongside PDF.")
     parser.add_argument("--ours-label", type=str, default=OURS_LABEL, help="Label for the proposed method annotation.")
     parser.add_argument(
+        "--circuit-family",
+        type=str,
+        default="ring_cnot",
+        choices=list(QuantumReservoir.ALLOWED_CIRCUIT_FAMILIES),
+        help="Reservoir entangler family.",
+    )
+    parser.add_argument("--depth", type=int, default=5, help="Reservoir depth.")
+    parser.add_argument(
         "--shots-list",
         type=str,
         default=None,
@@ -251,28 +271,42 @@ def main() -> None:
     shots_list = _parse_int_list(args.shots_list, [5, 8, 10, 15, 20, 25, 30, 40, 50])
     sigma_list = _parse_float_list(args.sigma_list, [0.0, 0.01, 0.02, 0.03, 0.05, 0.08, 0.10])
 
+    base_cache = "data_collapse_narma_fix_ieee" if use_narma_fix else "data_collapse_ieee"
+    suffix_parts = []
+    if args.circuit_family != "ring_cnot":
+        suffix_parts.append(args.circuit_family)
+    if int(args.depth) != 5:
+        suffix_parts.append(f"d{int(args.depth)}")
+    if args.shots_list or args.sigma_list:
+        suffix_parts.append("custom")
+    cache_name = base_cache + (f"_{'_'.join(suffix_parts)}" if suffix_parts else "") + ".pkl"
+
     if args.cache_file:
         cache_file = args.cache_file
     else:
-        if args.shots_list or args.sigma_list:
-            cache_name = "data_collapse_narma_fix_ieee_custom.pkl" if use_narma_fix else "data_collapse_ieee_custom.pkl"
-        else:
-            cache_name = "data_collapse_narma_fix_ieee.pkl" if use_narma_fix else "data_collapse_ieee.pkl"
         cache_file = os.path.join(OUT_DIR, cache_name)
+
+    out_base = "fig_collapse_narma_fix_ieee" if use_narma_fix else "fig_collapse_ieee"
+    if args.circuit_family != "ring_cnot":
+        out_base = f"{out_base}_{args.circuit_family}"
+    if int(args.depth) != 5:
+        out_base = f"{out_base}_d{int(args.depth)}"
     out_path = (
         args.output
         if args.output
-        else os.path.join(OUT_DIR, "fig_collapse_narma_fix_ieee.pdf" if use_narma_fix else "fig_collapse_ieee.pdf")
+        else os.path.join(OUT_DIR, f"{out_base}.pdf")
     )
 
     mode_label = "narma_fix" if use_narma_fix else "legacy"
-    print(f"Mode: {mode_label} | seeds={args.seeds}")
+    print(f"Mode: {mode_label} | family={args.circuit_family} | depth={args.depth} | seeds={args.seeds}")
     data = load_or_compute(
         cache_file=cache_file,
         shots_list=shots_list,
         sigma_list=sigma_list,
         n_seeds=int(args.seeds),
         use_narma_fix=use_narma_fix,
+        circuit_family=str(args.circuit_family),
+        depth=int(args.depth),
     )
     make_plot(out_path=out_path, data=data, save_png=bool(args.png), ours_label=str(args.ours_label))
 
