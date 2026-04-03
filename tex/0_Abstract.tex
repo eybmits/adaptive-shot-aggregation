@@ -1,0 +1,13 @@
+\begin{abstract}
+In repeated-measurement quantum reservoir computing (QRC), each labeled time step is observed through a finite shot record rather than an exact quantum state. Under a fixed execution budget, the learning problem therefore depends not only on the reservoir and the readout estimator, but also on how the same shot record is organized before the readout is trained. We study \emph{split-ensemble} training, a budget-fair protocol that partitions the shots at each time step into disjoint groups, averages within each group, and trains on the resulting grouped views.
+
+The theory is intentionally light but sharper than bookkeeping alone. Under a grouped-view surrogate adapted from classical measurement-error models and random-design ridge theory, grouping by size $k$ changes the exact row-to-dimension ratio from $\rhoEV$ to $\rhoK=(\Nshots/k)\rhoEV$, reduces the grouped feature-noise covariance to $\Sigma_\epsilon/k$, and yields a closed-form warm start for the preferred group size through an explicit attenuation-versus-row-count tradeoff. This gives a practical decision rule: grouping is most useful when the EV readout is still row-limited and therefore conditioning-limited.
+
+We validate that picture on a corrected synthetic suite with exact budget accounting $\Stotal=\Rsettings \Nshots T$, two measurement settings per labeled time step, and $20$ seeds. Across an empirical $\rhoEV$ sweep, stronger protocol and estimator controls, and a single common representative operating point, split-ensemble consistently improves on expectation-value (EV) training in the shot-limited regime. At the common operating point ($Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$, $\lambda=10$), split-ensemble reduces test $\NRMSE$ from $0.446\pm0.103$ to $0.414\pm0.072$ on Mackey--Glass, from $0.925\pm0.168$ to $0.845\pm0.142$ on Lorenz, and from $0.947\pm0.098$ to $0.863\pm0.035$ on NARMA10.
+
+To strengthen the practical relevance, we additionally import a real-device validation on IBM Quantum hardware from the companion hardware study: on \texttt{ibm\_marrakesh}, split-ensemble improves Mackey--Glass forecasting from $1.023\pm0.235$ (EV) to $0.670\pm0.080$ at fixed hardware shot records and without error mitigation. A larger-reservoir appendix scales the simulation up to $Q=10$ for all three benchmarks and up to $Q=12$ for Mackey--Glass and NARMA10, where the split advantage persists and often grows. These results position shot organization as a genuine algorithmic design axis for finite-shot QRC.
+\end{abstract}
+
+\begin{IEEEkeywords}
+quantum reservoir computing, finite-shot learning, measurement organization, conditioning, ridge regression, hardware validation
+\end{IEEEkeywords}

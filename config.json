@@ -1,0 +1,157 @@
+{
+  "budget_total": 12000,
+  "q_default": 4,
+  "depth_default": 1,
+  "entangler_default": "ring_cnot",
+  "eta": 0.2,
+  "window": 10,
+  "t0": 30,
+  "train_frac": 0.7,
+  "val_frac_within_train": 0.25,
+  "lambda_default": 10.0,
+  "lambda_grid": [
+    0.001,
+    0.003,
+    0.01,
+    0.03,
+    0.1,
+    0.3,
+    1.0,
+    3.0,
+    10.0,
+    30.0,
+    100.0,
+    300.0,
+    1000.0
+  ],
+  "gamma_grid": [
+    0.0,
+    0.1,
+    0.3,
+    1.0,
+    3.0,
+    10.0
+  ],
+  "phase_nshots": [
+    10,
+    12,
+    15,
+    18,
+    20,
+    25,
+    30,
+    40,
+    50
+  ],
+  "confirmation_seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "architecture_seeds": [
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219
+  ],
+  "appendix_seeds": [
+    300,
+    301,
+    302,
+    303,
+    304,
+    305,
+    306,
+    307,
+    308,
+    309,
+    310,
+    311,
+    312,
+    313,
+    314,
+    315,
+    316,
+    317,
+    318,
+    319
+  ],
+  "architecture_variants": [
+    [
+      "ring_cnot",
+      1
+    ],
+    [
+      "ring_cnot",
+      2
+    ],
+    [
+      "ring_cnot",
+      4
+    ],
+    [
+      "line_cnot",
+      1
+    ],
+    [
+      "all_to_all_cz",
+      1
+    ]
+  ],
+  "reservoir_sizes": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "representative_configs": {
+    "mackey_glass": {
+      "budget_total": 12000,
+      "n_shots": 18,
+      "sigma": 0.0
+    },
+    "lorenz": {
+      "budget_total": 12000,
+      "n_shots": 18,
+      "sigma": 0.0
+    },
+    "narma10": {
+      "budget_total": 12000,
+      "n_shots": 18,
+      "sigma": 0.0
+    }
+  }
+}

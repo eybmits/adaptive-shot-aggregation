@@ -1,0 +1,62 @@
+\appendices
+
+\section{Experiment 5: Duplication control}
+\label{sec:appdup}
+
+The main baseline figure already includes EV-dup, but the broader duplication control remains useful because it shows explicitly that matching the grouped row count by copying the same EV row does not reproduce the grouped-view gain.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.98\columnwidth]{experiment_5.pdf}
+    \caption{Duplication control from the broader suite. Row-count matching by exact duplication is not the same thing as training on several distinct grouped views of the same target.}
+    \label{fig:appdup}
+\end{figure}
+
+\section{Experiment 3: Larger reservoirs / more qubits}
+\label{sec:appmoreqsec}
+
+Figure~\ref{fig:appmoreq} scales the reservoir while keeping the protocol fixed. All three tasks are shown up to $Q=10$ with eight seeds per point; Mackey--Glass and NARMA10 additionally include $Q=12$. The positive EV-minus-Split gap persists throughout and often grows with $Q$.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.98\textwidth]{experiment_3.pdf}
+    \caption{Larger-reservoir sweep. Each panel combines the absolute EV and Split test NRMSE curves with the corresponding EV-minus-Split gap versus reservoir size. The split advantage persists as the qubit count increases and becomes especially pronounced on Mackey--Glass and NARMA10 once the feature dimension grows.}
+    \label{fig:appmoreq}
+\end{figure*}
+
+\section{Closed-form derivation of the warm start}
+\label{sec:appkstar}
+
+Define $a:=\sigma_\epsilon^2/\sigma_x^2=1/\mathrm{SNR}_m$. The attenuation factor in Eq.~\eqref{eq:beta0a} is then $\beta_0(k)=k/(k+a)$. The proxy in Eq.~\eqref{eq:proxy} can be written as
+\begin{equation}
+\mathcal{E}(k)=c_{\mathrm{att}}\left(\frac{a}{k+a}\right)^2 + c_{\mathrm{rows}}\frac{k}{\rhoEV\Nshots}.
+\end{equation}
+Differentiating and setting the derivative to zero yields
+\begin{equation}
+(k+a)^3 = \frac{2c_{\mathrm{att}}a^2\rhoEV\Nshots}{c_{\mathrm{rows}}},
+\end{equation}
+so the continuous minimizer is
+\begin{equation}
+k_\star^{\mathrm{cont}} = \left(\frac{2c_{\mathrm{att}}}{c_{\mathrm{rows}}}a^2\rhoEV\Nshots\right)^{1/3} - a.
+\end{equation}
+In practice this value is used only as a warm start: clip it to $[1,\Nshots]$, snap it to the nearest divisor of $\Nshots$, and then validate discretely.
+
+The same derivation also makes the scaling transparent:
+\begin{equation}
+k_\star \propto \left(\frac{\rhoEV\Nshots}{\mathrm{SNR}_m^2}\right)^{1/3},
+\end{equation}
+up to the problem-dependent ratio $c_{\mathrm{att}}/c_{\mathrm{rows}}$. Thus larger shot noise pushes toward larger groups, while a more row-limited EV design pushes toward smaller groups.
+
+\section{Implementation details for reproducibility}
+\label{sec:apprepro}
+
+\begin{itemize}[leftmargin=*]
+    \item Reservoir family: ring-CNOT entanglers with fixed depth unless otherwise stated.
+    \item Observables: $\{Z_i,X_i\}_{i=1}^Q$, measured through $\Rsettings=2$ settings.
+    \item Features: leaky integrator with rate $\eta=0.3$ and tapped-delay window $L=10$.
+    \item Splits: chronological train/validation/test split after a washout of $t_0=30$ time steps; grouping is performed only within split.
+    \item Training: ridge regression with protocol-matched validation over divisors of $\Nshots$; features are standardized from the training split only.
+    \item Main synthetic suite: $20$ seeds for representative points, the empirical gap plot, and baseline controls.
+    \item Larger-reservoir appendix: $8$ seeds per point for $Q\in\{4,6,8,10\}$ and, where reported, $Q=12$.
+    \item Hardware validation: imported directly from the companion \texttt{ibm\_marrakesh} study with $8$ seeds and no error mitigation.
+\end{itemize}

@@ -12,5 +12,13 @@ results/data_*.pkl
 results/sweep_results.json
 results/*.png
 
+# TeX build artifacts
+tex/*.aux
+tex/*.fdb_latexmk
+tex/*.fls
+tex/*.log
+tex/*.out
+tex/main.pdf
+
 # Claude Code internal
 .claude/

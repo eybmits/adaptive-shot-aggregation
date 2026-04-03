@@ -1,0 +1,78 @@
+\section{Evaluation}
+\label{sec:evaluation}
+
+\subsection{Experiment 1: Representative operating points}
+
+Figure~\ref{fig:rep} is the paper's trajectory-level visualization figure. The left panels show representative seed traces and the right panels show all 20 seed-level outcomes. This figure is useful because it makes the failure modes legible: Raw is often too noisy, EV is cleaner but can over-smooth or miss amplitude, and Split lands between them.
+
+All three representative panels now use exactly the same operating point ($Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$, $\lambda=10$, $\rhoEV=2.65125$), so the visual comparison is no longer entangled with task-specific choices. At this common operating point, the 20-seed test $\NRMSE$ values are:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Mackey--Glass:} EV $0.446\pm0.103$, Raw $0.563\pm0.076$, Split $0.414\pm0.072$;
+    \item \textbf{Lorenz:} EV $0.925\pm0.168$, Raw $0.990\pm0.126$, Split $0.845\pm0.142$;
+    \item \textbf{NARMA10:} EV $0.947\pm0.098$, Raw $0.911\pm0.027$, Split $0.863\pm0.035$.
+\end{itemize}
+The role of Figure~\ref{fig:rep} is therefore narrower and cleaner than before: it is an illustrative same-setting comparison that shows what the three protocols look like under one shared synthetic operating point, while the regime claim itself still comes from Figure~\ref{fig:gap}.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.985\textwidth]{experiment_1.pdf}
+    \caption{Common operating point comparison. Left: one representative seed trajectory per benchmark, chosen as the seed whose Split test $\NRMSE$ is closest to the 20-seed median. Right: all 20 seed outcomes with mean $\pm$ standard deviation. All three tasks use the same synthetic operating point ($Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$, $\lambda=10$), which makes the comparison visually uniform and easy to audit.}
+    \label{fig:rep}
+\end{figure*}
+
+\subsection{Experiment 2: Empirical regime test versus \texorpdfstring{$\rhoEV$}{rho-EV}}
+
+Figure~\ref{fig:gap} is the paper's main regime plot. The theory in Section~\ref{sec:methodology} says that grouping gives an exact right-shift in aspect ratio and that this shift should matter most when EV is still row-limited. Figure~\ref{fig:gap} tests exactly that idea on the common synthetic sweep over $\rhoEV$.
+
+Three observations matter. First, the displayed mean gap is positive for all shown Lorenz and NARMA10 points and for the shown Mackey--Glass points. Second, the advantage is generally larger in the conditioning-limited and transition ranges than in the well-conditioned range. Third, as $\rhoEV$ increases, the gap shrinks toward zero rather than growing. That is the regime picture the paper needs: grouping helps most when EV is still row-limited; once EV is comfortably conditioned, the extra grouped views matter less.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.98\columnwidth]{experiment_2.pdf}
+    \caption{Empirical split gain along the common synthetic sweep. Faint background points show individual seeds; markers with error bars show the 20-seed mean and 95\% confidence interval. The main lesson is not a universal numeric threshold but a clear regime trend: Split helps most when EV is still conditioning-limited, and the gain shrinks as $\rhoEV$ grows.}
+    \label{fig:gap}
+\end{figure}
+
+\subsection{Experiment 4: Stronger protocol and estimator controls}
+
+Figure~\ref{fig:base} compares Split not only to EV and Raw but also to EV-dup, EV-NA, and Split-NA. This is the main reviewer-facing control figure because it asks whether the effect can be explained away by matching the grouped row count or by adding a simple variance-aware penalty.
+
+Under the same common operating point, the answer is favorable and easier to explain than before. On Mackey--Glass, Lorenz, and NARMA10, Split is the lowest-mean method among the compared protocol and diagonal noise-aware baselines. EV-dup and EV-NA remain useful controls, but they do not close the gap to Split. The stronger claim that survives these controls is the one we actually want to make: shot organization is a real design variable, and grouped views can outperform both simple row-count matching and simple diagonal variance-aware corrections under the same shared synthetic setup.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.985\textwidth]{experiment_4.pdf}
+    \caption{Baseline controls at the common operating point. EV-dup tests whether the gain is explained solely by row-count matching; EV-NA and Split-NA test a simple diagonal variance-aware penalty. Split remains the best mean method across all three benchmarks under the same shared synthetic setting.}
+    \label{fig:base}
+\end{figure*}
+
+\subsection{Hardware validation on IBM Quantum}
+
+The synthetic narrative would be incomplete without a device-level check because the whole point of the protocol is to make fixed shot budgets count on real hardware. We therefore import the hardware experiment from the companion study on \texttt{ibm\_marrakesh}. This is a deliberately modest hardware claim: one task, one backend, one shot-limited operating point, no error mitigation. That is enough for our purpose because the paper's main claim is about \emph{protocol behavior under real shot noise}, not about broad hardware supremacy.
+
+The result is strong. On Mackey--Glass with the same hardware shot records for all methods, EV gives $\NRMSE=1.023\pm0.235$, Raw gives $0.932\pm0.021$, and Split gives $0.670\pm0.080$. That corresponds to an absolute gap of $0.353$ versus EV and preserves the same ranking seen in the synthetic study.
+
+\begin{table}[!t]
+    \caption{Hardware summary on \texttt{ibm\_marrakesh} (Mackey--Glass, $\Stotal=20$k, $N_{\mathrm{shots}}=40$, 8 seeds).}
+    \label{tab:hardware}
+    \centering
+    \begin{tabular}{lcc}
+        \toprule
+        Protocol & Test $\NRMSE$ & Best $k$ / grouping \\
+        \midrule
+        EV & $1.023 \pm 0.235$ & $k=40$ \\
+        Raw & $0.932 \pm 0.021$ & $k=1$ \\
+        Split & $0.670 \pm 0.080$ & $k=10$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Scaling the reservoir}
+
+The appendix enlarges the reservoir while keeping the protocol fixed. Figure~\ref{fig:appmoreq} shows that the positive EV-minus-Split gap persists as the qubit count increases and, on Mackey--Glass and NARMA10, often grows substantially. For example, on the chosen Mackey--Glass operating point the mean gap increases from $0.117$ at $Q=4$ to $0.340$ at $Q=12$; on NARMA10 it increases from $0.043$ at $Q=4$ to $0.443$ at $Q=12$. Lorenz is more conservative, but the mean gap remains positive through $Q=12$.
+
+This appendix matters for two reasons. First, it answers the natural objection that a four-qubit reservoir is too small for the conditioning story to be meaningful. Second, it shows that the protocol effect is not washed out as the readout dimension increases. In that sense the larger-reservoir sweep is not decorative; it materially strengthens the practical relevance of the paper.
+
+\subsection{What the theory adds and what it does not}
+
+Theoretical restraint is a feature here. The exact grouped-view lift, the attenuation factor, and the warm-start $k_\star$ are the parts of the theory that are actually useful. They motivate the regime picture and yield a practical decision rule. The paper does \emph{not} need a universal theorem for test error or a universal numeric crossover. The evidence for lower test error is empirical, and it is strongest exactly where the theory predicts the conditioning gain should matter most.
