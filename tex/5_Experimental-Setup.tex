@@ -17,7 +17,7 @@ The representative panels in Figure~\ref{fig:rep} and the protocol baselines in 
 
 The selection rule is explicit: choose the largest $N_{\mathrm{shots}}$ value from the common sweep for which all three benchmarks simultaneously satisfy two conditions in the $20$-seed mean, namely EV remains below $\NRMSE=1$ and Split improves on EV. Under that rule, the shared operating point is $Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$, $\lambda=10$, and $\rhoEV=2.65125$.
 
-This rule removes the appearance of magic numbers. The operating point is not chosen separately for Mackey--Glass, Lorenz, and NARMA10; it is the single largest shared point in the sweep that still keeps the EV baseline in a reasonable forecasting regime on all three tasks. The left panels in Figure~\ref{fig:rep} then show one representative seed per task, chosen as the seed whose Split test $\NRMSE$ is closest to the 20-seed median, while the right panels still report all 20 seed outcomes.
+This rule removes the appearance of magic numbers. The operating point is not chosen separately for Mackey--Glass, Lorenz, and NARMA10; it is the single largest shared point in the sweep that still keeps the EV baseline in a reasonable forecasting regime on all three tasks. The top row in Figure~\ref{fig:rep} then shows one representative seed per task, chosen as the seed whose Split test $\NRMSE$ is closest to the 20-seed median, while the bottom row reports all 20 seed outcomes.
 
 \subsection{Empirical regime plot}
 
@@ -25,7 +25,7 @@ The empirical regime plot (Figure~\ref{fig:gap}) is a one-parameter sweep throug
 \[
 \Delta = \NRMSE(\mathrm{EV})-\NRMSE(\mathrm{Split})
 \]
-changes along a one-parameter slice in $\rhoEV$. Faint points show individual seeds and the darker markers report the $20$-seed mean with a confidence interval. This plot is intended as the direct empirical test of the regime picture from Section~\ref{sec:methodology}.
+changes along a one-parameter slice in $\rhoEV$. Faint points show individual seeds and the darker curves report the $20$-seed mean with a translucent standard-deviation band. This plot is intended as the direct empirical test of the regime picture from Section~\ref{sec:methodology}.
 
 \subsection{Imported hardware validation}
 
@@ -35,4 +35,8 @@ We adopt those hardware results directly rather than re-optimizing them inside t
 
 \subsection{Larger-reservoir sweep}
 
-The appendix enlarges the reservoir while keeping the protocol fixed. For all three benchmarks we sweep $Q\in\{4,6,8,10\}$ with eight seeds per point; for Mackey--Glass and NARMA10 we additionally include $Q=12$. The purpose is not to claim asymptotic scaling, but to answer the concrete reviewer question of whether the protocol effect survives once the feature dimension becomes larger and the conditioning story becomes more interesting.
+The appendix enlarges the reservoir while keeping the protocol fixed. For all three benchmarks we sweep $Q\in\{4,6,8,10,12\}$ with $20$ seeds per point. The purpose is not to claim asymptotic scaling, but to answer the concrete reviewer question of whether the protocol effect survives once the feature dimension becomes larger and the conditioning story becomes more interesting.
+
+\subsection{Reservoir-architecture ablation}
+
+The appendix also varies the reservoir architecture at fixed protocol. The full architecture sweep uses the common synthetic operating point ($Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$, $\lambda=10$) with $20$ seeds and compares five variants: ring-CNOT with depths $1$, $2$, and $4$, line-CNOT with depth $1$, and all-to-all CZ with depth $1$. To keep the larger-reservoir follow-up targeted rather than exhaustive, we then rank the $Q=4$ variants within each dataset by their EV-minus-Split gap and rerun only the top two variants at $Q=12$ for Mackey--Glass and NARMA10, using eight seeds. This isolates the architecture question from a new hyperparameter search while still answering whether the split effect survives under qualitatively different reservoir couplings.

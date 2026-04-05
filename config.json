@@ -87,6 +87,22 @@
     218,
     219
   ],
+  "architecture_q12_topk": 2,
+  "architecture_q12_q": 12,
+  "architecture_q12_seeds": [
+    300,
+    301,
+    302,
+    303,
+    304,
+    305,
+    306,
+    307
+  ],
+  "architecture_q12_datasets": [
+    "mackey_glass",
+    "narma10"
+  ],
   "appendix_seeds": [
     300,
     301,
@@ -132,10 +148,11 @@
     ]
   ],
   "reservoir_sizes": [
-    3,
     4,
-    5,
-    6
+    6,
+    8,
+    10,
+    12
   ],
   "representative_configs": {
     "mackey_glass": {

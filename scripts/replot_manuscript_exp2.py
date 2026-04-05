@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import os
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, Iterable, List
 
 os.environ.setdefault("XDG_CACHE_HOME", "/tmp")
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/qrc_budget_mpl")
@@ -56,6 +56,13 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 FIGURES = ROOT / "figures"
 TASK_ORDER = ["mackey_glass", "lorenz", "narma10"]
+ARCH_LABELS = {
+    ("ring_cnot", 1): "Ring d=1",
+    ("ring_cnot", 2): "Ring d=2",
+    ("ring_cnot", 4): "Ring d=4",
+    ("line_cnot", 1): "Line d=1",
+    ("all_to_all_cz", 1): "All-to-all d=1",
+}
 
 
 def load_csv(name: str) -> pd.DataFrame:
@@ -480,6 +487,64 @@ def make_experiment_3(more_qubits_seed: pd.DataFrame) -> None:
     plt.close(fig)
 
 
+def make_experiment_7(arch_seed: pd.DataFrame, arch_summary: pd.DataFrame) -> None:
+    apply_style()
+    fig, axes = plt.subplots(1, 3, figsize=(FIG_W, scaled_height(7.0, 3.55)))
+    fig.subplots_adjust(left=0.10, right=0.99, top=0.87, bottom=0.36, wspace=0.30)
+    order = list(ARCH_LABELS.keys())
+    xtick_labels = [ARCH_LABELS[key] for key in order]
+    for ax, dataset in zip(axes, TASK_ORDER):
+        sub_seed = arch_seed[arch_seed["dataset"] == dataset].copy()
+        sub_summary = arch_summary[arch_summary["dataset"] == dataset].copy()
+        gap_values = sub_seed["ev_nrmse"].to_numpy(dtype=float) - sub_seed["split_nrmse"].to_numpy(dtype=float)
+        y_min = min(-0.02, float(np.floor((gap_values.min() - 0.03) / 0.05) * 0.05))
+        y_max = max(0.05, float(np.ceil((gap_values.max() + 0.03) / 0.05) * 0.05))
+        for xpos, key in enumerate(order):
+            entangler, depth = key
+            seed_cell = sub_seed[
+                (sub_seed["entangler"] == entangler)
+                & (sub_seed["depth"].astype(int) == depth)
+            ].copy()
+            if seed_cell.empty:
+                continue
+            seed_gap = seed_cell["ev_nrmse"].to_numpy(dtype=float) - seed_cell["split_nrmse"].to_numpy(dtype=float)
+            jitter = np.linspace(-0.10, 0.10, len(seed_gap))
+            ax.scatter(
+                np.full(len(seed_gap), xpos, dtype=float) + jitter,
+                np.sort(seed_gap),
+                s=10,
+                color=ID_COLOR,
+                alpha=0.16,
+                edgecolors="none",
+                zorder=1,
+            )
+            row = sub_summary[
+                (sub_summary["entangler"] == entangler)
+                & (sub_summary["depth"].astype(int) == depth)
+            ].iloc[0]
+            ax.errorbar(
+                xpos,
+                float(row["gap_ev_minus_split"]),
+                yerr=float(np.sqrt(row["ev_nrmse_std"] ** 2 + row["split_nrmse_std"] ** 2)),
+                fmt="o",
+                color=ID_COLOR,
+                markersize=5.6,
+                markeredgecolor=MARKER_EDGE_COLOR,
+                markeredgewidth=MARKER_EDGE_WIDTH,
+                capsize=3.0,
+                linewidth=1.3,
+                zorder=3,
+            )
+        ax.axhline(0.0, color=REFERENCE_COLOR, lw=REFERENCE_LW, ls=REFERENCE_LS, alpha=REFERENCE_ALPHA, zorder=0)
+        ax.set_title(TITLE_MAP[dataset], pad=3)
+        ax.set_xticks(np.arange(len(order)), xtick_labels, rotation=28, ha="right")
+        if dataset == TASK_ORDER[0]:
+            ax.set_ylabel("Gap (EV - Split)")
+        ax.set_ylim(y_min, y_max)
+        style_axis(ax, grid=True)
+    save_pdf(fig, FIGURES / "experiment_7.pdf")
+
+
 def main() -> None:
     global FIGURES
     parser = argparse.ArgumentParser(description="Replot manuscript figures in the exp2 PDF style.")
@@ -496,6 +561,8 @@ def main() -> None:
     dup_seed = load_csv("duplication_control_seed_level.csv")
     dup_summary = load_csv("duplication_control_summary.csv")
     more_qubits_seed = load_csv("more_qubits_seed_level.csv")
+    arch_seed = load_csv("architecture_ablation_seed_level.csv")
+    arch_summary = load_csv("architecture_ablation_summary.csv")
     traces = load_representative_traces()
 
     print("writing PDFs", flush=True)
@@ -504,6 +571,7 @@ def main() -> None:
     make_experiment_4(base_seed)
     make_experiment_5(dup_seed, dup_summary)
     make_experiment_3(more_qubits_seed)
+    make_experiment_7(arch_seed, arch_summary)
     print(f"done: {FIGURES}", flush=True)
 
 

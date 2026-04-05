@@ -53,7 +53,11 @@ class Config:
         ('line_cnot', 1),
         ('all_to_all_cz', 1),
     )
-    reservoir_sizes: Tuple[int, ...] = (3, 4, 5, 6)
+    architecture_q12_topk: int = 2
+    architecture_q12_q: int = 12
+    architecture_q12_seeds: Tuple[int, ...] = tuple(range(300, 308))
+    architecture_q12_datasets: Tuple[str, ...] = ('mackey_glass', 'narma10')
+    reservoir_sizes: Tuple[int, ...] = (4, 6, 8, 10, 12)
     representative_n_shots: int = 18
     representative_sigma: float = 0.0
 
@@ -183,6 +187,102 @@ def run_empirical_gap_suite(cfg: Config) -> tuple[pd.DataFrame, pd.DataFrame]:
     return seed_df, summary.sort_values(['dataset', 'rho_ev']).reset_index(drop=True)
 
 
+ARCHITECTURE_ORDER = {
+    ('ring_cnot', 1): 0,
+    ('ring_cnot', 2): 1,
+    ('ring_cnot', 4): 2,
+    ('line_cnot', 1): 3,
+    ('all_to_all_cz', 1): 4,
+}
+
+
+def run_architecture_q12_targeted_suite(cfg: Config, arch_summary: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    rows = []
+    selected_rows = []
+    for dataset in cfg.architecture_q12_datasets:
+        sub = arch_summary[arch_summary['dataset'] == dataset].copy()
+        sub['variant_order'] = [
+            ARCHITECTURE_ORDER[(str(entangler), int(depth))]
+            for entangler, depth in zip(sub['entangler'], sub['depth'])
+        ]
+        ranked = sub.sort_values(
+            ['gap_ev_minus_split', 'split_nrmse_mean', 'depth', 'variant_order'],
+            ascending=[False, True, True, True],
+        ).head(cfg.architecture_q12_topk)
+        selected_rows.extend(ranked.to_dict(orient='records'))
+        for _, row in ranked.iterrows():
+            entangler = str(row['entangler'])
+            depth = int(row['depth'])
+            for seed in cfg.architecture_q12_seeds:
+                out = base.run_main_protocols(
+                    dataset,
+                    int(cfg.budget_total),
+                    int(cfg.representative_n_shots),
+                    float(cfg.representative_sigma),
+                    int(seed),
+                    cfg,
+                    q=int(cfg.architecture_q12_q),
+                    depth=depth,
+                    entangler=entangler,
+                    traces=False,
+                )
+                rows.append(out)
+    seed_df = pd.DataFrame(rows).sort_values(['dataset', 'entangler', 'depth', 'seed']).reset_index(drop=True)
+    summary = seed_df.groupby(['dataset', 'q', 'entangler', 'depth', 'n_shots', 'sigma'], as_index=False).agg(
+        seeds=('seed', 'nunique'),
+        ev_nrmse_mean=('ev_nrmse', 'mean'),
+        ev_nrmse_std=('ev_nrmse', lambda x: float(np.std(x, ddof=1))),
+        raw_nrmse_mean=('raw_nrmse', 'mean'),
+        raw_nrmse_std=('raw_nrmse', lambda x: float(np.std(x, ddof=1))),
+        split_nrmse_mean=('split_nrmse', 'mean'),
+        split_nrmse_std=('split_nrmse', lambda x: float(np.std(x, ddof=1))),
+        rho_ev=('rho_ev', 'mean'),
+    )
+    summary['gap_ev_minus_split'] = summary['ev_nrmse_mean'] - summary['split_nrmse_mean']
+    win_rate = (
+        seed_df.assign(split_beats_ev=(seed_df['split_nrmse'] < seed_df['ev_nrmse']).astype(float))
+        .groupby(['dataset', 'q', 'entangler', 'depth', 'n_shots', 'sigma'], as_index=False)
+        .agg(split_win_rate=('split_beats_ev', 'mean'))
+    )
+    summary = summary.merge(win_rate, on=['dataset', 'q', 'entangler', 'depth', 'n_shots', 'sigma'], how='left')
+    selected_df = pd.DataFrame(selected_rows)[['dataset', 'entangler', 'depth', 'gap_ev_minus_split', 'split_nrmse_mean']]
+    summary = summary.merge(
+        selected_df.rename(
+            columns={
+                'gap_ev_minus_split': 'source_q4_gap_ev_minus_split',
+                'split_nrmse_mean': 'source_q4_split_nrmse_mean',
+            }
+        ),
+        on=['dataset', 'entangler', 'depth'],
+        how='left',
+    )
+    return seed_df, summary.sort_values(['dataset', 'entangler', 'depth']).reset_index(drop=True)
+
+
+def build_more_qubits_outputs(size_seed: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    seed_df = (
+        size_seed.loc[:, ['dataset', 'q', 'seed', 'rho_ev', 'ev_nrmse', 'split_nrmse', 'split_k']]
+        .copy()
+        .sort_values(['dataset', 'q', 'seed'])
+        .reset_index(drop=True)
+    )
+    seed_df['gap'] = seed_df['ev_nrmse'] - seed_df['split_nrmse']
+    summary = (
+        seed_df.groupby(['dataset', 'q'], as_index=False)
+        .agg(
+            ev_mean=('ev_nrmse', 'mean'),
+            split_mean=('split_nrmse', 'mean'),
+            gap_mean=('gap', 'mean'),
+            gap_std=('gap', lambda x: float(np.std(x, ddof=1))),
+            split_k_mode=('split_k', lambda x: int(pd.Series(x).mode().iloc[0])),
+            rho_ev=('rho_ev', 'mean'),
+        )
+        .sort_values(['dataset', 'q'])
+        .reset_index(drop=True)
+    )
+    return seed_df, summary
+
+
 def main() -> None:
     repo = HERE.parent
     results_dir = repo / 'results'
@@ -203,6 +303,12 @@ def main() -> None:
     lambda_seed, lambda_summary = base.run_lambda_suite(cfg)
     print('architecture suite', flush=True)
     arch_seed, arch_summary = base.run_architecture_suite(cfg)
+    arch_seed = arch_seed.copy()
+    arch_summary = arch_summary.copy()
+    arch_seed['q'] = int(cfg.q_default)
+    arch_summary['q'] = int(cfg.q_default)
+    print('targeted q12 architecture suite', flush=True)
+    arch_q12_seed, arch_q12_summary = run_architecture_q12_targeted_suite(cfg, arch_summary)
     print('duplication suite', flush=True)
     dup_seed, dup_summary = base.run_duplication_suite(cfg)
     print('reservoir-size suite', flush=True)
@@ -218,10 +324,15 @@ def main() -> None:
     baseline_summary.drop(columns=['sigma'], errors='ignore').to_csv(results_dir / 'baseline_controls_summary.csv', index=False)
     lambda_seed.to_csv(results_dir / 'lambda_seed_level.csv', index=False)
     lambda_summary.to_csv(results_dir / 'lambda_summary.csv', index=False)
-    arch_seed.to_csv(results_dir / 'architecture_seed_level.csv', index=False)
-    arch_summary.to_csv(results_dir / 'architecture_summary.csv', index=False)
+    arch_seed.to_csv(results_dir / 'architecture_ablation_seed_level.csv', index=False)
+    arch_summary.to_csv(results_dir / 'architecture_ablation_summary.csv', index=False)
+    arch_q12_seed.to_csv(results_dir / 'architecture_ablation_q12_seed_level.csv', index=False)
+    arch_q12_summary.to_csv(results_dir / 'architecture_ablation_q12_summary.csv', index=False)
     dup_seed.to_csv(results_dir / 'duplication_control_seed_level.csv', index=False)
     dup_summary.to_csv(results_dir / 'duplication_control_summary.csv', index=False)
+    more_qubits_seed, more_qubits_summary = build_more_qubits_outputs(size_seed)
+    more_qubits_seed.to_csv(results_dir / 'more_qubits_seed_level.csv', index=False)
+    more_qubits_summary.to_csv(results_dir / 'more_qubits_summary.csv', index=False)
     size_seed.to_csv(results_dir / 'reservoir_size_seed_level.csv', index=False)
     size_summary.to_csv(results_dir / 'reservoir_size_summary.csv', index=False)
 
@@ -247,6 +358,10 @@ def main() -> None:
         'phase_nshots': list(cfg.phase_nshots),
         'confirmation_seeds': list(cfg.confirmation_seeds),
         'architecture_seeds': list(cfg.architecture_seeds),
+        'architecture_q12_topk': cfg.architecture_q12_topk,
+        'architecture_q12_q': cfg.architecture_q12_q,
+        'architecture_q12_seeds': list(cfg.architecture_q12_seeds),
+        'architecture_q12_datasets': list(cfg.architecture_q12_datasets),
         'appendix_seeds': list(cfg.appendix_seeds),
         'architecture_variants': [list(v) for v in cfg.architecture_variants],
         'reservoir_sizes': list(cfg.reservoir_sizes),
