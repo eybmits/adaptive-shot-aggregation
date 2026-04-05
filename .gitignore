@@ -20,5 +20,10 @@ tex/*.log
 tex/*.out
 tex/main.pdf
 
+# Generated manuscript / figure PDFs (kept local, not versioned)
+docs/full_paper.pdf
+figures/*.pdf
+figures/*.png
+
 # Claude Code internal
 .claude/

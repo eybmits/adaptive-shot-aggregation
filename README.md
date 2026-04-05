@@ -2,20 +2,17 @@
 
 This repository is the canonical local paper package for the current Split-Ensemble QRC manuscript. The tracked `results/`, `figures/`, `tex/`, and `docs/` directories are the source of truth for the current paper state.
 
-## Canonical outputs
+## Canonical sources
 
-- Paper PDF: `docs/full_paper.pdf`
 - Manuscript source: `tex/main.tex`
-- Main figure set:
-  - `figures/experiment_1.pdf`
-  - `figures/experiment_2.pdf`
-  - `figures/experiment_3.pdf`
-  - `figures/experiment_4.pdf`
-  - `figures/experiment_5.pdf`
-  - `figures/experiment_7.pdf`
-- Supplementary figure:
-  - `figures/experiment_6.pdf`
 - Results overview: `docs/results_summary.md`
+- Active plotting / experiment code:
+  - `scripts/replot_manuscript_exp2.py`
+  - `scripts/run_20seed_experiments.py`
+  - `scripts/compute_paired_stats.py`
+  - `scripts/run_ibm_hardware_validation_best.py`
+
+Generated PDFs such as `docs/full_paper.pdf` and `figures/experiment_*.pdf` are local build products and are intentionally ignored by Git.
 
 ## Experiment map
 
@@ -27,7 +24,6 @@ This repository is the canonical local paper package for the current Split-Ensem
 7. `experiment_7.pdf`: reservoir-architecture ablation at the common operating point
 
 Supplementary reproducibility artifacts:
-- `experiment_6.pdf`: hardware-validation summary figure generated from the tracked IBM validation exports
 - `lambda_*.csv`: ridge-regularization sweep at the common operating point
 - `experiment_*_paired_stats.csv`: paired delta / CI / win-rate / Wilcoxon tables backing the revised claims
 - `reservoir_size_*.csv`: full-format version of the Experiment 3 size sweep
@@ -97,4 +93,4 @@ The manuscript additionally imports a narrow hardware validation as a table-back
 3. Refresh the canonical paper artifact:
    - copy `tex/main.pdf` to `docs/full_paper.pdf`
 
-`docs/full_paper.pdf` is the tracked compiled-paper artifact. `tex/main.pdf` and the other TeX byproducts are treated as disposable build outputs and are ignored.
+`docs/full_paper.pdf`, `figures/*.pdf`, and `figures/*.png` are treated as disposable local build outputs and are ignored by Git.

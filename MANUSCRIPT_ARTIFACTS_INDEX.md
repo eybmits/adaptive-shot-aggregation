@@ -1,7 +1,6 @@
 # Ground-truth manuscript artifacts index
 
 ## Main paper
-- `docs/full_paper.pdf`
 - `docs/results_summary.md`
 - `tex/main.tex`
 - `tex/0_Abstract.tex`
@@ -15,16 +14,15 @@
 - `tex/8_Appendix.tex`
 - `tex/9_References.tex`
 
-## Canonical figures
+## Local generated outputs (ignored by Git)
+- `docs/full_paper.pdf`
 - `figures/experiment_1.pdf`
 - `figures/experiment_2.pdf`
 - `figures/experiment_3.pdf`
 - `figures/experiment_4.pdf`
 - `figures/experiment_5.pdf`
-- `figures/experiment_7.pdf`
-
-## Supplementary figures
 - `figures/experiment_6.pdf`
+- `figures/experiment_7.pdf`
 
 ## Canonical result files
 - `results/representative_summary.csv`
