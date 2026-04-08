@@ -38,6 +38,20 @@ To keep the larger-reservoir follow-up targeted rather than exhaustive, we then 
     \label{fig:apparch}
 \end{figure*}
 
+\section{Experiment 8: Ridge-regularization sweep}
+\label{sec:applambda}
+
+The architecture appendix addresses the reservoir-wiring question, but a separate concern is whether the representative comparison is overly sensitive to one hand-picked ridge value. Figure~\ref{fig:applambdafig} therefore sweeps the shared common operating point ($Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$) over the full log-grid $\lambda\in\{10^{-3}, 3\times10^{-3}, \dots, 10^{3}\}$ used throughout the study. The qualitative ordering is stable across the entire grid: Split remains below both EV and Raw in all $13/13$ reported $\lambda$ cells on all three datasets. The dotted reference line marks the default choice $\lambda=10$ used in the main comparisons.
+
+The conservative reading is not that one universal ridge value solves every task, since the broad minima shift somewhat by dataset and protocol. The actual point of the sweep is narrower and more important for this paper: the finite-shot split advantage is not a by-product of tuning the main comparison to one isolated regularization setting. The common operating point sits inside a robust low-error region, and the Split-versus-EV ordering survives over the whole audited $\lambda$ range.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.98\textwidth]{experiment_8.pdf}
+    \caption{Ridge-regularization sweep at the common operating point ($Q=4$, $N_{\mathrm{shots}}=18$, $\sigma=0$). Curves show the seed-averaged test NRMSE versus ridge parameter $\lambda$; translucent bands show one standard deviation and the dotted vertical line marks the default choice $\lambda=10$. Across the full shared log-grid, Split remains below both EV and Raw on all three datasets, indicating that the main comparison is not driven by a single fragile regularization setting.}
+    \label{fig:applambdafig}
+\end{figure*}
+
 \section{Closed-form derivation of the warm start}
 \label{sec:appkstar}
 

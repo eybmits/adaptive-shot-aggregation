@@ -1678,6 +1678,7 @@ def main() -> None:
     make_figure_3_theory(theory_df, figures_dir / "figure_3_theory_regime_test")
     make_figure_4_baselines(baseline_summary, figures_dir / "experiment_4")
     make_figure_5_lambda(lambda_summary, figures_dir / "figure_5_lambda_sweeps")
+    make_figure_5_lambda(lambda_summary, figures_dir / "experiment_8")
     make_figure_6_architecture(arch_summary, figures_dir / "figure_6_architecture_ablation")
     make_appendix_duplication(dup_summary, figures_dir / "experiment_5")
     make_appendix_size(size_summary, figures_dir / "experiment_3")

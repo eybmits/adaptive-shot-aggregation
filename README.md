@@ -22,6 +22,7 @@ Generated PDFs such as `docs/full_paper.pdf` and `figures/experiment_*.pdf` are 
 4. `experiment_4.pdf`: baseline controls at the common operating point
 5. `experiment_5.pdf`: duplication-control sweep (`EV`, `EV-dup`, `Split`)
 7. `experiment_7.pdf`: reservoir-architecture ablation at the common operating point
+8. `experiment_8.pdf`: ridge-regularization sweep at the common operating point
 
 Supplementary reproducibility artifacts:
 - `lambda_*.csv`: ridge-regularization sweep at the common operating point
@@ -29,7 +30,7 @@ Supplementary reproducibility artifacts:
 - `reservoir_size_*.csv`: full-format version of the Experiment 3 size sweep
 - `hardware_validation_experiment2_best_*`: full audit bundle for the best-regime IBM validation rerun
 
-Appendix-only robustness figures extend the story with the `experiment_7` reservoir-architecture ablation at fixed `Q=4` and a targeted `Q=12` follow-up on the strongest variants.
+Appendix-only robustness figures extend the story with the `experiment_7` reservoir-architecture ablation at fixed `Q=4` and a targeted `Q=12` follow-up on the strongest variants, plus `experiment_8` for the ridge-regularization sweep at the same common operating point.
 
 The manuscript additionally imports a narrow hardware validation as a table-backed result via `results/hardware_validation_summary.csv`.
 
@@ -76,7 +77,7 @@ The manuscript additionally imports a narrow hardware validation as a table-back
 
 ## Active scripts
 
-- `scripts/replot_manuscript_exp2.py`: regenerates `figures/experiment_1.pdf` through `figures/experiment_5.pdf` plus `figures/experiment_7.pdf` from tracked result files
+- `scripts/replot_manuscript_exp2.py`: regenerates `figures/experiment_1.pdf` through `figures/experiment_5.pdf` plus `figures/experiment_7.pdf` and `figures/experiment_8.pdf` from tracked result files
 - `scripts/run_20seed_experiments.py`: synthetic-suite runner retained for the current codebase
 - `scripts/compute_paired_stats.py`: writes the paired-delta, CI, win-rate, and Wilcoxon tables used in the revised results text
 - `scripts/update_common_operating_point_results.py`: refreshes the representative operating-point artifacts

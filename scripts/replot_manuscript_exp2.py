@@ -545,6 +545,37 @@ def make_experiment_7(arch_seed: pd.DataFrame, arch_summary: pd.DataFrame) -> No
     save_pdf(fig, FIGURES / "experiment_7.pdf")
 
 
+def make_experiment_8(lambda_summary: pd.DataFrame) -> None:
+    apply_style()
+    fig, axes = plt.subplots(1, 3, figsize=(FIG_W, scaled_height(7.0, 3.00)))
+    fig.subplots_adjust(left=0.10, right=0.99, top=0.90, bottom=0.23, wspace=0.24)
+    specs = [
+        ("ev", "EV", FD_COLOR, FD_LS, FD_LW, FILL_ALPHA_FD),
+        ("raw", "Raw", RAW_COLOR, RAW_LS, RAW_LW, FILL_ALPHA_RAW),
+        ("split", "Split", ID_COLOR, ID_LS, ID_LW, FILL_ALPHA_ID),
+    ]
+    for ax, dataset in zip(axes, TASK_ORDER):
+        sub = lambda_summary[lambda_summary["dataset"] == dataset].copy()
+        y_min = float(np.floor((sub["nrmse_mean"].min() - 0.04) / 0.05) * 0.05)
+        y_max = float(np.ceil((sub["nrmse_mean"].max() + 0.04) / 0.05) * 0.05)
+        for protocol, label, color, ls, lw, alpha in specs:
+            ss = sub[sub["protocol"] == protocol].sort_values("lambda")
+            x = ss["lambda"].to_numpy(dtype=float)
+            y = ss["nrmse_mean"].to_numpy(dtype=float)
+            e = ss["nrmse_std"].fillna(0.0).to_numpy(dtype=float)
+            ax.semilogx(x, y, color=color, ls=ls, lw=lw, label=label, zorder=3)
+            ax.fill_between(x, y - e, y + e, color=color, alpha=alpha, linewidth=0.0, zorder=1)
+        ax.axvline(10.0, color=REFERENCE_COLOR, lw=REFERENCE_LW, ls=REFERENCE_LS, alpha=REFERENCE_ALPHA, zorder=2)
+        ax.set_title(TITLE_MAP[dataset], pad=4)
+        ax.set_xlabel(r"Ridge $\lambda$")
+        if dataset == TASK_ORDER[0]:
+            ax.set_ylabel("Test NRMSE")
+            ax.legend(frameon=False, loc="upper left")
+        ax.set_ylim(y_min, y_max)
+        style_axis(ax, grid=True)
+    save_pdf(fig, FIGURES / "experiment_8.pdf")
+
+
 def main() -> None:
     global FIGURES
     parser = argparse.ArgumentParser(description="Replot manuscript figures in the exp2 PDF style.")
@@ -563,6 +594,7 @@ def main() -> None:
     more_qubits_seed = load_csv("more_qubits_seed_level.csv")
     arch_seed = load_csv("architecture_ablation_seed_level.csv")
     arch_summary = load_csv("architecture_ablation_summary.csv")
+    lambda_summary = load_csv("lambda_summary.csv")
     traces = load_representative_traces()
 
     print("writing PDFs", flush=True)
@@ -572,6 +604,7 @@ def main() -> None:
     make_experiment_5(dup_seed, dup_summary)
     make_experiment_3(more_qubits_seed)
     make_experiment_7(arch_seed, arch_summary)
+    make_experiment_8(lambda_summary)
     print(f"done: {FIGURES}", flush=True)
 
 

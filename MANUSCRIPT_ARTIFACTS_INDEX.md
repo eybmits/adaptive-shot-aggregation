@@ -23,6 +23,7 @@
 - `figures/experiment_5.pdf`
 - `figures/experiment_6.pdf`
 - `figures/experiment_7.pdf`
+- `figures/experiment_8.pdf`
 
 ## Canonical result files
 - `results/representative_summary.csv`
