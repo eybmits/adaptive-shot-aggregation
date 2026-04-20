@@ -382,20 +382,15 @@ def make_experiment_5(dup_seed: pd.DataFrame, dup_summary: pd.DataFrame) -> None
 
 def make_experiment_3(more_qubits_seed: pd.DataFrame) -> None:
     apply_style()
-    fig, axes = plt.subplots(1, 3, figsize=(FIG_W, scaled_height(7.0, 3.72)))
-    fig.subplots_adjust(left=0.11, right=0.95, top=0.91, bottom=0.19, wspace=0.38)
-    gap_min = float(np.floor((more_qubits_seed["gap"].min() - 0.03) / 0.05) * 0.05)
-    gap_max = float(np.ceil((more_qubits_seed["gap"].max() + 0.03) / 0.05) * 0.05)
+    fig, axes = plt.subplots(1, 3, figsize=(FIG_W, scaled_height(7.0, 3.08)))
+    fig.subplots_adjust(left=0.11, right=0.99, top=0.91, bottom=0.30, wspace=0.30)
     legend_handles = [
         Line2D([0], [0], color=FD_COLOR, lw=FD_LW, ls=FD_LS, marker=FD_MARKER, markersize=5.2, markeredgecolor=MARKER_EDGE_COLOR, markeredgewidth=MARKER_EDGE_WIDTH, label="EV"),
         Line2D([0], [0], color=ID_COLOR, lw=ID_LW, ls=ID_LS, marker=ID_MARKER, markersize=5.5, markeredgecolor=MARKER_EDGE_COLOR, markeredgewidth=MARKER_EDGE_WIDTH, label="Split"),
-        Line2D([0], [0], color=REFERENCE_COLOR, lw=1.3, ls="-", marker="o", markersize=4.4, markerfacecolor="white", markeredgecolor=REFERENCE_COLOR, label="Gap"),
     ]
     for cidx, dataset in enumerate(TASK_ORDER):
         ax = axes[cidx]
-        ax_gap = ax.twinx()
         sub = more_qubits_seed[more_qubits_seed["dataset"] == dataset]
-        gap_grp = sub.groupby("q", as_index=False).agg(gap_mean=("gap", "mean"), gap_std=("gap", "std"))
         abs_grp = sub.groupby("q", as_index=False).agg(
             ev_mean=("ev_nrmse", "mean"),
             ev_std=("ev_nrmse", "std"),
@@ -403,6 +398,14 @@ def make_experiment_3(more_qubits_seed: pd.DataFrame) -> None:
             split_std=("split_nrmse", "std"),
         )
         xs = abs_grp["q"].to_numpy(dtype=float)
+        abs_values = np.concatenate(
+            [
+                sub["ev_nrmse"].to_numpy(dtype=float),
+                sub["split_nrmse"].to_numpy(dtype=float),
+            ]
+        )
+        abs_min = max(0.0, float(np.floor((abs_values.min() - 0.05) / 0.10) * 0.10))
+        abs_max = float(np.ceil((abs_values.max() + 0.05) / 0.10) * 0.10)
 
         ax.scatter(sub["q"], sub["ev_nrmse"], s=11, color=FD_COLOR, alpha=0.12, edgecolors="none", zorder=1)
         ax.scatter(sub["q"], sub["split_nrmse"], s=11, color=ID_COLOR, alpha=0.12, edgecolors="none", zorder=1)
@@ -427,64 +430,24 @@ def make_experiment_3(more_qubits_seed: pd.DataFrame) -> None:
         ax.plot(xs, abs_grp["ev_mean"], color=FD_COLOR, lw=FD_LW, ls=FD_LS, marker=FD_MARKER, markersize=5.2, markeredgecolor=MARKER_EDGE_COLOR, markeredgewidth=MARKER_EDGE_WIDTH, zorder=3)
         ax.plot(xs, abs_grp["split_mean"], color=ID_COLOR, lw=ID_LW, ls=ID_LS, marker=ID_MARKER, markersize=5.5, markeredgecolor=MARKER_EDGE_COLOR, markeredgewidth=MARKER_EDGE_WIDTH, zorder=3)
 
-        ax_gap.scatter(sub["q"], sub["gap"], s=10, color=REFERENCE_COLOR, alpha=0.10, edgecolors="none", zorder=1)
-        ax_gap.fill_between(
-            gap_grp["q"],
-            gap_grp["gap_mean"] - gap_grp["gap_std"].fillna(0.0),
-            gap_grp["gap_mean"] + gap_grp["gap_std"].fillna(0.0),
-            color=REFERENCE_COLOR,
-            alpha=0.08,
-            linewidth=0.0,
-            zorder=1,
-        )
-        ax_gap.plot(
-            gap_grp["q"],
-            gap_grp["gap_mean"],
-            color=REFERENCE_COLOR,
-            lw=1.3,
-            ls="-",
-            marker="o",
-            markersize=4.4,
-            markerfacecolor="white",
-            markeredgecolor=REFERENCE_COLOR,
-            zorder=2,
-        )
-        ax_gap.axhline(0.0, color=REFERENCE_COLOR, lw=REFERENCE_LW, ls=REFERENCE_LS, alpha=REFERENCE_ALPHA, zorder=1)
-
         ax.set_title(TITLE_MAP[dataset], pad=4)
-        ax.set_xlabel(r"Reservoir size $Q$")
         if cidx == 0:
             ax.set_ylabel("Test NRMSE")
-        if cidx == len(TASK_ORDER) - 1:
-            ax_gap.set_ylabel("Gap (EV - Split)", color=REFERENCE_COLOR)
-        else:
-            ax_gap.set_yticklabels([])
-            ax_gap.tick_params(length=0)
+        ax.set_xlabel(r"Reservoir size $Q$")
         ax.set_xticks(sorted(sub["q"].unique()))
-        ax.set_box_aspect(1.0)
+        ax.set_ylim(abs_min, abs_max)
         style_axis(ax, grid=True)
-        ax_gap.set_ylim(gap_min, gap_max)
-        ax_gap.grid(False)
-        ax_gap.spines["right"].set_linewidth(0.8)
-        ax_gap.spines["right"].set_color(REFERENCE_COLOR)
-        ax_gap.spines["top"].set_visible(False)
-        ax_gap.spines["left"].set_visible(False)
-        ax_gap.spines["bottom"].set_visible(False)
-        ax_gap.tick_params(direction="out", width=0.8, length=3.0, pad=4, colors=REFERENCE_COLOR)
     fig.legend(
         handles=legend_handles,
         loc="lower center",
-        bbox_to_anchor=(0.5, 0.045),
+        bbox_to_anchor=(0.5, 0.015),
         frameon=False,
-        ncol=3,
+        ncol=2,
         columnspacing=1.6,
         handlelength=2.0,
     )
 
-    out_more = FIGURES / "experiment_3.pdf"
-    out_more.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_more, format="pdf")
-    plt.close(fig)
+    save_pdf(fig, FIGURES / "experiment_3.pdf")
 
 
 def make_experiment_7(arch_seed: pd.DataFrame, arch_summary: pd.DataFrame) -> None:
