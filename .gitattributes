@@ -1,0 +1,20 @@
+# Preserve archival datasets and binary publication artifacts byte for byte.
+*.dat binary
+*.npz binary
+*.pdf binary
+
+# Keep human-readable project sources consistent across platforms.
+*.py text eol=lf
+*.tex text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+
+# These directories contain checksum-pinned evidence. Never normalize their
+# line endings or whitespace, including vendor-supplied source datasets.
+data/** binary
+results/** binary
+
+# Preserve the exact upstream IEEE class and bibliography style files.
+paper/IEEEtran.cls binary
+paper/IEEEtranDoi.bst binary

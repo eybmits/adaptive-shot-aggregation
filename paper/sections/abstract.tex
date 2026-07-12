@@ -1,0 +1,22 @@
+\begin{abstract}
+Quantum reservoir computing usually compresses repeated measurements into an
+expectation-value vector for each time step. We introduce adaptive shot aggregation: a
+fixed measurement record is partitioned into disjoint groups and averaged
+within each group. This spans individual shots and full averaging without additional quantum
+executions. We evaluate the method on Mackey--Glass, Santa Fe laser, R\"ossler,
+and sunspots under a shared simulation protocol and fixed execution budgets.
+At the balanced budget, grouping lowers mean test NRMSE across every task
+relative to full averaging. Santa Fe shows the strongest improvement, with
+every test window favoring grouping. A control that applies the observed joint
+shot fluctuations directly to the averaged features performs similarly,
+indicating that grouping mainly regularizes the classical readout.
+Unmitigated experiments with a separate hardware circuit on \emph{ibm\_fez}
+and \emph{ibm\_marrakesh} show the same positive trend across every task. Shot
+aggregation therefore offers a practical way to improve finite-shot learning
+at no added quantum cost.
+\end{abstract}
+
+\begin{IEEEkeywords}
+quantum reservoir computing, finite shot learning, measurement aggregation,
+time series forecasting
+\end{IEEEkeywords}

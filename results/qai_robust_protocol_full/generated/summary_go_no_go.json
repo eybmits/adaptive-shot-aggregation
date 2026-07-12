@@ -1,0 +1,1759 @@
+{
+  "classical_minus_ideal": [
+    {
+      "baseline": "classical_input",
+      "budget_setting": "balanced",
+      "ci95_high": -0.05349875645223891,
+      "ci95_low": -0.26514688281324805,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -0.15932281963274347,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "data_rich",
+      "ci95_high": -0.018312105827348275,
+      "ci95_low": -0.07679779402750919,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -0.04755494992742874,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "shot_rich",
+      "ci95_high": 1.8671416104173213,
+      "ci95_low": -5.34302463631402,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -1.7379415129483493,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "balanced",
+      "ci95_high": -0.0028774660252328527,
+      "ci95_low": -0.15215724216488324,
+      "cluster_win_rate": 0.2,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": -0.07751735409505806,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "data_rich",
+      "ci95_high": -0.015076657963200853,
+      "ci95_low": -0.09459843117038902,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": -0.05483754456679494,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "shot_rich",
+      "ci95_high": -0.12990081255967284,
+      "ci95_low": -0.5508578339553474,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": -0.34037932325751014,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "balanced",
+      "ci95_high": 0.08444674008222681,
+      "ci95_low": -0.0004853147406299607,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.04198071267079843,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.06884053057146007,
+      "ci95_low": 0.0293788992622059,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.04910971491683298,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "shot_rich",
+      "ci95_high": -0.20154463598692562,
+      "ci95_low": -0.28315567442782735,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": -0.2423501552073765,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "balanced",
+      "ci95_high": -0.0022962710900251704,
+      "ci95_low": -0.17117279465539925,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": -0.08673453287271221,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "data_rich",
+      "ci95_high": -0.007223981562325968,
+      "ci95_low": -0.12208252415741126,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": -0.06465325285986862,
+      "method": "ideal_quantum"
+    },
+    {
+      "baseline": "classical_input",
+      "budget_setting": "shot_rich",
+      "ci95_high": -0.215071180083738,
+      "ci95_low": -0.725686809857343,
+      "cluster_win_rate": 0.0,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": -0.4703789949705405,
+      "method": "ideal_quantum"
+    }
+  ],
+  "confirmatory_ev_minus_split": [
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.04909688656132027,
+      "ci95_low": -0.11501473549236232,
+      "cluster_win_rate": 0.6,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -0.03295892446552103,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.029981781965581364,
+      "ci95_low": -0.0022903202642471313,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.013845730850667115,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.05590438755859091,
+      "ci95_low": 0.013946748229778563,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.03492556789418474,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.0615796262089621,
+      "ci95_low": 0.010328337462294813,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.03595398183562846,
+      "method": "split"
+    }
+  ],
+  "confirmatory_split_minus_covariance_ev": [
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.02519445548661595,
+      "ci95_low": -0.008099519073039217,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": 0.008547468206788367,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.015839078925460295,
+      "ci95_low": -0.0026084817278603373,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.006615298598799979,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.021155433360942732,
+      "ci95_low": 0.0020629651021285243,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.011609199231535628,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.0066891353067578,
+      "ci95_low": -0.0025119400322246702,
+      "cluster_win_rate": 0.6,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.002088597637266565,
+      "method": "covariance_ev"
+    }
+  ],
+  "descriptive_checks_not_in_go_no_go": {
+    "ideal_vs_classical_has_chaotic_support": true,
+    "ideal_vs_classical_has_sunspot_support": false,
+    "ideal_vs_classical_supported_cells": 1,
+    "note": "These diagnostics do not alter the frozen balanced-setting decision gate.",
+    "partition_supported_harm_tasks": 0
+  },
+  "ev_minus_split": [
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.04909688656132027,
+      "ci95_low": -0.11501473549236232,
+      "cluster_win_rate": 0.6,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -0.03295892446552103,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.011801605205979357,
+      "ci95_low": 0.00023808248388243296,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": 0.006019843844930895,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.47386010987948113,
+      "ci95_low": -0.1364216432033718,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": 0.16871923333805466,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.029981781965581364,
+      "ci95_low": -0.0022903202642471313,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.013845730850667115,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.015046744344579678,
+      "ci95_low": 0.00027689518841310466,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.007661819766496392,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.13374533216748113,
+      "ci95_low": 0.038676498880949775,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.08621091552421546,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.05590438755859091,
+      "ci95_low": 0.013946748229778563,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.03492556789418474,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.01639269033217963,
+      "ci95_low": -0.00019503234718541013,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.00809882899249711,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.19266309602916706,
+      "ci95_low": 0.030807791362413378,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.11173544369579022,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "balanced",
+      "ci95_high": 0.0615796262089621,
+      "ci95_low": 0.010328337462294813,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.03595398183562846,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.03158737571939436,
+      "ci95_low": 0.0009513272607837991,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.01626935149008908,
+      "method": "split"
+    },
+    {
+      "baseline": "ev",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.39807454735519365,
+      "ci95_low": -0.05853373020597191,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.16977040857461087,
+      "method": "split"
+    }
+  ],
+  "feature_validity": {
+    "classical_to_quantum_relative_projection_error": 0.7861267963674083,
+    "effective_rank": 5.149535883996422,
+    "input_dependent_features": 11,
+    "input_dependent_fraction": 1.0,
+    "nonlinear_features": 11,
+    "nonlinear_fraction": 1.0,
+    "numerical_rank": 11,
+    "passed": true
+  },
+  "gates": {
+    "feature_validity": {
+      "passed": true,
+      "rule": "all preregistered ideal feature-validity criteria pass"
+    },
+    "split_vs_covariance_ev_balanced": {
+      "passed": true,
+      "practical_margin_absolute_nrmse": 0.05,
+      "primary_confirmatory_setting": "balanced",
+      "rule": "for every task, upper 95% CI of Split-Covariance-EV is strictly below 0.05 NRMSE",
+      "tasks_required": 4,
+      "tasks_within_margin": 4
+    },
+    "split_vs_ev_balanced": {
+      "noninferiority_margin_absolute_nrmse": 0.05,
+      "passed": false,
+      "primary_confirmatory_setting": "balanced",
+      "rule": "for every task, lower 95% CI of EV-Split is strictly above -0.05 NRMSE; for at least one task it is strictly above zero",
+      "tasks_improved": 2,
+      "tasks_noninferior": 3,
+      "tasks_required": 4
+    }
+  },
+  "inference": {
+    "independent_unit": "trajectory_or_sunspot_window",
+    "interval": "two-sided 95% Student-t interval over cluster means",
+    "nested_factors_averaged_before_ci": [
+      "reservoir_seed",
+      "shot_seed",
+      "partition_seed"
+    ]
+  },
+  "method_summary": [
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.17955938369404711,
+      "ci95_low": 0.07571871801668234,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.12763905085536473,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.6298660395542037,
+      "ci95_low": 0.35642317953806285,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.4931446095461333,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.5501497702357052,
+      "ci95_low": 0.38731653633909613,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.4687331532874007,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.39813506913385477,
+      "ci95_low": 0.17578867184236155,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.2869618704881082,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.6473077204448529,
+      "ci95_low": 0.5077740233909759,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.5775408719179144,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.643697705798992,
+      "ci95_low": 0.35968644970685115,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.5016920777529216,
+      "method": "split"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.13150226502305454,
+      "ci95_low": 0.07416179390924049,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.10283202946614751,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.4555595122242113,
+      "ci95_low": 0.30959685451671337,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.38257818337046234,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.4606831515974116,
+      "ci95_low": 0.3201403812800516,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.3904117664387316,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.20016848462577236,
+      "ci95_low": 0.10060547416138012,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.15038697939357623,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.5551340005523012,
+      "ci95_low": 0.39143147698999425,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.47328273877114774,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.45691935046797627,
+      "ci95_low": 0.3118644947196252,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.38439192259380073,
+      "method": "split"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.5333827496819592,
+      "ci95_low": -0.040250448718945564,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 0.24656615048150682,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 3.543679080405134,
+      "ci95_low": -0.8332626776102883,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 1.355208201397423,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 3.9640222006055152,
+      "ci95_low": -0.9690623869623183,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 1.4974799068215985,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 5.875831743121488,
+      "ci95_low": -1.9068164162617751,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 1.9845076634298564,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 2.472566672540631,
+      "ci95_low": -0.16237397675338605,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 1.1550963478936225,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 3.4913903250400637,
+      "ci95_low": -0.8338689780729758,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_nrmse": 1.328760673483544,
+      "method": "split"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.12111142528726632,
+      "ci95_low": 0.07916759570696769,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.100139510497117,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.49810340058198577,
+      "ci95_low": 0.3961554501906548,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.4471294253863203,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.5047933073786526,
+      "ci95_low": 0.4303876022929222,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.4675904548357874,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.2418953901756014,
+      "ci95_low": 0.11341833900874869,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.17765686459217506,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.6509441948253634,
+      "ci95_low": 0.5829601846252781,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.6169521897253207,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.49616079326931767,
+      "ci95_low": 0.411328654700923,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.45374472398512034,
+      "method": "split"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.09130610904654263,
+      "ci95_low": 0.08536742059056895,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.08833676481855579,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.5034250973534968,
+      "ci95_low": 0.434497439202115,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.46896126827780593,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.51575724459679,
+      "ci95_low": 0.4450953360766059,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.4804262903366979,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.18452002918300692,
+      "ci95_low": 0.10182858958769457,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.14317430938535075,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.6406234076974181,
+      "ci95_low": 0.5679399943851052,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.6042817010412617,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.5065584981770836,
+      "ci95_low": 0.4389704429633195,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.47276447057020154,
+      "method": "split"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.15701532927291012,
+      "ci95_low": 0.0883057193610622,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.12266052431698615,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.7493119336251228,
+      "ci95_low": 0.33869122625593984,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.5440015799405313,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.8643800292423628,
+      "ci95_low": 0.38728782022101427,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.6258339247316885,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.6871994165706606,
+      "ci95_low": 0.2388802785783319,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.4630398475744963,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.7198907838116049,
+      "ci95_low": 0.4365990168102785,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.5782449003109417,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.7361476715570369,
+      "ci95_low": 0.3430983468579093,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_nrmse": 0.5396230092074731,
+      "method": "split"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.1365385822078997,
+      "ci95_low": 0.055949743343824236,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.09624416277586197,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.43351669899945844,
+      "ci95_low": 0.300869124314912,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.3671929116571852,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.4736124199391191,
+      "ci95_low": 0.3538429376266919,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.4137276787829055,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.07122730576671742,
+      "ci95_low": 0.03729959444340966,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.05426345010506354,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.650566058628987,
+      "ci95_low": 0.5089442970022071,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.579755177815597,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.4421049300960979,
+      "ci95_low": 0.3154992916813438,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.37880211088872084,
+      "method": "split"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.12150052423467292,
+      "ci95_low": 0.08624465869694928,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.1038725914658111,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.462614672138259,
+      "ci95_low": 0.4209968832994334,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.4418057777188462,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.48030930162907837,
+      "ci95_low": 0.42551078897718286,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.4529100453031306,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.059131176639808866,
+      "ci95_low": 0.050394576458147336,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.0547628765489781,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.6158193913180318,
+      "ci95_low": 0.5736232115173491,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.5947213014176904,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.4659487896238612,
+      "ci95_low": 0.42367364299740573,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.4448112163106335,
+      "method": "split"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.21575460597748547,
+      "ci95_low": 0.04104905680431266,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.12840183139089906,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.6925853012031347,
+      "ci95_low": 0.4269536909763663,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.5597694960897505,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.8375059388617347,
+      "ci95_low": 0.4693024803126633,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.653404209587199,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.4759893330313253,
+      "ci95_low": 0.26551464016522586,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.3707519865982756,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.7232602251697883,
+      "ci95_low": 0.6069923504290836,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.665126287799436,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.6703339918786021,
+      "ci95_low": 0.4130035399042157,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_nrmse": 0.5416687658914089,
+      "method": "split"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.4993919076895639,
+      "ci95_low": 0.27415829463375596,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.3867751011616599,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.603383802633535,
+      "ci95_low": 0.4266420615780695,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5150129321058022,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.6574676699817873,
+      "ci95_low": 0.44864335317560766,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5530555115786975,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.5667861940873616,
+      "ci95_low": 0.38023307398138273,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.4735096340343722,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.6526820182818311,
+      "ci95_low": 0.4640178365507235,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5583499274162773,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.6033533225837429,
+      "ci95_low": 0.4308497369023949,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5171015297430689,
+      "method": "split"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.40094093457960445,
+      "ci95_low": 0.30829790715885264,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.35461942086922854,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.6383240626611488,
+      "ci95_low": 0.49203183809429896,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5651779503777239,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.6479530546668744,
+      "ci95_low": 0.5150061247902282,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5814795897285513,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.4483472313356661,
+      "ci95_low": 0.3901981161225282,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.41927267372909716,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.7158087245620369,
+      "ci95_low": 0.5002006840922709,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.6080047043271539,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "data_rich",
+      "ci95_high": 0.6387944796725629,
+      "ci95_low": 0.49162599680436153,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.5652102382384622,
+      "method": "split"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.863575572300685,
+      "ci95_low": 0.4710420668029043,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 0.6673088195517947,
+      "method": "classical_input"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 1.742331706638179,
+      "ci95_low": 0.565597062482919,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 1.153964384560549,
+      "method": "covariance_ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 1.8146401597340946,
+      "ci95_low": 0.7528397428906931,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 1.283739951312394,
+      "method": "ev"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 1.5578156337725797,
+      "ci95_low": 0.7175599952720904,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 1.137687814522335,
+      "method": "ideal_quantum"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 1.78706335633693,
+      "ci95_low": 0.6362114009196743,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 1.2116373786283021,
+      "method": "raw"
+    },
+    {
+      "budget_setting": "shot_rich",
+      "ci95_high": 1.6935740351785467,
+      "ci95_low": 0.5343650502970195,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_nrmse": 1.1139695427377831,
+      "method": "split"
+    }
+  ],
+  "overall_passed": false,
+  "partition_robustness": [
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.08322357727783536,
+      "ci95_low": -0.12420413014228723,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -0.020490276432225944,
+      "partitions_per_cluster_min": 20
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.030946331133097294,
+      "ci95_low": -0.04364738561640964,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": -0.006350527241656173,
+      "partitions_per_cluster_min": 20
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.06236178657415616,
+      "ci95_low": -0.027041030929815753,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.017660377822170205,
+      "partitions_per_cluster_min": 20
+    },
+    {
+      "budget_setting": "balanced",
+      "ci95_high": 0.07675412152644234,
+      "ci95_low": 0.021945472363261165,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.049349796944851754,
+      "partitions_per_cluster_min": 20
+    }
+  ],
+  "reporting_filter": {
+    "classical_exception": "classical_input/not_applicable",
+    "descriptive_budget_settings": [
+      "shot_rich",
+      "data_rich"
+    ],
+    "excluded": [
+      "smoke",
+      "legacy",
+      "feature_ablation",
+      "degenerate_circuit_ablation"
+    ],
+    "feature_set": "z_plus_zz",
+    "primary_confirmatory_setting": "balanced",
+    "reservoir_variant": "expressive_reuploading",
+    "scope_role": "headline"
+  },
+  "schema_version": "qai-result-report-v1",
+  "selected_k_frequency": [
+    {
+      "budget_setting": "balanced",
+      "dataset": "lorenz",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "lorenz",
+      "k": 2,
+      "selection_frequency": 0.014814814814814815,
+      "selections": 2
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "lorenz",
+      "k": 4,
+      "selection_frequency": 0.21481481481481482,
+      "selections": 29
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "lorenz",
+      "k": 5,
+      "selection_frequency": 0.2962962962962963,
+      "selections": 40
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "lorenz",
+      "k": 10,
+      "selection_frequency": 0.2740740740740741,
+      "selections": 37
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "lorenz",
+      "k": 20,
+      "selection_frequency": 0.2,
+      "selections": 27
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "lorenz",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "lorenz",
+      "k": 2,
+      "selection_frequency": 0.06666666666666667,
+      "selections": 9
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "lorenz",
+      "k": 5,
+      "selection_frequency": 0.5185185185185185,
+      "selections": 70
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "lorenz",
+      "k": 10,
+      "selection_frequency": 0.4148148148148148,
+      "selections": 56
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 1,
+      "selection_frequency": 0.014814814814814815,
+      "selections": 2
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 2,
+      "selection_frequency": 0.08888888888888889,
+      "selections": 12
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 4,
+      "selection_frequency": 0.1111111111111111,
+      "selections": 15
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 5,
+      "selection_frequency": 0.17777777777777778,
+      "selections": 24
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 8,
+      "selection_frequency": 0.16296296296296298,
+      "selections": 22
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 10,
+      "selection_frequency": 0.11851851851851852,
+      "selections": 16
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 20,
+      "selection_frequency": 0.14814814814814814,
+      "selections": 20
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "lorenz",
+      "k": 40,
+      "selection_frequency": 0.17777777777777778,
+      "selections": 24
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "mackey_glass",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "mackey_glass",
+      "k": 2,
+      "selection_frequency": 0.044444444444444446,
+      "selections": 6
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "mackey_glass",
+      "k": 4,
+      "selection_frequency": 0.28888888888888886,
+      "selections": 39
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "mackey_glass",
+      "k": 5,
+      "selection_frequency": 0.32592592592592595,
+      "selections": 44
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "mackey_glass",
+      "k": 10,
+      "selection_frequency": 0.3037037037037037,
+      "selections": 41
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "mackey_glass",
+      "k": 20,
+      "selection_frequency": 0.037037037037037035,
+      "selections": 5
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "mackey_glass",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "mackey_glass",
+      "k": 2,
+      "selection_frequency": 0.007407407407407408,
+      "selections": 1
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "mackey_glass",
+      "k": 5,
+      "selection_frequency": 0.8962962962962963,
+      "selections": 121
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "mackey_glass",
+      "k": 10,
+      "selection_frequency": 0.0962962962962963,
+      "selections": 13
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 1,
+      "selection_frequency": 0.014814814814814815,
+      "selections": 2
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 2,
+      "selection_frequency": 0.05185185185185185,
+      "selections": 7
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 4,
+      "selection_frequency": 0.15555555555555556,
+      "selections": 21
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 5,
+      "selection_frequency": 0.17037037037037037,
+      "selections": 23
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 8,
+      "selection_frequency": 0.1925925925925926,
+      "selections": 26
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 10,
+      "selection_frequency": 0.2222222222222222,
+      "selections": 30
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 20,
+      "selection_frequency": 0.1111111111111111,
+      "selections": 15
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "mackey_glass",
+      "k": 40,
+      "selection_frequency": 0.08148148148148149,
+      "selections": 11
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "rossler",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "rossler",
+      "k": 2,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "rossler",
+      "k": 4,
+      "selection_frequency": 0.18518518518518517,
+      "selections": 25
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "rossler",
+      "k": 5,
+      "selection_frequency": 0.37037037037037035,
+      "selections": 50
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "rossler",
+      "k": 10,
+      "selection_frequency": 0.4074074074074074,
+      "selections": 55
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "rossler",
+      "k": 20,
+      "selection_frequency": 0.037037037037037035,
+      "selections": 5
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "rossler",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "rossler",
+      "k": 2,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "rossler",
+      "k": 5,
+      "selection_frequency": 0.9111111111111111,
+      "selections": 123
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "rossler",
+      "k": 10,
+      "selection_frequency": 0.08888888888888889,
+      "selections": 12
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 1,
+      "selection_frequency": 0.1259259259259259,
+      "selections": 17
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 2,
+      "selection_frequency": 0.08888888888888889,
+      "selections": 12
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 4,
+      "selection_frequency": 0.14074074074074075,
+      "selections": 19
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 5,
+      "selection_frequency": 0.17037037037037037,
+      "selections": 23
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 8,
+      "selection_frequency": 0.07407407407407407,
+      "selections": 10
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 10,
+      "selection_frequency": 0.2,
+      "selections": 27
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 20,
+      "selection_frequency": 0.08148148148148149,
+      "selections": 11
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "rossler",
+      "k": 40,
+      "selection_frequency": 0.11851851851851852,
+      "selections": 16
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "sunspots",
+      "k": 1,
+      "selection_frequency": 0.0,
+      "selections": 0
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "sunspots",
+      "k": 2,
+      "selection_frequency": 0.044444444444444446,
+      "selections": 6
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "sunspots",
+      "k": 4,
+      "selection_frequency": 0.34074074074074073,
+      "selections": 46
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "sunspots",
+      "k": 5,
+      "selection_frequency": 0.4,
+      "selections": 54
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "sunspots",
+      "k": 10,
+      "selection_frequency": 0.18518518518518517,
+      "selections": 25
+    },
+    {
+      "budget_setting": "balanced",
+      "dataset": "sunspots",
+      "k": 20,
+      "selection_frequency": 0.02962962962962963,
+      "selections": 4
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "sunspots",
+      "k": 1,
+      "selection_frequency": 0.044444444444444446,
+      "selections": 6
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "sunspots",
+      "k": 2,
+      "selection_frequency": 0.3111111111111111,
+      "selections": 42
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "sunspots",
+      "k": 5,
+      "selection_frequency": 0.5555555555555556,
+      "selections": 75
+    },
+    {
+      "budget_setting": "data_rich",
+      "dataset": "sunspots",
+      "k": 10,
+      "selection_frequency": 0.08888888888888889,
+      "selections": 12
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 1,
+      "selection_frequency": 0.014814814814814815,
+      "selections": 2
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 2,
+      "selection_frequency": 0.05925925925925926,
+      "selections": 8
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 4,
+      "selection_frequency": 0.16296296296296298,
+      "selections": 22
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 5,
+      "selection_frequency": 0.18518518518518517,
+      "selections": 25
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 8,
+      "selection_frequency": 0.16296296296296298,
+      "selections": 22
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 10,
+      "selection_frequency": 0.2074074074074074,
+      "selections": 28
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 20,
+      "selection_frequency": 0.1037037037037037,
+      "selections": 14
+    },
+    {
+      "budget_setting": "shot_rich",
+      "dataset": "sunspots",
+      "k": 40,
+      "selection_frequency": 0.1037037037037037,
+      "selections": 14
+    }
+  ],
+  "split_minus_covariance_ev": [
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.02519445548661595,
+      "ci95_low": -0.008099519073039217,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": 0.008547468206788367,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.0028641375667049374,
+      "ci95_low": 0.0007633408799717421,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": 0.0018137392233383398,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.006641241069008971,
+      "ci95_low": -0.05953629689676741,
+      "cluster_win_rate": 0.2,
+      "clusters": 5,
+      "dataset": "lorenz",
+      "mean_gain": -0.02644752791387922,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.015839078925460295,
+      "ci95_low": -0.0026084817278603373,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.006615298598799979,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.004853725851361232,
+      "ci95_low": 0.002752678733430083,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": 0.0038032022923956575,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.009256654555270305,
+      "ci95_low": -0.018013796021386898,
+      "cluster_win_rate": 0.4,
+      "clusters": 5,
+      "dataset": "mackey_glass",
+      "mean_gain": -0.0043785707330582955,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.021155433360942732,
+      "ci95_low": 0.0020629651021285243,
+      "cluster_win_rate": 0.8,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.011609199231535628,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.004811058244330936,
+      "ci95_low": 0.0011998189392436896,
+      "cluster_win_rate": 1.0,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": 0.0030054385917873128,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.005918667001918121,
+      "ci95_low": -0.04212012739860114,
+      "cluster_win_rate": 0.2,
+      "clusters": 5,
+      "dataset": "rossler",
+      "mean_gain": -0.01810073019834151,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "balanced",
+      "ci95_high": 0.0066891353067578,
+      "ci95_low": -0.0025119400322246702,
+      "cluster_win_rate": 0.6,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 0.002088597637266565,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "data_rich",
+      "ci95_high": 0.0030954118799299676,
+      "ci95_low": -0.0030308361584532777,
+      "cluster_win_rate": 0.4,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": 3.228786073834477e-05,
+      "method": "covariance_ev"
+    },
+    {
+      "baseline": "split",
+      "budget_setting": "shot_rich",
+      "ci95_high": 0.012940689736220694,
+      "ci95_low": -0.09293037338175231,
+      "cluster_win_rate": 0.2,
+      "clusters": 5,
+      "dataset": "sunspots",
+      "mean_gain": -0.0399948418227658,
+      "method": "covariance_ev"
+    }
+  ],
+  "status": "NO-GO"
+}

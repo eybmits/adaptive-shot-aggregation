@@ -1,0 +1,533 @@
+% Standalone supplementary material for the QCE26 NIER short paper.
+% Named build:     latexmk -pdf -interaction=nonstopmode -halt-on-error supplement.tex
+% Anonymous build: latexmk -pdf -interaction=nonstopmode -halt-on-error supplement_anon.tex
+\documentclass[10pt,conference]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\graphicspath{{gfx/}{figures/}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{balance}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage[hypertexnames=false]{hyperref}
+\definecolor{paperblue}{HTML}{0057FF}
+\definecolor{citegreen}{HTML}{39FF14}
+\hypersetup{%
+  colorlinks=true,
+  linkcolor=paperblue,
+  citecolor=citegreen,
+  urlcolor=paperblue,
+  pdfborder={0 0 0},
+  pdftitle={Supplementary Material: From Raw Shots to Expectation Values: Intermediate Shot Grouping Improves Time Series Prediction},
+  pdfsubject={Robust protocol, exact covariance identity, ablations, hardware provenance, and reproducibility}
+}
+\urlstyle{same}
+
+\newcommand{\nrmse}{\mathrm{NRMSE}}
+\newcommand{\EV}{\mathrm{EV}}
+\newcommand{\Grouped}{\mathrm{Grouped}}
+\input{results_macros.tex}
+\setlength{\textfloatsep}{8pt plus 1pt minus 2pt}
+\setlength{\dbltextfloatsep}{8pt plus 1pt minus 2pt}
+\setlength{\floatsep}{7pt plus 1pt minus 1pt}
+
+\begin{document}
+
+\title{Supplementary Material for\\
+\emph{From Raw Shots to Expectation Values:\\
+Intermediate Shot Grouping Improves Time Series Prediction}}
+
+\ifdefined\ANON
+  \hypersetup{pdfauthor={}}
+  \author{\IEEEauthorblockN{Anonymous Authors}}
+\else
+  \hypersetup{pdfauthor={Markus Baumann; Maximilian Zorn; Thomas Gabor; Claudia Linnhoff-Popien; Jonas Stein}}
+  \author{%
+  \IEEEauthorblockN{Markus Baumann, Maximilian Zorn, Thomas Gabor,
+  Claudia Linnhoff-Popien, and Jonas Stein}}
+\fi
+
+\maketitle
+\bstctlcite{BSTcontrol}
+
+\paragraph{Scope and artifact status.}
+This document records the exact algebra, shared four-task protocol, completed
+simulation, and provenance behind the main paper. The manuscript evidence
+contains 13,180 replicate rows and 9,720 aggregation-spectrum rows for
+Mackey--Glass, Santa Fe laser, R\"ossler, and sunspots. All four simulation
+tasks use the same six-qubit reservoir, features, budgets, chronological joint
+tuning, parameter grids, seed design, and test-access rule; separate source
+manifests preserve their data and implementation provenance. At the balanced
+setting, Grouped is supported on
+Santa Fe, R\"ossler, and sunspots, and positive but inconclusive on
+Mackey--Glass. The completed unmitigated hardware transfer applies a separate
+fixed ten-qubit protocol to the same four tasks on two processors. Its block-level
+intervals describe shot variation within one acquisition, not independent
+hardware campaigns.
+
+\appendices
+
+\section{Exact Identity and Implementation Scaling}
+\label{app:identity}
+
+For aggregation scale $k$, let $G=N/k$ and let $x_t^{(g)}\in\mathbb{R}^d$ denote the
+leaked and lagged feature vector of group $g$ at training time $t$.  With an
+unpenalized intercept $b$, every time step receives total weight one:
+\begin{equation}
+  \mathcal L_k(b,w)=\frac{1}{|\mathcal T|G}
+  \sum_{t\in\mathcal T}\sum_{g=1}^{G}
+  \bigl(y_t-b-w^\top x_t^{(g)}\bigr)^2
+  +\lambda\lVert w\rVert_2^2.
+  \label{eq:supp-grouped}
+\end{equation}
+Define $\bar x_t=G^{-1}\sum_gx_t^{(g)}$ and
+\begin{equation}
+  C_k=\frac{1}{|\mathcal T|G}\sum_{t,g}
+  (x_t^{(g)}-\bar x_t)(x_t^{(g)}-\bar x_t)^\top .
+  \label{eq:supp-cov}
+\end{equation}
+
+\paragraph{Proof of the exact decomposition.}
+Write $x_t^{(g)}=\bar x_t+d_t^{(g)}$, where
+$\sum_g d_t^{(g)}=0$.  Expanding the square in
+\eqref{eq:supp-grouped}, the cross term is proportional to
+$(y_t-b-w^\top\bar x_t)w^\top\sum_g d_t^{(g)}$ and therefore vanishes at every
+$t$; the remaining deviation term is
+$G^{-1}\sum_g(w^\top d_t^{(g)})^2=w^\top C_{k,t}w$.  Averaging over $t$ gives
+\begin{equation}
+  \mathcal L_k(b,w)=\frac{1}{|\mathcal T|}\sum_t
+  (y_t-b-w^\top\bar x_t)^2+w^\top C_kw
+  +\lambda\lVert w\rVert_2^2,
+  \label{eq:supp-identity}
+\end{equation}
+which is deterministic and assumes neither Gaussian noise, isotropy, nor
+independence across time.
+
+\subsection{Scaling used in the implementation}
+
+For every fold and candidate $k$, standardization is fit on grouped training
+rows only.  The same transformed rows define both $C_k$ and the grouped fit.
+The implementation uses \texttt{sklearn.linear\_model.Ridge}, whose loss is a
+sum rather than the mean loss in \eqref{eq:supp-grouped}.  It therefore passes
+\begin{equation}
+  \texttt{alpha}_{\rm sklearn}=\lambda\,|\mathcal T|G.
+  \label{eq:supp-sklearn-scaling}
+\end{equation}
+This preserves the meaning of $\lambda$ as $G$ changes.  The generalized-ridge
+solver independently reconstructs the solution from $\bar x_t$, $C_k$, and
+$\lambda I$; unit tests require its predictions to match direct grouped Ridge
+to numerical precision.
+
+The directly tuned Cov-EV baseline is intentionally different.  It fits
+EV rows with
+$\alpha w^\top\widehat\Sigma_{\rm shot}w+\lambda\lVert w\rVert_2^2$ and
+tunes $(\alpha,\lambda)$ on the same chronological folds. It does not inherit
+Grouped training's $k$, $C_k$, or tuned penalty and is therefore a genuine competing
+baseline rather than an identity check.  The decomposition is consistent with
+the general connection between feature noise and Tikhonov regularization
+\cite{bishop1995training}, but here it holds for the observed finite record
+exactly.
+
+\section{Frozen Evaluation Protocol}
+\label{app:protocol}
+
+The primary experiment was frozen in
+\path{configs/qai_robust_protocol.json} before inspecting redesigned forecast
+outcomes.  All methods reuse the same sampled local-$Z$ measurement record.  The classical
+baseline receives the scalar input with the identical leak $\eta=0.2$ and ten
+causal lags.  The primary quantum representation contains six local $Z_i$ and
+five neighboring $Z_iZ_{i+1}$ features reconstructed from the same shots.
+
+\begin{table}[t]
+\caption{Three predeclared settings.  Every record uses exactly $TN=10{,}000$
+circuit executions.}
+\label{tab:supp-budget}
+\centering
+\begin{tabular}{lrrl}
+\toprule
+Setting & $T$ & $N$ & candidate $k$ \\
+\midrule
+Shot rich & 250 & 40 & 1,2,4,5,8,10,20,40 \\
+Balanced  & 500 & 20 & 1,2,4,5,10,20 \\
+Data rich & 1000& 10 & 1,2,5,10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Chronological boundaries and normalization}
+
+Indices in Table~\ref{tab:supp-folds} are zero-based, half-open intervals.
+After washout $t_0=30$, the last 20\% of the usable sequence is the untouched
+test block.  The first half of the pre-test interval initializes an expanding
+training prefix; the remainder is split into three consecutive blocked
+development folds. Input normalization is frozen using raw series values only
+through the first training stop (inclusive because the next-step target is
+formed from the following value).  One train-fitted affine min--max map is used
+on both branches.  Circuit inputs alone are clipped to $[0,1]$ for angle
+encoding; next-step targets retain the same affine scale without clipping and
+may therefore lie below zero or above one.  Feature standardizers are then fit
+separately for every fold and candidate using training rows only.
+
+\begin{table*}[t]
+\caption{Exact fold boundaries generated by the frozen protocol.  Each entry
+is $[\mathrm{start},\mathrm{stop})$.}
+\label{tab:supp-folds}
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Setting & normalization stop & fold 1: fit / develop & fold 2: fit / develop & fold 3: fit / develop & final test \\
+\midrule
+Shot rich & 118 & [30,118) / [118,147) & [30,147) / [147,177) & [30,177) / [177,206) & [206,250) \\
+Balanced  & 218 & [30,218) / [218,281) & [30,281) / [281,343) & [30,343) / [343,406) & [406,500) \\
+Data rich & 418 & [30,418) / [418,547) & [30,547) / [547,677) & [30,677) / [677,806) & [806,1000) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+For each candidate pair, development NRMSE is computed from one forecast per
+time step after averaging the group predictions. Mean development NRMSE across
+the three folds determines the tuned pair; exact ties prefer smaller $\lambda$,
+then smaller $k$ (or smaller $\alpha$ for Cov-EV). The tuned configuration
+is refit on $[30,t_{\rm test})$, and the final test block is evaluated once.
+
+\subsection{Grids and nested uncertainty}
+
+The shared ridge grid is
+$\lambda\in\{10^{-3},10^{-2},10^{-1},1,10,10^2,10^3\}$.  Cov-EV uses
+$\alpha\in\{0,0.01,0.03,0.1,0.3,1,3,10\}$.  Grouped searches all divisors of
+$N$, including $k=1$ and $k=N$ as safe endpoint fallbacks.  The compared
+methods are: matched classical input, ideal statevector QRC, EV, adaptive
+Grouped, Raw, and tuned Cov-EV.
+
+Five independent initial conditions are used for each synthetic task. The two
+measured series use five windows with disjoint test blocks: sunspot origins
+are separated by 240 months, and Santa Fe origins by 1,001 samples. Santa Fe
+uses only the 9,093-point continuation file, so its complete input windows are
+also disjoint at every budget. Reservoir seeds
+$\{1729,2718,31415\}$, shot seeds $\{1009,2003,3001\}$, and primary grouping
+seeds $\{17,43,97\}$ are nested factors. The inferential unit is the synthetic
+trajectory or measured-series window: nested repeats are averaged within each unit,
+and 95\% $t$ intervals are computed over the five unit-level means.  Paired
+method differences are formed within the same unit before interval estimation;
+shot or grouping seeds are never counted as independent forecasting samples.
+All forecasts predict the next step from the observed input at
+time $t$ is available when predicting $t+1$.  We do not evaluate autonomous
+multistep rollouts.
+
+\section{Expressive Architecture and Target-Free Diagnostics}
+\label{app:architecture}
+
+The redesigned reservoir was chosen using ideal feature behavior and hardware
+depth only, before forecast targets were examined.  It uses six qubits, two
+data-reuploading layers, and seed 1729.  Each layer applies input-dependent
+$R_Y$ and $R_Z$ rotations to every qubit, heterogeneous nearest-neighbor
+$R_{ZZ}$ rotations on a line, and fixed heterogeneous local $R_XR_YR_Z$
+mixing.  This is a compact data-reuploading construction
+\cite{perezsalinas2020data}; no trainable quantum parameters are used.
+
+\begin{table}[t]
+\caption{Frozen circuit identity.}
+\label{tab:supp-hashes}
+\centering
+\begin{tabular}{p{0.28\columnwidth}p{0.61\columnwidth}}
+\toprule
+Field & Frozen value \\
+\midrule
+Circuit version & \texttt{expressive\_reuploading\_v2} \\
+Qubits / layers & 6 / 2 \\
+Primary seed & 1729 \\
+Observables & $Z_0,\ldots,Z_5$ and $Z_iZ_{i+1}$, $i=0,\ldots,4$ \\
+Parameter hash & \scriptsize\texttt{fdff90afa7f488026e7c822f33e424682}\newline
+  \texttt{c2c084653d3ccd245f91e2e90038505} \\
+Architecture hash & \scriptsize\texttt{d44fac7ba013f8337e293d9e08ca3b3b}\newline
+  \texttt{d85be634520d7b9f1953be296770b964} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The complete double-precision arrays for the two sets of six input-$Y$
+weights, input-$Z$ weights, $2\times6\times3$ local angles, and $2\times5$
+couplings are serialized in
+\path{results/expressive_reservoir/ideal_diagnostics.json}. Hash validation is
+mandatory in the simulation runner. Regenerating angles from the seed is convenient, but
+the serialized values and hash, rather than a library-specific random-number
+implementation, define the circuit.
+
+\subsection{Pre-forecast validity gate}
+
+The diagnostic evaluates 257 inputs using exact statevectors and uses no
+forecast target or shot sampling.  All 11 features vary with input and all 11
+leave more than 5\% variance unexplained by an affine function of the input.
+The standardized feature matrix has numerical rank 11 and effective rank
+5.15.  Removing the second layer's couplings changes every measured feature;
+the maximum absolute effect is 1.58.  Finally, after applying the same leak and
+ten-lag map, projection onto the full linear span of the filtered scalar input
+leaves relative residual 0.786.  These values pass the frozen thresholds in
+the diagnostic JSON.  They establish only that the measured representation is
+input-dependent, nonlinear, non-collapsed, and not a linear copy of the matched
+classical preprocessing.  They are not a forecast result or a quantum-advantage
+claim.
+
+\section{Completed Simulation Outcome}
+\label{app:outcome}
+
+The manuscript filter retains only the expressive $Z+ZZ$ representation and
+the balanced setting. Diagnostic and ablation rows cannot enter the main
+report. Nested reservoir, shot, and grouping
+seeds are averaged within each of five trajectories or real-series windows before
+the method means and paired Student-$t$ intervals are formed.
+
+\begin{table*}[t]
+\caption{Balanced-setting mean test NRMSE for the classical and ideal controls
+and EV, Grouped, Raw, and Cov-EV.  Bold marks the best sampled quantum mean,
+not the best value across the classical and ideal columns.}
+\label{tab:supp-main-means}
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+Task & Classical & Ideal QRC & EV & Grouped & Raw & Cov-EV \\
+\midrule
+Mackey--Glass & 0.100 & 0.178 & 0.468 & 0.454 & 0.617 & \textbf{0.447} \\
+Santa Fe laser & 0.762 & 0.493 & 0.764 & 0.680 & 0.697 & \textbf{0.677} \\
+R\"ossler & 0.096 & 0.054 & 0.414 & 0.379 & 0.580 & \textbf{0.367} \\
+Sunspots & 0.387 & 0.474 & 0.553 & 0.517 & 0.558 & \textbf{0.515} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:supp-contrasts} gives the two paired comparisons. A
+positive EV-minus-Grouped value favors Grouped; a positive
+Grouped-minus-Cov-EV value favors Cov-EV. Grouped has supported gains
+on Santa Fe, R\"ossler, and sunspots, while Mackey--Glass is inconclusive. All
+four lower bounds exceed the $-0.05$ practical margin and three exceed zero.
+The numerical pattern is consistent with the shared protocol: Santa Fe has the
+largest balanced gain, while Mackey--Glass remains the weakest contrast.
+
+\begin{table*}[t]
+\caption{Frozen balanced-setting paired effects over five independent
+trajectories/windows.  Values are mean $[95\%\ \mathrm{CI}]$ in NRMSE.}
+\label{tab:supp-contrasts}
+\centering
+\begin{tabular}{lcc}
+\toprule
+Task & EV $-$ Grouped & Grouped $-$ Cov-EV \\
+\midrule
+Mackey--Glass & $0.0138\ [-0.0023,\ 0.0300]$ & $0.0066\ [-0.0026,\ 0.0158]$ \\
+Santa Fe laser & $0.0848\ [0.0174,\ 0.1522]$ & $0.0026\ [-0.0167,\ 0.0218]$ \\
+R\"ossler & $0.0349\ [0.0139,\ 0.0559]$ & $0.0116\ [0.0021,\ 0.0212]$ \\
+Sunspots & $0.0360\ [0.0103,\ 0.0616]$ & $0.0021\ [-0.0025,\ 0.0067]$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The covariance-control gate passed its narrow condition: every upper bound in
+the last column was below $0.05$.  Cov-EV nevertheless had the lower
+mean on all four tasks and a supported advantage on R\"ossler. The gate means
+only that its advantage did not exceed the frozen practical margin; it does not
+show that Grouped is the uniquely effective regularizer.
+
+The ideal-QRC control remains mixed. At the balanced setting, the
+classical-minus-ideal differences were $-0.0775$ for Mackey--Glass, $0.2688$
+for Santa Fe, $0.0420$ for R\"ossler, and $-0.0867$ for sunspots. The matched
+classical input was significantly better on Mackey--Glass and sunspots; ideal
+QRC was significantly better on Santa Fe; R\"ossler's interval crossed zero.
+Feature validity therefore did not translate into uniform forecasting utility
+or establish quantum advantage.
+
+\section{Grouping Assignment and Robustness Contract}
+\label{app:partitions}
+
+A sampler returns an unordered set of bitstrings at each time step.  Treating
+the first stored shot at time $t$ and the first stored shot at $t+1$ as the
+same persistent shot index creates a classical bookkeeping link, not a physical
+trajectory.  A fixed-group construction based on those positions could
+therefore make grouping depend on an arbitrary storage order.
+
+For each aggregation scale $k$ and grouping seed, the primary procedure independently permutes
+the $N$ shot indices at every time step, divides the permuted record into
+contiguous groups of size $k$, averages observables within each group, and only
+then applies the linear leak and lag map to each group sequence.  Candidate
+values of $k$ receive distinct deterministic permutations.  Because both
+averaging and the leak/lag operator are linear,
+\begin{equation}
+  \frac{1}{G}\sum_g \mathcal P\!\left(\frac{1}{k}
+  \sum_{n\in g}z_t^{(n)}\right)
+  =\mathcal P\!\left(\frac{1}{N}\sum_{n=1}^{N}z_t^{(n)}\right),
+  \label{eq:supp-mean-preserving}
+\end{equation}
+where $\mathcal P$ denotes the common leak-and-lag map.  Thus every grouping
+has exactly the same mean feature sequence as EV; only the empirical
+within-group covariance differs.
+
+The headline design averages over grouping seeds 17, 43, and 97.  A balanced
+setting subset repeats the primary construction for 20 additional seeds
+101--120.  A fixed-group ablation uses seeds 17, 43, and 97 with one grouping
+assignment shared across time.  The predeclared outputs are
+\path{partition_robustness_summary.csv},
+\path{fixed_lane_sensitivity.csv}, and
+\path{selected_k_frequency.csv} in
+\path{results/qai_robust_protocol_santa_fe_manuscript/}. They report trajectory/window-level
+paired gains, the difference between fixed-group and per-time regrouping, and tuned-$k$
+frequencies, respectively.  The complete campaign passes the strict reporter;
+incomplete shards were not pooled.
+
+The balanced frequency panel contains 135 nested tuned configurations per task
+($5$ clusters $\times3$ reservoir seeds $\times3$ shot seeds $\times3$
+grouping seeds).  They are descriptive choices, not 135 independent trials.
+$k=1$ was eligible and tuning returned it once in the Santa Fe screen. Tuning
+returned an interior $k$ in 96.3\% of Mackey--Glass runs, 94.1\% of Santa Fe runs, 96.3\%
+of R\"ossler runs, and 97.0\% of sunspot runs. These high rates describe the
+tuned configurations; they are not independent test outcomes.
+
+\begin{table*}[t]
+\caption{Grouping checks at the balanced setting.  Values are mean
+$[95\%\ \mathrm{CI}]$ over five trajectory/window clusters.  Positive
+EV-minus-Grouped favors Grouped; positive fixed-group-minus-per-time-regrouped
+favors per-time regrouping.}
+\label{tab:supp-partitions}
+\centering
+\begin{tabular}{lcc}
+\toprule
+Task & 20-grouping EV $-$ Grouped & Fixed group $-$ per-time regrouped \\
+\midrule
+Mackey--Glass & $-0.0064\ [-0.0436,\ 0.0309]$ & $-0.0021\ [-0.0165,\ 0.0124]$ \\
+Santa Fe laser & $0.1103\ [-0.0146,\ 0.2351]$ & $0.0004\ [-0.0320,\ 0.0327]$ \\
+R\"ossler & $0.0177\ [-0.0270,\ 0.0624]$ & $-0.0018\ [-0.0134,\ 0.0098]$ \\
+Sunspots & $0.0493\ [0.0219,\ 0.0768]$ & $-0.0017\ [-0.0079,\ 0.0045]$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Only sunspots had a positive clustered interval in the 20-grouping subset.
+Every fixed-group interval crossed zero.  The result therefore supports neither
+a universal grouping-robust benefit nor a meaningful advantage of one
+grouping convention over the other.
+
+\section{Completed Four-Task Hardware Transfer}
+\label{app:hardware}
+
+Mackey--Glass, Santa Fe, R\"ossler, and sunspots use the same unmitigated
+ten-qubit circuit, local-$Z$ readout, leak and ten-lag postprocessing,
+chronological development/test split, and tuning grids on \texttt{ibm\_fez} and
+\texttt{ibm\_marrakesh}. Each task--processor pair contributes one $T=500$
+acquisition with 400 ordered shots per step. The record is partitioned into
+twenty disjoint $N=20$ blocks, each retaining the 10,000-execution budget used
+by the balanced simulation setting.
+
+This hardware circuit is separate from the six-qubit expressive reservoir used
+in simulation. It uses one amplitude-encoded input qubit, nine
+Hadamard-initialized memory qubits, a depth-one ring of
+$R_{ZZ}(\pi/2)$ couplings, $R_X(\pi/4)$ rotations, and ten local-$Z$
+measurements. The hardware study tests the aggregation procedure on a second
+fixed reservoir realization. It is not a reproduction of the six-qubit feature
+map and does not compare qubit counts. The circuit and physical layout are
+fixed within each processor, so EV, Grouped, and Raw differ only in their
+classical use of the same ordered measurement record.
+
+Santa Fe uses continuation window~5, $[4587,5088)$, disjoint from the five
+simulation windows. It was acquired on July~12, 2026, under the same circuit,
+archived physical layouts, and analysis as the earlier hardware tasks. The Fez
+job \texttt{d99mf4t2su3c739kl9k0} used \QAIHardwareFezSeconds{} QPU seconds;
+the Marrakesh job \texttt{d99mf52f47jc73a99fj0} used
+\QAIHardwareMarrakeshSeconds{}, for \QAIHardwareTotalSeconds{} seconds total.
+On Fez, Santa EV and Grouped NRMSE are \QAIHardwareFezSantaEV{} and
+\QAIHardwareFezSantaGrouped{}; on Marrakesh they are
+\QAIHardwareMarrakeshSantaEV{} and \QAIHardwareMarrakeshSantaGrouped{}.
+Grouped wins \QAIHardwareSantaWins{} blocks on each processor.
+
+The paired intervals use the twenty disjoint shot blocks within each single
+acquisition. They are descriptive checks of shot-record organization and must
+not be interpreted as replication across calibration periods, jobs, or devices.
+
+\section{Reproducibility Commands and Artifact Inventory}
+\label{app:reproducibility}
+
+All commands below run from the repository root.  First regenerate the
+target-free diagnostic and check its serialized parameter hash:
+\begin{scriptsize}
+\begin{verbatim}
+D=scripts/\
+run_expressive_reservoir_diagnostics.py
+python "$D" --feature-grid-csv \
+  results/expressive_reservoir/\
+ideal_feature_grid.csv
+\end{verbatim}
+\end{scriptsize}
+Inspect the current four task job plan and verify the included evidence:
+\begin{scriptsize}
+\begin{verbatim}
+python scripts/run_robust_evaluation.py \
+  --config configs/benchmark.json \
+  --results-dir results/benchmark_dry_run \
+  --dry-run
+python scripts/verify_santa_fe_manuscript.py
+python scripts/plot_manuscript_figures.py
+\end{verbatim}
+\end{scriptsize}
+The completed IBM acquisitions cannot be reproduced without new QPU use. The
+released raw records can be reanalyzed and the hardware figure redrawn offline:
+\begin{scriptsize}
+\begin{verbatim}
+python scripts/analyze_qai_hardware.py
+python scripts/analyze_qai_hardware.py \
+  --subdir marrakesh
+python scripts/plot_hardware_figure.py
+\end{verbatim}
+\end{scriptsize}
+The extension manifest preserves live availability, frozen input hashes,
+physical layouts, job identifiers, ordered-bitstring hashes, and charged time;
+credentials are neither stored nor released.
+
+\subsection{Artifact inventory}
+
+\noindent\textbf{Frozen inputs:}
+The current runnable protocol is \path{configs/benchmark.json}. The files
+\path{configs/qai_robust_protocol.json},
+\path{configs/qai_robust_protocol_santa_fe.json},
+and \path{results/expressive_reservoir/ideal_diagnostics.json} are retained
+because their hashes are recorded by the completed source manifests.
+\textbf{Simulation provenance:}
+the source manifests in \path{results/qai_robust_protocol_full/} and
+\path{results/qai_santa_fe_laser_screen/} record configuration,
+implementation, commit, data, and test-access hashes. The merge manifest in
+\path{results/qai_robust_protocol_santa_fe_manuscript/} records both source
+hashes and output provenance. Source \path{shards/} contain checkpoints. The
+merged \path{replicate_results.csv},
+\path{cluster_summary.csv}, \path{cluster_paired_stats.csv}, and
+\path{partition_robustness_summary.csv} contain completed nested rows, cluster
+summaries, EV-paired differences, and grouping sensitivity.
+The paper directory contains the balanced table source and regenerated vector
+figures; the merged result directory contains the manuscript-facing tables and
+their hashes.
+\textbf{Hardware provenance:}
+\path{results/qai_hardware_santa_fe_extension/manifest.json} records the
+completed Santa acquisition and promotion into the two four-task archives under
+\path{results/qai_hardware/}. The raw shots, task inputs, layouts, operational
+manifests, and derived tables needed to audit the main-paper hardware figure
+are released together.
+
+Build this standalone supplement with
+\begin{scriptsize}
+\begin{verbatim}
+cd paper
+latexmk -pdf -interaction=nonstopmode \
+  -halt-on-error supplement.tex
+\end{verbatim}
+\end{scriptsize}
+The bibliography and IEEE class are the same files used by the six-page main
+paper.  The named artifact is available at
+\ifdefined\ANON
+an anonymous review link supplied separately with the submission.
+\else
+\href{https://github.com/eybmits/split-ensemble-qrc}{github.com/eybmits/split-ensemble-qrc}.
+\fi
+
+\bibliographystyle{IEEEtranDoi}
+\bibliography{bstcontrol,references}
+
+\end{document}

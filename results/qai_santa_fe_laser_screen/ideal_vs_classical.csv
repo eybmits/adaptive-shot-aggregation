@@ -1,0 +1,4 @@
+dataset,budget_setting,reservoir_variant,feature_set,baseline,method,clusters,delta_classical_minus_ideal,cluster_ci95_low,cluster_ci95_high,cluster_win_rate,inference_unit
+santa_fe_laser,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,0.2688393784176695,0.12885961170128352,0.40881914513405543,1.0,trajectory_or_sunspot_window
+santa_fe_laser,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,0.24130264714430175,0.17692849628715093,0.30567679800145253,1.0,trajectory_or_sunspot_window
+santa_fe_laser,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.09410423738026294,-0.2851701798736471,0.09696170511312122,0.2,trajectory_or_sunspot_window

@@ -1,29 +1,56 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-
-# macOS
+# Operating system and editors
 .DS_Store
 **/.DS_Store
+.idea/
+.vscode/
 
-# Cached simulation data (large, regeneratable)
-results/data_*.pkl
-results/sweep_results.json
-results/*.png
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# TeX build artifacts
-tex/*.aux
-tex/*.fdb_latexmk
-tex/*.fls
-tex/*.log
-tex/*.out
-tex/main.pdf
+# Local simulation runs. Frozen paper evidence under results/ is committed.
+results/benchmark/
+results/benchmark_dry_run/
+results/smoke/
 
-# Generated manuscript / figure PDFs (kept local, not versioned)
-docs/full_paper.pdf
-figures/*.pdf
-figures/*.png
+# Resumable run checkpoints can contain machine-local paths. Consolidated
+# result tables and manifests remain tracked as the publication evidence.
+results/*/shards/
 
-# Claude Code internal
-.claude/
+# Intermediate report previews; paper/figures contains the submitted figures.
+results/*/generated/*.png
+results/*/generated/*.pdf
+
+# TeX intermediates
+*.aux
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Generated raster previews
+paper/figures/*.png
+paper/gfx/*.png
+
+# Paper-writer state and duplicate local build products. Submission PDFs are
+# published from output/pdf/.
+paper/context/
+paper/*.bbl
+paper/main*.pdf
+paper/supplement*.pdf
+
+# Generated anonymous bundle. Recreate and verify it with `make release`.
+release/
+
+# Temporary files
+tmp/
+*.tmp

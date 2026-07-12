@@ -1,0 +1,74 @@
+\section{Discussion}
+\label{sec:discussion}
+
+Adaptive shot aggregation is a small change to the classical side of a quantum
+learning pipeline. The complete measurement record is retained, and each
+aggregation scale $k$ decides how many shots are combined into each training
+view. Earlier time blocks are used to choose $k$ together with the ridge
+strength $\lambda$ before the test block is opened. Raw ($k=1$) and EV ($k=N$)
+are included as the two extremes, so either conventional representation is
+kept when partial averaging is not useful.
+
+The practical advantage is that the method makes better use of measurements
+that have already been acquired. It requires no additional
+circuits, shots, mitigation, or trainable quantum parameters. Its largest gains
+appear when a record contains many shots per time step but relatively few time
+steps. In this regime, full averaging leaves only one training example for each
+time step, while
+individual shots are too noisy. Partial averaging provides several denoised
+views of each target and lets the readout adapt to the available record.
+
+Equation~\eqref{eq:covariance} explains this behavior. Training on grouped
+views is mathematically identical to EV training with an added cost for relying
+on feature changes that vary strongly across shots. Cov-EV applies this cost
+directly and nearly matches Grouped. The gain therefore comes from stabilizing
+the classical readout, not from creating additional physical information.
+
+The same pattern appears across synthetic dynamics, measured time series, and
+unmitigated hardware records. The feature audit verifies that the simulation
+reservoir responds to the input, provides nonlinear information, and contains
+no redundant measured feature. The separate
+ten-qubit hardware circuit then tests whether the aggregation procedure
+transfers to another reservoir design. It is not a qubit-count comparison,
+but the positive trend on both processors shows that the method is not tied to
+the six-qubit simulation circuit.
+
+The method requires individual measurement outcomes because alternative
+aggregation scales cannot be reconstructed from stored expectation values.
+When bitstrings are retained, however, adaptive aggregation can be added after
+execution and evaluated at negligible cost. The present study covers two
+synthetic systems, two measured series, linear readouts, and one acquisition
+per task and processor. Independent hardware campaigns and additional
+reservoir families are the natural next tests.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Adaptive shot aggregation makes the representation of a finite measurement
+record a controllable part of the learning pipeline. Across all four
+forecasting tasks, intermediate aggregation reduced mean test error at the
+balanced execution budget. Unmitigated measurements on both quantum processors
+reproduced the positive trend. Equation~\eqref{eq:covariance} shows that
+grouped views stabilize the readout using the observed shot fluctuations while using exactly the
+same shots as Raw and EV. Retaining shot-level records therefore enables a direct
+post-execution improvement without changing the circuit or increasing the
+quantum execution budget.
+
+\appendices
+\section{Reproducibility Summary}
+\label{app:reproducibility}
+
+All four simulation tasks use the same six-qubit reservoir, preprocessing,
+time-ordered train-and-check procedure, and execution budgets. Mackey--Glass
+and R\"ossler use five independent trajectories; Santa Fe and sunspots use five
+windows with disjoint test blocks. Repeated circuit settings, measurement
+samples, and grouping assignments are averaged within each trajectory or
+window before uncertainty is computed. Every method receives the same raw
+record and candidate ridge strengths. The three budgets are
+$(T,N)=(250,40),(500,20),(1000,10)$, each totaling 10,000 executions. Hardware
+uses one fixed ten-qubit circuit and one ordered 400-shot record per task and
+processor, divided into twenty disjoint $N=20$ blocks. Complete time splits,
+settings, raw outputs, hardware jobs, checksums, and rebuilding scripts are
+provided in the supplement and artifact.
+\ifdefined\ANON\else The named artifact is available at
+\url{https://github.com/eybmits/split-ensemble-qrc}.\fi

@@ -1,0 +1,54 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Simulation reservoir}
+
+The reservoir has six qubits and two shallow data reuploading layers
+~\cite{perezsalinas2020data}. Each layer encodes the scalar input on every
+qubit with heterogeneous $R_y$ and $R_z$ rotations, applies neighboring
+$R_{zz}$ couplings, and mixes locally with frozen non-Clifford angles. The
+circuit parameters are fixed before forecasting, and additional frozen
+realizations quantify sensitivity. One computational basis measurement yields
+six local $Z_i$ signs and five neighboring products $Z_iZ_{i+1}$ at no
+additional quantum cost.
+
+Ideal statevector simulation is performed before forecasting. All 11 features
+change with the input and exceed the specified nonlinearity threshold. They
+all contribute distinct numerical information. Because several respond in
+similar ways, their effective number is 5.15. A leak of 0.2
+and ten causal lags provide temporal context. Ridge regression produces the
+next step forecast, and performance is measured by test NRMSE. These checks
+show that the reservoir supplies a varied, nonlinear feature set. They do not evaluate
+quantum advantage.
+
+\subsection{Adaptive shot aggregation}
+
+Let $x_t^{(n)}$ denote the processed features from shot index $n$ at time
+$t$. For a divisor $k$ of $N$, the $N$ shots are partitioned into
+$G=N/k$ disjoint groups, producing
+\begin{equation}
+  x_t^{(g)}=\frac{1}{k}\sum_{n\in g}x_t^{(n)},
+  \qquad g=1,\ldots,G .
+  \label{eq:grouping}
+\end{equation}
+Each grouped sample shares the same target. At evaluation, the $G$
+predictions for one step are averaged. This equals prediction from their mean
+features, so any difference between EV and Grouped is created during
+training rather than evaluation.
+
+Measurement indices do not identify physical trajectories. A random
+permutation is therefore drawn at every time step before groups are formed, and
+the analysis is repeated across random grouping assignments. A fixed assignment across time
+is included as a sensitivity analysis.
+
+\subsection{Fixed execution budget and training}
+
+The quantum cost is $TN$ circuit executions. Three specified settings use
+exactly $10{,}000$ executions. They allocate $(T,N)=(250,40)$, $(500,20)$, and
+$(1000,10)$ to the number of time steps and shots. All divisors of $N$ are
+considered, including Raw at $k=1$ and EV at $k=N$. Three expanding
+train-and-check splits preserve time order: each candidate pair $(k,\lambda)$
+is fitted on an earlier block and scored on the following block. The best pair
+is then fixed, the readout is refitted to all data preceding the test block,
+and the final 20\% is evaluated once. Normalization and feature scaling use
+training data only.

@@ -1,0 +1,138 @@
+\section{Evaluation}
+\label{sec:results}
+
+\subsection{Balanced setting}
+
+Table~\ref{tab:balanced} and Fig.~\ref{fig:operating} summarize the balanced
+setting. Grouped lowers mean NRMSE relative to EV by \QAIMackeyEVGrouped{} on Mackey--Glass
+(95\% CI $[\QAIMackeyEVGroupedLow,\QAIMackeyEVGroupedHigh]$),
+\QAISantaFeEVGrouped{} on Santa Fe laser
+($[\QAISantaFeEVGroupedLow,\QAISantaFeEVGroupedHigh]$),
+\QAIRosslerEVGrouped{} on R\"ossler
+($[\QAIRosslerEVGroupedLow,\QAIRosslerEVGroupedHigh]$), and
+\QAISunspotsEVGrouped{} on sunspots
+($[\QAISunspotsEVGroupedLow,\QAISunspotsEVGroupedHigh]$). The intervals exclude
+zero for both measured series and R\"ossler. The interval for Mackey--Glass
+includes zero.
+
+\begin{table}[t]
+\caption{Mean test NRMSE at the balanced setting. Repeated measurement trials
+are averaged within each of five separate trajectories or windows. Lower
+values are better.}
+\label{tab:balanced}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{1.7pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+Task & Class. & Ideal & EV & Grouped & Raw & Cov-EV \\
+\midrule
+\QAIBalancedTableRows
+\bottomrule
+\end{tabular}
+\end{table}
+
+Santa Fe has the largest difference at the balanced setting. Adaptive shot
+aggregation reduces EV from 0.764 to 0.680. Each of the five disjoint windows
+favors Grouped. Joint tuning favors $k=10$ most often and an intermediate
+aggregation scale in 94\% of repeated trials. Cov-EV reaches 0.677, nearly
+matching Grouped, while the Grouped gain decreases from 0.143 with 40 shots per
+step to 0.010 with 10 shots per step. This pattern is consistent with
+grouping changing the readout differently for different tasks and execution
+allocations.
+
+The ideal QRC model performs worse than the identically processed classical
+input on Mackey--Glass and sunspots, better on Santa Fe, and yields an
+inconclusive difference on R\"ossler. The experiments therefore support claims
+about aggregation of a chosen reservoir record, but not quantum advantage.
+
+The chosen aggregation scale varies across tasks, trajectories, circuit
+parameter settings, measurement samples, and grouping assignments. EV is
+preferred in some cases.
+Equation~\eqref{eq:covariance} shows that changing $k$ changes which feature
+combinations the readout is discouraged from using, not only how strongly it
+is discouraged. Raw generally has higher error, while
+several intermediate aggregation scales remain competitive with EV.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig3_regime_map.pdf}
+  \caption{Comparison at fixed execution budget. Each panel shows
+  $\Delta=\nrmse_{\rm EV}-\nrmse_{\rm Grouped}$ at
+  $(T,N)=(250,40),(500,20),(1000,10)$. Positive values favor Grouped. Points
+  are trajectory or window units; markers and bars are means and 95\%
+  intervals.}
+  \label{fig:regimes}
+\end{figure}
+
+\subsection{Time steps and shots}
+
+Figure~\ref{fig:regimes} compares three allocations of the same 10,000
+executions. With 40 shots at each of 250 time steps, every task has a positive
+mean difference between 0.086 and 0.170. The intervals exclude zero for
+Mackey--Glass, Santa Fe, and R\"ossler, while the sunspot result varies across
+windows. With 10 shots at each of 1,000 time steps, the mean differences fall
+between 0.008 and 0.016. The intervals exclude zero for Mackey--Glass and
+sunspots and include zero for Santa Fe and R\"ossler. Grouping has its largest
+effect when the record contains many shots per time step and fewer time steps.
+
+\subsection{Controls and grouping robustness}
+
+Cov-EV has a lower mean than Grouped on all four tasks at the balanced setting.
+The paired differences range from 0.0021 to 0.0116 NRMSE, and only the
+R\"ossler interval excludes zero. Grouped obtains its fluctuation-based penalty
+directly from the record without introducing another adjustable strength. Cov-EV applies
+the same fluctuation-based penalty directly to EV and chooses its strength from
+earlier data. Their similar performance supports the explanation in
+Eq.~\eqref{eq:covariance}.
+
+Raw has higher error than EV on Mackey--Glass and R\"ossler at the balanced
+setting. The intervals for Santa Fe and sunspots include zero. The exact
+two-form calculation matches Grouped ridge at fixed $k$ to numerical precision
+and verifies the implementation. It differs from Cov-EV, which chooses the
+strength of the fluctuation-based penalty independently. Across twenty repeated
+settings in the sensitivity analysis, EV minus Grouped means are $-0.0064$
+on Mackey--Glass, $0.1103$ on Santa Fe, $0.0177$ on R\"ossler, and $0.0493$ on
+sunspots; only the sunspot interval excludes zero. Fixed-group minus
+per-time-regrouped mean differences are at most 0.0021 NRMSE in magnitude and
+every clustered interval contains zero. The grouping convention therefore has
+little effect relative to variation across repeated settings. Figure~\ref{fig:controls}
+summarizes the matched controls for all four tasks.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
+  \caption{Controls at the balanced setting in the order EV, Grouped, Raw, and
+  Cov-EV. Faint points are the five trajectory or window means after repeated
+  measurement trials are averaged within each unit; markers and bars show means
+  and 95\% intervals.}
+  \label{fig:controls}
+\end{figure}
+
+\subsection{Hardware transfer}
+
+All four tasks have positive mean EV minus Grouped differences on both processors
+(Fig.~\ref{fig:hardware}): 0.038--0.153 NRMSE on \emph{ibm\_fez} and
+0.031--0.103 on \emph{ibm\_marrakesh}. For Santa Fe, EV decreases from
+\QAIHardwareFezSantaEV{} to \QAIHardwareFezSantaGrouped{} on Fez, a gain of
+\QAIHardwareFezSantaGain{} ($[\QAIHardwareFezSantaGainLow,
+\QAIHardwareFezSantaGainHigh]$), and from \QAIHardwareMarrakeshSantaEV{} to
+\QAIHardwareMarrakeshSantaGrouped{} on Marrakesh, a gain of
+\QAIHardwareMarrakeshSantaGain{} ($[\QAIHardwareMarrakeshSantaGainLow,
+\QAIHardwareMarrakeshSantaGainHigh]$). Grouped wins \QAIHardwareSantaWins{}
+blocks on each processor. Santa Fe was acquired later using the same circuit,
+physical layouts, and analysis. These paired intervals are descriptive of
+variation among measurement blocks within one acquisition. They do not measure
+variation across independent hardware campaigns.
+
+\begin{figure}[!b]
+  \centering
+  \includegraphics[width=\columnwidth]{fig5_hardware.pdf}
+  \caption{Unmitigated transfer results from the separate ten-qubit reservoir
+  on \emph{ibm\_fez} and \emph{ibm\_marrakesh}. For each task and processor,
+  one record with $T=500$ and 400 shots per step is partitioned into twenty
+  disjoint records with $N=20$. The upper panels show performance across
+  aggregation scales. The lower panels show the test difference between EV and
+  Grouped; positive values favor Grouped.}
+  \label{fig:hardware}
+\end{figure}

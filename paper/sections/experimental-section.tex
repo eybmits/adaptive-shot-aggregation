@@ -1,0 +1,77 @@
+\section{Experimental Setup}
+\label{sec:protocol}
+
+\subsection{Simulation setup}
+We evaluate Mackey--Glass~\cite{mackey1977oscillation},
+R\"ossler~\cite{rossler1976equation}, Santa Fe competition Series~A
+far-infrared laser intensity~\cite{gershenfeld1993future}, and monthly
+sunspots~\cite{sidc2026sunspots}. In simulation, all four tasks use the same
+frozen six-qubit
+reservoir, $Z+ZZ$ features, leak, ten lags, washout, training based scaling,
+time-ordered model selection, execution budgets, and candidate settings. The only
+task specific inputs are the source sequence and forecast window origins.
+
+Each synthetic task contributes five independently generated trajectories.
+Each measured series contributes five chronological windows with disjoint
+test blocks. Santa Fe uses five fully disjoint windows from the
+9,093-point continuation record. Three circuit parameter settings, three
+measurement samples, and three grouping assignments repeat the experiment
+within each forecasting unit. We first average these repetitions within each unit and then compute
+paired 95\% intervals across the five separate trajectories or windows. This
+prevents repeated simulations of one sequence from being counted as
+independent forecasting problems.
+
+The main comparison includes the identically leaked and lagged scalar input,
+ideal reservoir features without sampling noise, EV, Grouped, Raw, and
+independently tuned Cov-EV training. Every sampled method reuses the identical raw
+record, time-ordered splits, ridge candidates, and test access policy. Twenty extra
+grouping assignments at the balanced setting test sensitivity to arbitrary group
+assignments.
+
+After a washout of 30 steps, the last 20\% of each usable sequence is reserved
+for testing and is not inspected while settings are chosen. The earlier block
+is evaluated in three rounds: each round fits on the past and checks the
+forecast on the next block. For every aggregation scale $k$, the ridge value is chosen from
+$\{10^{-3},10^{-2},10^{-1},1,10,10^2,10^3\}$; Cov-EV uses the same ridge values
+with eight predeclared strengths for the fluctuation-based penalty. Scaling is
+recomputed using only the fitting portion in every round. Scoring first
+averages all Grouped predictions back to one forecast per time step. Thus every
+method contributes the same number of forecasts to the comparison. The test
+block is accessed only after all choices have been fixed.
+
+The allocation $(T,N)=(500,20)$ is the primary comparison. The other two
+allocations use the same budget of 10,000 executions and are secondary
+analyses. Reservoir parameters, generators, window origins, repeat identifiers,
+grouping rules, candidate settings, and reporting filters are stored before the test
+blocks are evaluated. The reservoir, aggregation choices, ridge choices, and
+test procedure are identical across tasks.
+
+\subsection{Hardware setup}
+The device study intentionally uses a different reservoir design. Its
+fixed ten-qubit circuit contains one amplitude-encoded input qubit, nine
+Hadamard-initialized memory qubits, one $R_{ZZ}$ ring layer, transverse
+$R_X$ rotations, and ten local-$Z$ outputs. The circuit is mapped to selected
+physical qubits on \emph{ibm\_fez} and \emph{ibm\_marrakesh} and is held fixed
+across all four hardware tasks. It tests whether the same aggregation procedure
+transfers to a second circuit and set of measured features; it is not a hardware
+implementation of the six-qubit simulator or a qubit-count comparison. Within
+each study, every aggregation method receives the same circuit outputs and only
+the classical organization of shots changes. One $T=500$, 400-shot acquisition
+per task and processor is partitioned into twenty
+ordered and disjoint records with $N=20$. Santa Fe uses continuation window~5,
+$[4587,5088)$, and was acquired later under the identical protocol. Hardware
+intervals describe variation among measurement blocks within one
+acquisition. They do not represent independent devices or calibration periods.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig2_composite.pdf}
+  \caption{Summary under the shared protocol. (a) Test outcomes for Mackey--Glass
+  for five independent trajectories. (b) Balanced aggregation spectrum over
+  aggregation scale. (c) The spectrum relative to EV across tasks. (d)
+  Test outcomes after choosing aggregation scale and ridge strength together.
+  Panels (b,c) use development data only; panels (a,d) use test blocks. Bands and
+  intervals use separate trajectories or windows; faint marks show repeated
+  measurement trials within them.}
+  \label{fig:operating}
+\end{figure}

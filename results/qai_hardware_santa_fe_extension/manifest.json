@@ -1,0 +1,219 @@
+{
+  "account_name": "seedwise-open-plan",
+  "availability_confirmation": {
+    "live_runtime_remaining_qpu_seconds": 10348.0,
+    "operator_confirmed_available_qpu_seconds": 10348.0,
+    "recorded_at_utc": "2026-07-12T10:08:18.488962+00:00",
+    "required_qpu_seconds": 130,
+    "source": "live QiskitRuntimeService.usage query immediately before submission"
+  },
+  "confirmed_usage_seconds": 111.0,
+  "created_at_utc": "2026-07-12T10:06:25.697395+00:00",
+  "credentials_embedded": false,
+  "jobs": {
+    "ibm_fez": {
+      "backend": "ibm_fez",
+      "bindings": 500,
+      "bits_sha256": "6e37863bbbb5230aa7c4a793905bb2f0edcb3b42f7efaf6c18e62dca8836f96d",
+      "bits_shape": [
+        500,
+        400,
+        10
+      ],
+      "fetched_at_utc": "2026-07-12T10:14:27.874462+00:00",
+      "job_id": "d99mf4t2su3c739kl9k0",
+      "last_status": "DONE",
+      "max_execution_time_seconds": 65,
+      "retry_limit": 0,
+      "shots": 400,
+      "state": "FETCHED",
+      "submission_started_at_utc": "2026-07-12T10:08:18.489578+00:00",
+      "submitted_at_utc": "2026-07-12T10:08:19.657667+00:00",
+      "usage_seconds": 55.0
+    },
+    "ibm_marrakesh": {
+      "backend": "ibm_marrakesh",
+      "bindings": 500,
+      "bits_sha256": "7ce30273bbbcbeeb4019b7a0027cc139c8247aa318fc31454a5bf3b4dd918582",
+      "bits_shape": [
+        500,
+        400,
+        10
+      ],
+      "fetched_at_utc": "2026-07-12T10:14:30.582832+00:00",
+      "job_id": "d99mf52f47jc73a99fj0",
+      "last_status": "DONE",
+      "max_execution_time_seconds": 65,
+      "retry_limit": 0,
+      "shots": 400,
+      "state": "FETCHED",
+      "submission_started_at_utc": "2026-07-12T10:08:19.660272+00:00",
+      "submitted_at_utc": "2026-07-12T10:08:21.017264+00:00",
+      "usage_seconds": 56.0
+    }
+  },
+  "plan": {
+    "archived_layouts": {
+      "ibm_fez": {
+        "bridge_ancillas": [
+          125,
+          126
+        ],
+        "chosen_at": "2026-07-09T13:12:55.121748+00:00",
+        "data_qubits": [
+          127,
+          137,
+          147,
+          146,
+          145,
+          144,
+          143,
+          136,
+          123,
+          124
+        ],
+        "source_path": "results/qai_hardware/layout.json",
+        "source_sha256": "34105feb0ac739bfd97b13b0534d61e08d67281547281d08f3fd9ed949ec80c6"
+      },
+      "ibm_marrakesh": {
+        "bridge_ancillas": [
+          18,
+          31
+        ],
+        "chosen_at": "2026-07-09T18:23:52.496738+00:00",
+        "data_qubits": [
+          32,
+          33,
+          34,
+          35,
+          19,
+          15,
+          14,
+          13,
+          12,
+          11
+        ],
+        "source_path": "results/qai_hardware/marrakesh/layout.json",
+        "source_sha256": "99fbe06053b77a8512efe9345bd7ce1d8712241123c8a3bf523ad6f5ca65c1e8"
+      }
+    },
+    "budget": {
+      "aggregate_cap_seconds": 130,
+      "backends": [
+        "ibm_fez",
+        "ibm_marrakesh"
+      ],
+      "max_seconds_per_job": 65,
+      "retries": 0
+    },
+    "circuit_contract": {
+      "bindings": 500,
+      "features": "ten local-Z outcomes; same legacy leak and ten-lag postprocessing",
+      "q_data": 10,
+      "shots_per_binding": 400,
+      "source": "scripts/run_qai_hardware.py::build_circuit"
+    },
+    "task_provenance": {
+      "cluster_id": "santa_fe_laser_window_05",
+      "encoding": "legacy base.input_amplitude_angle (clips circuit input to [0,1])",
+      "hash_kind": "sha256 of contiguous array bytes",
+      "hashes": {
+        "angles": "6faa235f5dd233e61899105c54c2f68cf136660196fd8364e011f7d2b23c08b5",
+        "inputs": "268f49d76e6ef0e30f08315d670ed4cec93001653c114213d660c02cb438c194",
+        "raw": "d425b9833f291557c3467e48a6b6c0d6bf2c1c7d3888bf45f3c32868ef8404bb",
+        "targets": "d044d4e1c676ac8ae0d34676eabac064be83d69bd7ff3bf4f97058007d94eb32"
+      },
+      "normalization": "legacy base.normalize_and_shift with config.json",
+      "shapes": {
+        "angles": [
+          500
+        ],
+        "inputs": [
+          500
+        ],
+        "raw": [
+          501
+        ],
+        "targets": [
+          500
+        ]
+      },
+      "source_cluster_index": 5,
+      "source_metadata": {
+        "cluster_kind": "disjoint_continuation_window",
+        "window_end_index": 5088,
+        "window_start_index": 4587
+      },
+      "task": "santa_fe_laser"
+    }
+  },
+  "preflight": {
+    "backends": {
+      "ibm_fez": {
+        "backend": "ibm_fez",
+        "num_qubits": 156,
+        "operational": true,
+        "pending_jobs": 3,
+        "transpiled_ops": {
+          "cz": 4,
+          "measure": 10,
+          "rx": 11,
+          "rz": 36,
+          "rzz": 10,
+          "sx": 17
+        }
+      },
+      "ibm_marrakesh": {
+        "backend": "ibm_marrakesh",
+        "num_qubits": 156,
+        "operational": true,
+        "pending_jobs": 13,
+        "transpiled_ops": {
+          "cz": 4,
+          "measure": 10,
+          "rx": 11,
+          "rz": 36,
+          "rzz": 10,
+          "sx": 17
+        }
+      }
+    },
+    "completed_at_utc": "2026-07-12T10:08:18.017980+00:00"
+  },
+  "schema_version": "qai-legacy-santa-fe-extension-v1",
+  "status": "COMPLETE_RAW_ARCHIVES_NO_FORECAST_ANALYSIS",
+  "task": "santa_fe_laser",
+  "task_provenance": {
+    "cluster_id": "santa_fe_laser_window_05",
+    "encoding": "legacy base.input_amplitude_angle (clips circuit input to [0,1])",
+    "hash_kind": "sha256 of contiguous array bytes",
+    "hashes": {
+      "angles": "6faa235f5dd233e61899105c54c2f68cf136660196fd8364e011f7d2b23c08b5",
+      "inputs": "268f49d76e6ef0e30f08315d670ed4cec93001653c114213d660c02cb438c194",
+      "raw": "d425b9833f291557c3467e48a6b6c0d6bf2c1c7d3888bf45f3c32868ef8404bb",
+      "targets": "d044d4e1c676ac8ae0d34676eabac064be83d69bd7ff3bf4f97058007d94eb32"
+    },
+    "normalization": "legacy base.normalize_and_shift with config.json",
+    "shapes": {
+      "angles": [
+        500
+      ],
+      "inputs": [
+        500
+      ],
+      "raw": [
+        501
+      ],
+      "targets": [
+        500
+      ]
+    },
+    "source_cluster_index": 5,
+    "source_metadata": {
+      "cluster_kind": "disjoint_continuation_window",
+      "window_end_index": 5088,
+      "window_start_index": 4587
+    },
+    "task": "santa_fe_laser"
+  }
+}

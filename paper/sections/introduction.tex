@@ -1,0 +1,47 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Quantum learning experiments obtain classical data by executing a circuit
+repeatedly. The resulting measurement record must be converted into feature
+values before training. We study how many repeated measurements should be
+averaged to form each training example.
+
+Quantum reservoir computing (QRC) provides a controlled setting for this
+comparison. A fixed quantum circuit transforms an input sequence into measured
+features, and training is restricted to a classical readout
+~\cite{fujii2017harnessing,nakajima2019boosting,mujal2021opportunities}.
+The circuit, targets, and measurement record can therefore remain fixed while
+the aggregation supplied to the readout changes.
+
+We compare three representations of the same record. EV averages all
+measurements at each time step, Grouped averages disjoint subsets, and Raw uses
+each measurement separately. The aggregation scale $k$ is the number of shots
+per averaged training view and ranges from $k=1$ for Raw to $k=N$ for EV. It is
+chosen together with the ridge strength using earlier data in time order.
+
+EV provides one sample with low measurement variance per time step. Raw
+provides many samples with high measurement variance. Grouped provides several
+partially averaged samples with a common target. Measurement error can reduce
+fitted coefficients~\cite{fuller1987measurement}, while a small number of
+training examples relative to the number of features can destabilize regression
+~\cite{hsu2012random}. Adaptive shot aggregation calibrates this balance for
+each record. Figure~\ref{fig:organization} shows how the three representations
+are formed from the same measurement record.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig1_shot_organization.pdf}
+  \caption{Three aggregation modes for one finite measurement record. A
+  normalized input drives a fixed quantum reservoir. The same repeated
+  measurements are processed using full expectation-value averaging (EV),
+  disjoint group averaging (Grouped), or individual shots (Raw). Only the
+  classical aggregation of the measurement record changes.}
+  \label{fig:organization}
+\end{figure}
+
+Our contribution is adaptive shot aggregation, which treats the shots per
+training view as an adjustable readout setting without changing the execution
+budget. We evaluate it on two synthetic systems and two measured series under
+one matched protocol. Three allocations of time steps and shots establish how
+the effect depends on execution conditions, matched controls explain why it
+occurs, and a separate hardware reservoir tests transfer.

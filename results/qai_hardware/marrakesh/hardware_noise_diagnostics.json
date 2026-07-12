@@ -1,0 +1,78 @@
+[
+ {
+  "dataset": "mackey_glass",
+  "autocorr_by_lag": {
+   "1": -0.0021816712116141702,
+   "2": -0.0032697341931403464,
+   "5": -0.0027840897082088358,
+   "20": -0.0025377473827324507
+  },
+  "autocorr_iid_null_sd": 0.05,
+  "mean_abs_offdiag_corr_hw": 0.003187206707994508,
+  "mean_abs_offdiag_corr_sim": 3.4742278165207644e-17,
+  "mean_abs_offdiag_excess": 0.003187206707994515,
+  "max_abs_offdiag_excess": 0.01797402298054458,
+  "drift_slope_per_record": -4.0406015037593985e-05,
+  "drift_corr_r": -0.07382463320162484,
+  "drift_p": 0.7570799196730685,
+  "a_mean": 7.854304556308686,
+  "k0_mode": 10
+ },
+ {
+  "dataset": "santa_fe_laser",
+  "autocorr_by_lag": {
+   "1": -0.0028468401094371414,
+   "2": -0.0025226176667383035,
+   "5": -0.0025505547115100024,
+   "20": -0.002025974450173335
+  },
+  "autocorr_iid_null_sd": 0.05,
+  "mean_abs_offdiag_corr_hw": 0.002963145760965501,
+  "mean_abs_offdiag_corr_sim": 3.363539317162674e-17,
+  "mean_abs_offdiag_excess": 0.0029631457609654885,
+  "max_abs_offdiag_excess": 0.027716856820175953,
+  "drift_slope_per_record": 3.741353383458645e-05,
+  "drift_corr_r": 0.0687650813164278,
+  "drift_p": 0.7732960654344336,
+  "a_mean": 19.37301068271558,
+  "k0_mode": 10
+ },
+ {
+  "dataset": "rossler",
+  "autocorr_by_lag": {
+   "1": -0.0015149412543805252,
+   "2": -0.0023154731872037657,
+   "5": -0.002830738387527022,
+   "20": -0.002292540251777281
+  },
+  "autocorr_iid_null_sd": 0.05,
+  "mean_abs_offdiag_corr_hw": 0.0028662846792760887,
+  "mean_abs_offdiag_corr_sim": 3.5018957892936526e-17,
+  "mean_abs_offdiag_excess": 0.0028662846792760896,
+  "max_abs_offdiag_excess": 0.01586620302452857,
+  "drift_slope_per_record": 5.248120300751828e-06,
+  "drift_corr_r": 0.009356679307243744,
+  "drift_p": 0.9687702937830722,
+  "a_mean": 7.773811552157063,
+  "k0_mode": 10
+ },
+ {
+  "dataset": "sunspots",
+  "autocorr_by_lag": {
+   "1": -0.0022055746388402876,
+   "2": -0.002050087397123311,
+   "5": -0.00282567710822089,
+   "20": -0.00258070534655592
+  },
+  "autocorr_iid_null_sd": 0.05,
+  "mean_abs_offdiag_corr_hw": 0.003678818067320619,
+  "mean_abs_offdiag_corr_sim": 3.443208337379658e-17,
+  "mean_abs_offdiag_excess": 0.0036788180673206043,
+  "max_abs_offdiag_excess": 0.03210157099346408,
+  "drift_slope_per_record": -4.5383458646616565e-05,
+  "drift_corr_r": -0.09059566398330614,
+  "drift_p": 0.7040559857084545,
+  "a_mean": 7.281906611841038,
+  "k0_mode": 10
+ }
+]

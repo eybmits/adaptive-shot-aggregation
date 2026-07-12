@@ -1,4 +1,0 @@
-protocol,nrmse_mean,nrmse_std,seeds,backend,dataset,budget_total,n_shots
-EV,1.023,0.235,8,ibm_marrakesh,mackey_glass,20000,40
-Raw,0.932,0.021,8,ibm_marrakesh,mackey_glass,20000,40
-Split,0.67,0.08,8,ibm_marrakesh,mackey_glass,20000,40
