@@ -22,7 +22,7 @@ from typing import Iterable
 
 
 SOURCE_DATE_EPOCH = "1783641600"
-PAPER_TITLE = "From Raw Shots to Expectation Values: Intermediate Shot Grouping Improves Time Series Prediction"
+PAPER_TITLE = "From Raw Shots to Expectation Values: Shot Grouping Improves Time Series Prediction"
 PDF_CONTRACT = {
     "main.pdf": {
         "pages": 6,

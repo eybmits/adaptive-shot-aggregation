@@ -1,7 +1,7 @@
 # From Raw Shots to Expectation Values
 
-This repository contains the code, evidence, and paper for **Intermediate Shot
-Grouping Improves Time Series Prediction**.
+This repository contains the code, evidence, and paper for **Shot Grouping
+Improves Time Series Prediction**.
 
 The submission is a **QCE26 New Ideas and Emergent Results (NIER) short
 paper**. Its focused claim is that adaptive shot aggregation can tune how many
