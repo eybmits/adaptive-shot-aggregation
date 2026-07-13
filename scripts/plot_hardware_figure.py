@@ -80,7 +80,7 @@ def main() -> None:
     devices = (("ibm_fez", HARDWARE), ("ibm_marrakesh", HARDWARE / "marrakesh"))
     tables = {name: load_tables(directory) for name, directory in devices}
     fig, axes = plt.subplots(2, 2, figsize=(3.5, 3.42), sharey="row")
-    fig.subplots_adjust(left=0.205, right=0.985, bottom=0.11, top=0.925, hspace=0.55, wspace=0.10)
+    fig.subplots_adjust(left=0.205, right=0.985, bottom=0.11, top=0.865, hspace=0.55, wspace=0.10)
     rng = np.random.default_rng(23)
 
     k_values = sorted(tables["ibm_fez"][0]["k"].unique())
@@ -124,7 +124,22 @@ def main() -> None:
         axis.set_title(name, fontweight="bold")
         axis.text(-0.30 if column == 0 else -0.10, 1.05, "ab"[column], transform=axis.transAxes, fontsize=9, fontweight="bold")
     axes[0, 0].set_ylabel("Development NRMSE")
-    axes[0, 0].legend(handles=handles, ncol=2, fontsize=5.1, frameon=False, loc="upper left")
+    fig.legend(
+        handles=handles,
+        ncol=4,
+        fontsize=5.1,
+        frameon=True,
+        facecolor="white",
+        edgecolor="#d6dbe3",
+        framealpha=1.0,
+        fancybox=True,
+        borderpad=0.35,
+        handlelength=1.55,
+        handletextpad=0.40,
+        columnspacing=0.95,
+        loc="upper center",
+        bbox_to_anchor=(0.595, 0.995),
+    )
 
     y_positions = np.arange(len(TASKS))[::-1]
     maximum = 0.0
