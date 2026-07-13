@@ -91,22 +91,15 @@ only for Mackey--Glass and sunspots.
 
 \subsection{Why the gain is regularization}
 
-The central control is Cov-EV, which keeps EV features and adds a penalty based
-on how the individual shots fluctuate together. At the balanced setting Cov-EV
-has a slightly lower mean error than Grouped on all four tasks, by $0.0021$ to
-$0.0116$ NRMSE, and only the R\"ossler interval excludes zero. Grouped obtains
-its penalty directly when the views are formed, whereas Cov-EV separately
-chooses the covariance-penalty strength on earlier data. Their near-match is
-the main evidence that the benefit described by
-Eq.~\eqref{eq:loss-decomposition} comes from regularizing the readout rather
-than from extra information from the quantum device.
-
-Two further checks support this interpretation. Raw is less accurate than EV
-on Mackey--Glass and R\"ossler and inconclusive on the two real-world datasets,
-so noisy single shots are not simply better data. The exact two-term form of
-Eq.~\eqref{eq:loss-decomposition} also reproduces the grouped ridge fit at a
-fixed $k$ to numerical precision. Cov-EV is a separate control: it uses the
-full shot covariance and independently chooses its strength.
+Cov-EV keeps EV features and adds a penalty based on how the shots fluctuate
+together. At the balanced setting its mean error is $0.0021$ to $0.0116$ NRMSE
+below Grouped, and only the R\"ossler interval excludes zero. This near-match
+supports the regularization mechanism in Eq.~\eqref{eq:loss-decomposition}
+rather than extra device information (Fig.~\ref{fig:controls}). Raw is less
+accurate than EV on Mackey--Glass and R\"ossler and inconclusive on the two
+real-world datasets. At fixed $k$, the exact two-term loss reproduces the
+Grouped ridge fit to numerical precision; Cov-EV independently tunes the
+strength of the full shot-covariance penalty.
 
 Grouping is also robust to how the groups are drawn. Across twenty repeated
 settings the average improvements are $-0.0064$ on Mackey--Glass, $0.1103$ on
@@ -120,38 +113,44 @@ run-to-run variation. Figure~\ref{fig:controls} collects these controls.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
-  \caption{Controls at the balanced setting in the order EV, Grouped, Raw, and
-  Cov-EV. Faint points are the five trajectory or window means after repeated
-  measurement trials are averaged within each unit; markers and bars show means
-  and 95\% intervals.}
+  \caption{\fontsize{7.25}{8.0}\selectfont Why the gain is regularization, shown task by task. Each panel places
+  the four methods on the same error axis, where lower is better. Grouped (teal
+  diamond) and Cov-EV (purple square) sit lowest and almost on top of each other
+  on every task, EV (open circle) is behind them, and Raw (yellow, individual
+  shots) is worst. The near-match between Grouped and Cov-EV is the key point.
+  Cov-EV adds Grouped's fluctuation penalty directly to full averaging, so when
+  it reaches the same error the benefit of grouping is regularization of the
+  readout rather than extra information from the device. Faint points are the
+  five trajectory or window means after repeated measurement trials are
+  averaged within each unit. Markers and bars show the means and their $95\%$
+  intervals. The order from top to bottom is EV, Grouped, Raw, and Cov-EV.}
   \label{fig:controls}
 \end{figure}
 
 \subsection{Transfer to hardware}
 
-The same experiment was run without error mitigation on two superconducting
-processors, \emph{ibm\_fez} and \emph{ibm\_marrakesh}
-(Fig.~\ref{fig:hardware}). Grouped improves every task on both machines, with
-mean gains from $0.038$ to $0.153$ NRMSE on \emph{ibm\_fez} and from $0.031$ to
-$0.103$ on \emph{ibm\_marrakesh}. On Santa Fe laser, the error falls from
-$0.750$ to $0.711$ on \emph{ibm\_fez}, a gain of $0.038$
-($[0.027,0.050]$), and from $0.744$ to $0.713$ on
-\emph{ibm\_marrakesh}, a gain of $0.031$ ($[0.023,0.039]$).
-Grouped is more accurate in $19$ of $20$ measurement blocks on each processor.
-
-These intervals describe variation among the twenty measurement blocks of a
-single acquisition. They do not measure variation across independent hardware
-campaigns, so the hardware results demonstrate consistent transfer of the
-effect rather than a precise device-level comparison.
+Figure~\ref{fig:hardware} reports the unmitigated hardware results. Grouped
+improves every task, with mean gains from $0.038$ to $0.153$ NRMSE on
+\emph{ibm\_fez} and from $0.031$ to $0.103$ on \emph{ibm\_marrakesh}. On Santa
+Fe laser, the error falls from $0.750$ to $0.711$ on \emph{ibm\_fez} and from
+$0.744$ to $0.713$ on \emph{ibm\_marrakesh}. Grouped is more accurate in $19$
+of $20$ measurement blocks on each processor.
 
 \begin{figure}[!b]
   \centering
   \includegraphics[width=\columnwidth]{fig5_hardware.pdf}
-  \caption{Unmitigated transfer results from the separate ten-qubit reservoir
-  on \emph{ibm\_fez} and \emph{ibm\_marrakesh}. For each task and processor,
-  one record with $T=500$ and 400 shots per step is partitioned into twenty
-  disjoint records with $N=20$. The upper panels show performance across
-  aggregation scales. The lower panels show the test difference between EV and
-  Grouped; positive values favor Grouped.}
+  \caption{\fontsize{7.25}{8.0}\selectfont The same effect on real hardware, on two processors. A separate
+  ten-qubit reservoir was run without error mitigation on \emph{ibm\_fez} and
+  \emph{ibm\_marrakesh}. For each task and processor, one acquisition of $400$
+  shots at each of $T=500$ time steps was split into twenty disjoint records
+  with $N=20$. (a,b)~The aggregation spectrum. On both devices the development
+  error traces the same U shape over the aggregation scale $k$, so an
+  intermediate scale again beats both endpoints on every task. (c,d)~The
+  improvement per task, measured as the EV error minus the Grouped error, where
+  the dashed line is a tie and points to its right favor Grouped. Grouped is
+  more accurate on all four tasks on both machines. Faint points are the
+  individual measurement blocks, and each colored marker with a bar is the mean
+  with its $95\%$ interval. These intervals describe variation among the blocks
+  of a single acquisition, not across independent hardware campaigns.}
   \label{fig:hardware}
 \end{figure}

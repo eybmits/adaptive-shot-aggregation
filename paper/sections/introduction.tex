@@ -46,11 +46,15 @@ the number of shots per averaged training view, slides smoothly from $k=1$
 \begin{figure}[!t]
   \centering
   \includegraphics[width=\columnwidth]{fig1_shot_organization.pdf}
-  \caption{Three aggregation modes for one finite measurement record. A
-  normalized input drives a fixed quantum reservoir. The same repeated
-  measurements are processed using full expectation-value averaging (EV),
-  disjoint group averaging (Grouped), or individual shots (Raw). Only the
-  classical aggregation of the measurement record changes.}
+  \caption{\fontsize{7.25}{8.0}\selectfont The one idea of this paper, in a picture. A normalized input drives a
+  fixed quantum reservoir that is measured many times at each step, which
+  produces a finite record of shots (black dots). Turning that record into
+  training data is the only step that changes. EV averages all shots of a step
+  into one clean feature. Raw keeps every shot as its own noisy feature.
+  Grouped sits between them and averages the shots in disjoint groups, giving
+  a few partly cleaned features. All three feed the same linear readout, and
+  the circuit, the shots, and the targets are identical across them, so any
+  difference in accuracy comes from the aggregation alone.}
   \label{fig:organization}
 \end{figure}
 
