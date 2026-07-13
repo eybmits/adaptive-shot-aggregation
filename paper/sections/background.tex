@@ -13,18 +13,11 @@ by a small fixed non-Clifford rotation, keeping the circuit outside the
 Clifford-only setting. All angles are drawn once and frozen, so the circuit
 never changes during forecasting, and several independent frozen circuits
 check that the results do not depend on one lucky draw. A single
-computational-basis measurement then yields eleven features at once, the six
-qubit signals $Z_i$ and the five neighbor correlations $Z_iZ_{i+1}$, at no
-extra quantum cost.
-
-Before forecasting, an exact noise-free simulation confirms the feature set is
-useful. All eleven features respond to the input and are nonlinear above a
-preset threshold, and they carry distinct information rather than copies of one
-another. Because a few react similarly, their effective number is $5.15$,
-somewhat below eleven. A leaky integrator with leak $0.2$ and the ten most
+computational-basis measurement then yields eleven features at once: the six
+qubit signals $Z_i$ and the five neighbor correlations $Z_iZ_{i+1}$. A leaky
+integrator with leak $0.2$ and the ten most
 recent steps add temporal memory, and a ridge regression maps the features to
-the next value, scored by test NRMSE. These checks show the reservoir supplies
-a varied, nonlinear feature set. They make no claim of quantum advantage.
+the next value, scored by test NRMSE.
 
 \subsection{Adaptive shot aggregation}
 
