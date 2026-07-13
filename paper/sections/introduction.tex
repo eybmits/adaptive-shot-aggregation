@@ -64,10 +64,11 @@ of the classical readout, supplied automatically by the record's own
 fluctuations. Because aggregation is classical post-processing, it costs no
 additional quantum executions and applies retroactively to any archived record.
 
-Our contribution is \emph{adaptive shot aggregation}: the number of shots per
-training view becomes a validated readout setting. The paper establishes
-\emph{when} the choice matters, through three allocations of time steps and
-shots under fixed budgets; \emph{why} it works, through matched controls that
-isolate the regularization mechanism; and \emph{where} it transfers, through
-unmitigated experiments with a separate hardware reservoir on two
-superconducting processors.
+Our contribution is \emph{adaptive shot aggregation}. The number of shots per
+training view becomes a setting of the classical readout, selected by
+validation like any other hyperparameter, at no additional quantum cost. We map
+when the choice matters through three budget allocations of time steps and
+shots. We explain why it works through matched controls that isolate the
+regularization mechanism. We test where it transfers through unmitigated
+experiments with a separate hardware reservoir on two superconducting
+processors.
