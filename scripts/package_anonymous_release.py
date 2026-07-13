@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PAPER = ROOT / "paper"
 DESTINATION = ROOT / "release" / "qce2026_nier_anonymous"
 SOURCE_DATE_EPOCH = "1783641600"
-PAPER_TITLE = "From Raw Shots to Expectation Values: Shot Grouping Improves Time Series Prediction"
+PAPER_TITLE = "From Raw Shots to Expectation Values: Reorganizing Measurement Records in Quantum Machine Learning"
 
 SECTION_FILES = (
     "abstract.tex",

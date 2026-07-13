@@ -1,7 +1,6 @@
-# From Raw Shots to Expectation Values
+# From Raw Shots to Expectation Values: Reorganizing Measurement Records in Quantum Machine Learning
 
-This repository contains the code, evidence, and paper for **Shot Grouping
-Improves Time Series Prediction**.
+This repository contains the code, evidence, and paper for the QCE26 submission.
 
 The submission is a **QCE26 New Ideas and Emergent Results (NIER) short
 paper**. Its focused claim is that adaptive shot aggregation can tune how many

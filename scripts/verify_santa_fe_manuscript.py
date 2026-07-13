@@ -20,7 +20,7 @@ PAPER = ROOT / "paper" if (ROOT / "paper").is_dir() else ROOT
 TASKS = ("mackey_glass", "santa_fe_laser", "rossler", "sunspots")
 PAPER_TITLE = (
     "From Raw Shots to Expectation Values: "
-    "Shot Grouping Improves Time Series Prediction"
+    "Reorganizing Measurement Records in Quantum Machine Learning"
 )
 
 
