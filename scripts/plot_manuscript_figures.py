@@ -271,10 +271,10 @@ def _fig2_panel_a(ax: plt.Axes, balanced: pd.DataFrame) -> None:
         ax.plot(row["raw"], yi, "o", color=RAW, ms=3.7, mec="white", mew=0.5, zorder=3)
         ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=0.9, ms=4.1, zorder=4)
         ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=0.55, ms=4.0, zorder=5)
-    ax.set_yticks(y, [f"T{i + 1}" for i in range(len(y))])
+    ax.set_yticks(y, [str(i + 1) for i in range(len(y))])
     ax.set_ylim(-0.55, len(y) - 0.45)
-    ax.set_xlabel("Test NRMSE", labelpad=2)
-    ax.set_title("Paired trajectories", fontweight="bold", pad=3.5)
+    ax.set_xlabel("Test error (NRMSE)", labelpad=2)
+    ax.set_title("Five Mackey–Glass series", fontweight="bold", fontsize=6.8, pad=4.2)
     ax.xaxis.set_major_locator(MaxNLocator(3))
     ax.tick_params(axis="y", length=0)
     _panel_letter(ax, "a", x=-0.16)
@@ -351,7 +351,7 @@ def _fig2_panel_c(ax: plt.Axes, validation: pd.DataFrame) -> None:
     ax.set_xlabel("Shots per group $k$", labelpad=2)
     ax.set_ylabel("Error relative to EV (%)", labelpad=2)
     ax.set_title(
-        "Group-size effect across tasks",
+        "Group size across tasks",
         fontweight="bold",
         fontsize=5.9,
         pad=5.0,
@@ -398,12 +398,12 @@ def _fig2_panel_d(ax: plt.Axes, balanced: pd.DataFrame) -> None:
     for yi, task in zip(y, TASKS):
         row = wide.loc[task]
         delta = float(row["ev"] - row["split"])
-        ax.text(label_x, yi, rf"$\Delta={delta:+.3f}$", ha="left", va="center", fontsize=5.2, color="#14705f")
+        ax.text(label_x, yi, f"{delta:.3f} lower", ha="left", va="center", fontsize=5.2, color="#14705f")
     ax.set_yticks(y, [TASK_SHORT[task] for task in TASKS])
     ax.set_ylim(-0.55, len(TASKS) - 0.45)
-    ax.set_xlabel("Test NRMSE", labelpad=2)
+    ax.set_xlabel("Test error (NRMSE)", labelpad=2)
     ax.set_title(
-        "Adaptive aggregation outcome",
+        "Final test comparison",
         fontweight="bold",
         fontsize=6.1,
         pad=5.0,
