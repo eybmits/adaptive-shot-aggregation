@@ -136,15 +136,15 @@
   \begin{scope}[shift={(0.70,0)}]
   \node[stage] at (2.15,2.09) {Input series};
   \node[draw=qnodeblue!18,fill=white,rounded corners=5pt,
-        minimum width=3.75cm,minimum height=1.68cm] at (2.15,1.00) {};
+        minimum width=3.75cm,minimum height=1.86cm] at (2.15,1.00) {};
   \def\xstart{0.50}\def\xt{3.00}\def\xtp{3.62}\def\xend{3.82}
 
   \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.55pt]
     (\xstart,0.43) -- (\xend,0.43);
   \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.55pt]
     (\xstart,0.43) -- (\xstart,1.62);
-  \node[font=\scriptsize,text=axisgray,anchor=south east] at
-    ($(\xstart,1.62)+(-0.08,0.03)$) {$y$};
+  \node[font=\scriptsize,text=axisgray,anchor=north west] at
+    ($(\xstart,1.62)+(0.10,0.18)$) {$y$};
 
   % Both segments evaluate the same analytic sinusoid.  Splitting the path at
   % t changes only the line style, so the forecast has no artificial corner.
