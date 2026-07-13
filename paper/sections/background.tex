@@ -36,3 +36,17 @@ block and scored on the block that follows. The best pair is then frozen, the
 readout is refitted on all data before the test block, and the final fifth of
 the series is scored once. Normalization and feature scaling use training data
 only, so the test block never influences any choice.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig2_composite.pdf}
+  \caption{Summary under the shared protocol. (a) Test errors for five
+  independently generated Mackey--Glass time series. (b) Validation error for
+  each candidate group size at the balanced budget. (c) Validation error
+  relative to EV across tasks. (d) Final test comparison after choosing group
+  size and ridge strength; labels report how much lower the Grouped error is
+  than EV. Panels (b,c) use validation data only; panels (a,d) use test blocks. Bands and
+  intervals use separate trajectories or windows; faint marks show repeated
+  measurement trials within them.}
+  \label{fig:operating}
+\end{figure}
