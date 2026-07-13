@@ -25,12 +25,19 @@ the views. Grouped training is therefore EV training plus a penalty read
 directly off the observed shot fluctuations, and the identity assumes neither
 Gaussian noise nor independence over time.
 
-This yields a clean test of the explanation. Cov-EV applies the very same
-penalty on top of EV and tunes its strength on the same earlier data. If
-Grouped and Cov-EV perform alike, the gain comes from this regularization
-rather than from any extra physical information. As an implementation check we
-also evaluate both at a fixed $k$ and confirm they predict identically. Because
-the leaky integrator and overlapping lags make neighboring feature vectors
-dependent, we report uncertainty across trajectories or measured windows rather
-than across the many correlated grouped views. The full derivation and
-statistical details are in the supplement.
+The identity motivates a matched baseline: covariance-regularized
+expectation-value training (Cov-EV). Cov-EV keeps the fully averaged EV
+features and adds a penalty estimated from how the individual shots fluctuate
+together. Its strength and the ordinary ridge strength are chosen using the
+same earlier data as the other methods. Cov-EV does not reuse the aggregation
+scale chosen by Grouped; it tests whether the same regularization mechanism can
+be applied directly after full averaging. Similar performance from Grouped and
+Cov-EV would therefore support regularization as the source of the gain.
+
+Separately, we verify the exact identity above by comparing direct Grouped
+training with the equivalent EV loss plus $C_{k,t}$ at a fixed $k$; their
+predictions match. Because the leaky integrator and overlapping lags make
+neighboring feature vectors dependent, we report uncertainty across
+trajectories or measured windows rather than across the many correlated
+grouped views. The full derivation and statistical details are in the
+supplement.

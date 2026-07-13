@@ -278,6 +278,11 @@ def scan_pdf(path: Path, findings: list[str]) -> None:
     raw_strings = command_output(["strings", "-a", str(path)]) if shutil.which("strings") else ""
     scan_text(str(path), info + "\n" + text, findings)
     for name, pattern in DIRECT_PATTERNS.items():
+        # Compressed PDF streams can contain short printable byte sequences
+        # that resemble an email address by chance. Real addresses remain
+        # covered by the extracted-text and metadata scan above.
+        if name == "email address":
+            continue
         if pattern.search(raw_strings):
             findings.append(f"{path}: raw PDF strings contain {name}")
     # Short byte sequences in compressed PDF streams can coincidentally spell a
