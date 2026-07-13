@@ -142,6 +142,8 @@ outcomes.  All methods reuse the same sampled local-$Z$ measurement record.  The
 baseline receives the scalar input with the identical leak $\eta=0.2$ and ten
 causal lags.  The primary quantum representation contains six local $Z_i$ and
 five neighboring $Z_iZ_{i+1}$ features reconstructed from the same shots.
+Table~\ref{tab:supp-budget} lists the three fixed-budget settings and their
+admissible aggregation scales.
 
 \begin{table}[t]
 \caption{Three predeclared settings.  Every record uses exactly $TN=10{,}000$
@@ -229,6 +231,7 @@ $R_Y$ and $R_Z$ rotations to every qubit, heterogeneous nearest-neighbor
 $R_{ZZ}$ rotations on a line, and fixed heterogeneous local $R_XR_YR_Z$
 mixing.  This is a compact data-reuploading construction
 \cite{perezsalinas2020data}; no trainable quantum parameters are used.
+Table~\ref{tab:supp-hashes} records the frozen circuit identity.
 
 \begin{table}[t]
 \caption{Frozen circuit identity.}
@@ -281,6 +284,7 @@ the balanced setting. Diagnostic and ablation rows cannot enter the main
 report. Nested reservoir, shot, and grouping
 seeds are averaged within each of five trajectories or real-series windows before
 the method means and paired Student-$t$ intervals are formed.
+Table~\ref{tab:supp-main-means} reports the resulting mean test errors.
 
 \begin{table*}[t]
 \caption{Balanced-setting mean test NRMSE for the classical and ideal controls
@@ -383,6 +387,7 @@ $k=1$ was eligible and tuning returned it once in the Santa Fe screen. Tuning
 returned an interior $k$ in 96.3\% of Mackey--Glass runs, 94.1\% of Santa Fe runs, 96.3\%
 of R\"ossler runs, and 97.0\% of sunspot runs. These high rates describe the
 tuned configurations; they are not independent test outcomes.
+Table~\ref{tab:supp-partitions} summarizes the paired grouping checks.
 
 \begin{table*}[t]
 \caption{Grouping checks at the balanced setting.  Values are mean
