@@ -21,6 +21,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
@@ -48,6 +49,12 @@ TASK_TITLES = {
 }
 TASK_SHORT = {
     "mackey_glass": "M–Glass",
+    "santa_fe_laser": "Santa Fe",
+    "rossler": "Rössler",
+    "sunspots": "Sunspots",
+}
+TASK_LEGEND = {
+    "mackey_glass": "Mackey–Glass",
     "santa_fe_laser": "Santa Fe",
     "rossler": "Rössler",
     "sunspots": "Sunspots",
@@ -133,6 +140,70 @@ def _panel_letter(ax: plt.Axes, letter: str, *, x: float = -0.13) -> None:
         fontweight="bold",
         clip_on=False,
     )
+
+
+def _task_legend(fig: plt.Figure) -> None:
+    """Add one compact task legend without reintroducing panel titles."""
+
+    handles = [
+        Line2D(
+            [0],
+            [0],
+            color=TASK_COLORS[task],
+            marker=TASK_MARKERS[task],
+            markersize=3.3,
+            markeredgecolor="white",
+            markeredgewidth=0.45,
+            linewidth=0.9,
+            label=TASK_LEGEND[task],
+        )
+        for task in TASKS
+    ]
+    fig.legend(
+        handles=handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.995),
+        ncol=4,
+        fontsize=5.7,
+        frameon=True,
+        facecolor="white",
+        edgecolor="#d6dbe3",
+        framealpha=1.0,
+        fancybox=True,
+        borderpad=0.28,
+        handlelength=1.15,
+        handletextpad=0.25,
+        columnspacing=0.60,
+        labelspacing=0.20,
+    )
+
+
+def _panel_task_key(fig: plt.Figure) -> None:
+    """Map panel letters to tasks while preserving method color semantics."""
+
+    handles = [
+        Line2D([], [], linestyle="none", label=f"{letter}  {TASK_LEGEND[task]}")
+        for letter, task in zip("abcd", TASKS)
+    ]
+    legend = fig.legend(
+        handles=handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.995),
+        ncol=4,
+        fontsize=5.7,
+        frameon=True,
+        facecolor="white",
+        edgecolor="#d6dbe3",
+        framealpha=1.0,
+        fancybox=True,
+        borderpad=0.28,
+        handlelength=0.0,
+        handletextpad=0.0,
+        columnspacing=0.78,
+        labelspacing=0.20,
+    )
+    for text in legend.get_texts():
+        text.set_color(BLACK)
 
 
 def _t_interval(values: Iterable[float]) -> tuple[float, float, float]:
@@ -422,7 +493,13 @@ def figure_3(rows: pd.DataFrame) -> None:
     gains = _paired_cluster_gains(rows)
     rng = np.random.default_rng(240719)
     fig, axes = plt.subplots(2, 2, figsize=(PAGE_COLUMN_WIDTH, 2.72), constrained_layout=True)
-    fig.get_layout_engine().set(h_pad=0.035, w_pad=0.025, hspace=0.02, wspace=0.02)
+    fig.get_layout_engine().set(
+        h_pad=0.035,
+        w_pad=0.025,
+        hspace=0.02,
+        wspace=0.02,
+        rect=(0, 0, 1, 0.925),
+    )
     letters = "abcd"
     x = np.arange(len(TIME_STEPS), dtype=float)
     for index, (ax, task) in enumerate(zip(axes.ravel(), TASKS)):
@@ -476,6 +553,7 @@ def figure_3(rows: pd.DataFrame) -> None:
             ax.set_ylabel("EV minus Grouped", labelpad=2)
         _panel_letter(ax, letters[index], x=-0.17 if index % 2 == 0 else -0.13)
         _open_axes(ax)
+    _task_legend(fig)
     _save(fig, "fig3_regime_map")
 
 
@@ -493,7 +571,13 @@ def figure_4(rows: pd.DataFrame) -> None:
         sharex=True,
         sharey=True,
     )
-    fig.get_layout_engine().set(h_pad=0.03, w_pad=0.025, hspace=0.02, wspace=0.015)
+    fig.get_layout_engine().set(
+        h_pad=0.03,
+        w_pad=0.025,
+        hspace=0.02,
+        wspace=0.015,
+        rect=(0, 0, 1, 0.925),
+    )
     letters = "abcd"
     for index, (ax, task) in enumerate(zip(axes.ravel(), TASKS)):
         sub = balanced.loc[balanced["dataset"].eq(task)]
@@ -540,6 +624,7 @@ def figure_4(rows: pd.DataFrame) -> None:
     xmin, xmax = float(all_values.min()), float(all_values.max())
     padding = 0.055 * (xmax - xmin)
     axes[0, 0].set_xlim(xmin - padding, xmax + padding)
+    _panel_task_key(fig)
     _save(fig, "fig4_controls_compact")
 
 
