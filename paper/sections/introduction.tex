@@ -41,9 +41,7 @@ We compare three representations of one record
 averages all measurements at each time step. Raw uses each measurement
 separately. Grouped averages disjoint subsets, and its aggregation scale $k$,
 the number of shots per averaged training view, slides smoothly from $k=1$
-(Raw) to $k=N$ (EV). The scale is selected together with the ridge strength
-using earlier data in time order, never the test block. The record itself
-decides how much averaging it needs.
+(Raw) to $k=N$ (EV).
 
 \begin{figure}[!t]
   \centering
