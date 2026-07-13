@@ -64,26 +64,30 @@ Grouped on all four task means.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig3_regime_map.pdf}
-  \caption{Comparison at fixed execution budget. Each panel shows
-  $\Delta=\nrmse_{\rm EV}-\nrmse_{\rm Grouped}$ at
-  $(T,N)=(250,40),(500,20),(1000,10)$. Positive values favor Grouped. Points
-  are trajectory or window units; markers and bars are means and 95\%
-  intervals.}
+  \caption{\fontsize{7.25}{8.0}\selectfont When aggregation helps most, at a fixed budget of ten thousand
+  circuit executions. Each panel is one task. The vertical axis shows how much
+  Grouped improves on full averaging, measured as the EV error minus the
+  Grouped error, so a value above the dashed zero line means Grouped wins and a
+  value on the line means a tie. Moving right spends the same budget on more
+  time steps and therefore fewer shots at each step, from $40$ shots at $250$
+  steps to $10$ shots at $1000$ steps. In every task the improvement is largest
+  on the left and shrinks toward zero on the right. The message is simple.
+  Grouping helps most when each step is measured many times and the series is
+  short, because that is exactly when full averaging wastes the most training
+  examples. Points are trajectory or window units, and markers with bars are
+  means with $95\%$ intervals.}
   \label{fig:regimes}
 \end{figure}
 
 \subsection{Trading time steps against shots}
 
-The fixed budget of ten thousand executions can be spent in different ways,
-and Fig.~\ref{fig:regimes} compares three of them. When each of $250$ time
-steps receives $40$ shots, Grouped improves every task, with mean gains from
+Figure~\ref{fig:regimes} compares three ways of spending the fixed budget. With
+$40$ shots at each of $250$ time steps, Grouped improves every task by
 $0.086$ to $0.170$. The interval stays above zero for Mackey--Glass, Santa Fe
 laser, and R\"ossler, while the sunspot result varies across windows. When the
 same budget is spread over $1000$ time steps with only $10$ shots each, the
 gains shrink to between $0.008$ and $0.016$, and the interval stays above zero
-only for Mackey--Glass and sunspots. Grouping helps most when a step is measured
-many times and the series is short, because full averaging then produces very
-few training views from a shot-rich record.
+only for Mackey--Glass and sunspots.
 
 \subsection{Why the gain is regularization}
 

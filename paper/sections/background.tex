@@ -40,13 +40,24 @@ only, so the test block never influences any choice.
 \begin{figure}[!t]
   \centering
   \includegraphics[width=\columnwidth]{fig2_composite.pdf}
-  \caption{Summary under the shared protocol. (a) Test errors for five
-  independently generated Mackey--Glass time series. (b) Validation error for
-  each candidate group size at the balanced budget. (c) Validation error
-  relative to EV across tasks. (d) Final test comparison after choosing group
-  size and ridge strength; labels report how much lower the Grouped error is
-  than EV. Panels (b,c) use validation data only; panels (a,d) use test blocks. Bands and
-  intervals use separate trajectories or windows; faint marks show repeated
-  measurement trials within them.}
+  \caption{\fontsize{7.25}{8.0}\selectfont How adaptive aggregation behaves under the shared protocol, read
+  left to right. Lower NRMSE is always better. (a)~One task, five runs. For
+  each of five independent Mackey--Glass trajectories, Grouped (teal diamond)
+  lands to the left of full averaging EV (open circle), and individual shots
+  Raw (yellow) sit farthest right. Grouped is the most accurate on every run
+  and Raw the least. (b)~Turning the dial. At the balanced budget we sweep the
+  aggregation scale $k$ from Raw at $k=1$ (yellow square) to EV at $k=20$
+  (blue square). The error traces a U shape whose lowest point is an
+  intermediate scale, which is where Grouped operates. The star marks the
+  scale chosen automatically by validation. (c)~The U shape is general.
+  Plotting each task's error as a percentage of its own EV error, every curve
+  dips below $100$ at intermediate $k$, so an intermediate scale beats full
+  averaging on all four tasks. (d)~The bottom line. After $k$ and the ridge
+  strength are chosen on earlier data, Grouped (teal diamond) again beats EV
+  (open circle) on every task by the amount shown at right, with Raw (yellow)
+  trailing. Panels (b) and (c) use validation data only. Panels (a) and (d)
+  use held-out test blocks. Bands and intervals are computed across independent
+  trajectories or windows, and faint marks show repeated measurement trials
+  within them.}
   \label{fig:operating}
 \end{figure}
