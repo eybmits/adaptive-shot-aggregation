@@ -37,12 +37,13 @@ alone changes. Whatever happens to the forecast is attributable to the
 aggregation because nothing else moved.
 
 We compare three representations of one record
-(Fig.~\ref{fig:organization}). EV averages all measurements at each time step.
-Raw uses each measurement separately. Grouped averages disjoint subsets, and
-its aggregation scale $k$, the number of shots per averaged training view,
-slides smoothly from $k=1$ (Raw) to $k=N$ (EV). The scale is selected together
-with the ridge strength using earlier data in time order, never the test block.
-The record itself decides how much averaging it needs.
+(Fig.~\ref{fig:organization}). The expectation-value representation (EV)
+averages all measurements at each time step. Raw uses each measurement
+separately. Grouped averages disjoint subsets, and its aggregation scale $k$,
+the number of shots per averaged training view, slides smoothly from $k=1$
+(Raw) to $k=N$ (EV). The scale is selected together with the ridge strength
+using earlier data in time order, never the test block. The record itself
+decides how much averaging it needs.
 
 \begin{figure}[!t]
   \centering
