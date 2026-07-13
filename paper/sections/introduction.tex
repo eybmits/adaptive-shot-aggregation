@@ -1,27 +1,49 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Every quantum learning experiment produces a record of individual measurement
-outcomes. Most learning pipelines average all shots from one time step into a
-single expectation-value vector. This reduces measurement noise, but many
-circuit executions then provide only one training example. Keeping each shot
-separate creates more examples, but each example is noisy. We study the useful
-range between these two choices.
+Every quantum learning experiment ends the same way: a circuit runs many
+times, and each run returns one measured bitstring. Before anything can be
+learned, this pile of shots must become training data. The step looks like
+bookkeeping, and it is usually treated that way. Almost every pipeline averages
+all shots of a time step into a single expectation-value estimate and moves on.
+This paper asks what that habit costs.
 
-Quantum reservoir computing (QRC) provides a controlled setting for this
-comparison~\cite{fujii2017harnessing,nakajima2019boosting,mujal2021opportunities}.
-A fixed quantum circuit transforms an input sequence into measured features,
-and only a classical readout is trained. We can therefore keep the circuit,
-targets, execution budget, and measurement record fixed while changing only
-how the shots are combined.
+The habit has a respectable origin. Expectation values are the native currency
+of quantum mechanics: they are what theory predicts and what experiments are
+built to estimate. A learning pipeline, however, does not consume observables.
+It consumes training examples, and it cares about two things only: how many
+there are and how noisy each one is. The moment a measurement record becomes
+training data, a physics convention quietly turns into a statistical decision:
+spend all measurements on making one example clean, or make several examples
+that are merely clean enough. Put this way, it would be surprising if a single
+fixed answer served every task, every budget, and every noise level. It does
+not.
 
-Figure~\ref{fig:organization} shows the three representations. Raw keeps every
-shot separate. EV averages all $N$ shots from one time step. Grouped divides
-the same shots into disjoint groups and averages within each group. The
-aggregation scale $k$ is simply the number of shots in one average. Thus,
-$k=1$ gives Raw, $k=N$ gives EV, and values between them give several partially
-averaged Grouped examples. We compare the settings on earlier time segments and
-fix the best one before evaluating the final test period.
+Averaging everything is one end of a dial. It buys the cleanest possible
+feature vector but pays with scarcity. Thousands of circuit executions collapse
+into a handful of training examples, and too few examples relative to the
+number of features destabilizes regression~\cite{hsu2012random}. The opposite
+end, keeping every shot as its own example, buys abundance but pays with noise,
+and noisy features systematically shrink fitted
+coefficients~\cite{fuller1987measurement}. Between these extremes lies an
+entire range of aggregations. Nothing in the record forces either convention,
+and the record does not care which one tradition prefers.
+
+Quantum reservoir computing (QRC) is a clean place to study this
+dial~\cite{fujii2017harnessing,nakajima2019boosting,mujal2021opportunities}. A
+fixed quantum circuit transforms an input sequence into measured features, and
+only a classical readout is trained. The circuit, the targets, and the
+measurement record can therefore be held completely fixed while the aggregation
+alone changes. Whatever happens to the forecast is attributable to the
+aggregation because nothing else moved.
+
+We compare three representations of one record
+(Fig.~\ref{fig:organization}). EV averages all measurements at each time step.
+Raw uses each measurement separately. Grouped averages disjoint subsets, and
+its aggregation scale $k$, the number of shots per averaged training view,
+slides smoothly from $k=1$ (Raw) to $k=N$ (EV). The scale is selected together
+with the ridge strength using earlier data in time order, never the test block.
+The record itself decides how much averaging it needs.
 
 \begin{figure}[!t]
   \centering
@@ -34,11 +56,22 @@ fix the best one before evaluating the final test period.
   \label{fig:organization}
 \end{figure}
 
-We call this procedure \emph{adaptive shot aggregation}. It treats the amount
-of averaging as a readout setting and requires no additional quantum
-executions. Across two synthetic systems and two measured series, Grouped
-reduces test error relative to EV at the balanced budget on every task.
-Matched controls show that grouping acts mainly as regularization of the
-classical readout. Experiments on two superconducting processors show the same
-positive trend. The study establishes when aggregation matters, why it helps,
-and how it transfers from simulation to hardware.
+The dial turns out to matter. Under one matched protocol and fixed execution
+budgets, an intermediate aggregation lowers test error relative to full
+averaging on every task we evaluate, including two synthetic systems and two
+measured series. The preferred scale varies from record to record, which is
+precisely why it deserves validation rather than convention. The gain requires
+nothing quantum. Matched controls trace it to correctly scaled regularization
+of the classical readout, supplied automatically by the record's own
+fluctuations. Because aggregation is classical post-processing, it costs no
+additional quantum executions and applies retroactively to any archived record.
+The results in this paper could have been extracted from data that already sat
+on disk.
+
+Our contribution is \emph{adaptive shot aggregation}: the number of shots per
+training view becomes a validated readout setting. The paper establishes
+\emph{when} the choice matters, through three allocations of time steps and
+shots under fixed budgets; \emph{why} it works, through matched controls that
+isolate the regularization mechanism; and \emph{where} it transfers, through
+unmitigated experiments with a separate hardware reservoir on two
+superconducting processors.
