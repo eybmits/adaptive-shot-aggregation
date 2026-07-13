@@ -394,7 +394,7 @@ def _fig2_panel_d(ax: plt.Axes, balanced: pd.DataFrame) -> None:
     xmin, xmax = min(all_values), max(all_values)
     span = xmax - xmin
     ax.set_xlim(xmin - 0.10 * span, xmax + 0.55 * span)
-    label_x = xmax + 0.06 * span
+    label_x = xmax + 0.12 * span
     for yi, task in zip(y, TASKS):
         row = wide.loc[task]
         delta = float(row["ev"] - row["split"])
