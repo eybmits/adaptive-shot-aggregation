@@ -1,16 +1,12 @@
 \section{Discussion}
 \label{sec:discussion}
 
-The main message is simple. A measurement record contains useful structure that
-the standard expectation-value pipeline does not use for training, and a
-validated choice of aggregation scale recovers part of it at no quantum cost.
-
-Adaptive shot aggregation touches only the classical side of the pipeline. The
-aggregation scale $k$ sets how many shots form each training view, and the two
-familiar conventions remain available as its endpoints, Raw at one shot per view
-and EV at all shots per view. The scale and ridge strength are chosen from
-earlier time blocks, while the held-out test block remains unseen. No circuit is
-rerun and no extra shots are spent.
+A measurement record contains training structure that full expectation-value
+averaging discards. Choosing the aggregation scale on earlier time blocks
+recovers part of it without further quantum executions. Adaptive shot
+aggregation changes only classical processing: $k$ moves from Raw at $k=1$ to
+EV at $k=N$. The scale and ridge strength are fixed before the held-out test;
+the circuit and record remain unchanged.
 
 The method helps most in a clear regime. When a record holds many shots at each
 of relatively few time steps, full averaging turns a large measurement effort
@@ -56,5 +52,6 @@ beatable. Choosing the aggregation scale by validation lowers mean test error
 on chaotic and real-world forecasting at the balanced budget, holds on two
 superconducting processors, and requires no additional quantum cost. Because
 every measurement-based reservoir produces such a record, the choice we make
-explicit here is available to any of them, and the question it raises belongs
-to finite-shot learning in general.
+explicit here is available to all of them. And the underlying question, how to
+turn finitely sampled noisy measurements into training data, reaches well beyond
+reservoirs to finite-shot learning as a whole.
