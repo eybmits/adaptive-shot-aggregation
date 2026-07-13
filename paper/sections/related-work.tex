@@ -1,29 +1,44 @@
 \section{Related Work}
 \label{sec:related}
 
-Measurement grouping has prior use. Cemin \emph{et al.} average subsets of
-measurements to enlarge a training set for reduced quantum channel learning
-~\cite{cemin2024channels}, and training with noisy inputs is related to
-an additional penalty on large fitted weights~\cite{bishop1995training}. This study evaluates the
-complete range from Raw to EV on a fixed QRC record. It adds joint calibration
-of aggregation and readout regularization, an exact explanation for the
-resulting penalty, three
-allocations of a fixed execution budget, and a matched evaluation on four
-forecasting tasks. The contribution is the calibration and evaluation of the
-aggregation scale, not the original introduction of subset averaging.
+Finite sampling can be addressed at three points in a quantum learning
+pipeline. It can be addressed before execution, by deciding how to spend a
+measurement budget. It can be addressed after averaging, by correcting the
+statistics of expectation values. Or it can be addressed at the record
+itself, by changing how repeated measurements become training data. Our
+method lives at this third point, which is the least studied of the three.
 
-Finite sampling has also been addressed at other stages. Ahmed \emph{et al.}
-derive noise-aware training after expectation values have been formed
-~\cite{ahmed2025optimal}. Kreplin and Roth use variance regularization to reduce
-sampling noise~\cite{kreplin2024reduction}, while resource-aware optimization
-allocates measurements before execution~\cite{moussa2023resource}. Sampling
-limits and useful combinations of features have also been studied in physical
-learning systems~\cite{hu2023tackling}. Our method begins after execution and
-uses a single archived measurement record.
+The idea of averaging subsets of measurements is not new, and we do not claim
+it. Cemin \emph{et al.} average subsets of measurements to enlarge a training
+set for reduced quantum channel learning~\cite{cemin2024channels}, and it is
+a classical result that training with noisy inputs behaves like an additional
+penalty on large fitted weights~\cite{bishop1995training}. What has been
+missing is the treatment of the aggregation scale as a tunable quantity. This
+study evaluates the complete range from Raw to EV on one fixed QRC record,
+calibrates the scale jointly with the readout regularization, gives an exact
+account of the penalty this creates, and tests the result under three
+allocations of a fixed execution budget on four matched forecasting tasks.
+The contribution is the calibration and evaluation of the aggregation scale,
+not the original introduction of subset averaging.
 
-QRC research has examined how noise, dissipation, measurement, finite Hilbert
-space, and input transformations shape temporal features
-~\cite{kubota2022noise,palacios2024role,kubota2023temporal,martinezpena2023finite,mujal2023timeseries,suzuki2022natural,sannia2024dissipation,govia2022nonlinear,martinezpena2023capacity,kalfus2022hilbert,fry2023noiseinduced,govia2021singleoscillator}.
-Those studies analyze or modify the quantum representation. Here the
-representation is held fixed and only the organization of repeated
-measurements changes.
+The other two points of the pipeline are well developed and complementary to
+ours. Before execution, resource-aware optimization decides how many
+measurements each part of a computation deserves~\cite{moussa2023resource}.
+After averaging, Ahmed \emph{et al.} derive noise-aware training rules for
+expectation values~\cite{ahmed2025optimal}, and Kreplin and Roth reduce
+sampling noise through variance regularization~\cite{kreplin2024reduction}.
+Fundamental limits of learning from finitely sampled physical systems have
+also been mapped out~\cite{hu2023tackling}. None of these methods competes
+with ours. Allocation ends where our method begins, and the averaged
+quantities that noise-aware corrections operate on can themselves be produced
+by grouped aggregation. Our method needs nothing beyond a single archived
+measurement record.
+
+Within QRC, a rich line of work studies how noise, dissipation, measurement,
+finite Hilbert space, and input transformations shape temporal
+features~\cite{kubota2022noise,palacios2024role,kubota2023temporal,martinezpena2023finite,mujal2023timeseries,suzuki2022natural,sannia2024dissipation,govia2022nonlinear,martinezpena2023capacity,kalfus2022hilbert,fry2023noiseinduced,govia2021singleoscillator}.
+All of these studies analyze or modify the quantum representation. We do the
+opposite. The representation is held completely fixed, and only the
+organization of its repeated measurements changes. Because every reservoir in
+those studies still produces a measurement record, adaptive shot aggregation
+applies on top of any of them.
