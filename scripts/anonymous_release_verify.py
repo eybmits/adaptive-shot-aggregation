@@ -22,7 +22,7 @@ from typing import Iterable
 
 
 SOURCE_DATE_EPOCH = "1783641600"
-PAPER_TITLE = "From Raw Shots to Expectation Values: Reorganizing Measurement Records in Quantum Machine Learning"
+PAPER_TITLE = "From Quantum Shots to Training Data: Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning"
 PDF_CONTRACT = {
     "main.pdf": {
         "pages": 6,

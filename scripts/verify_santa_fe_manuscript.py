@@ -19,8 +19,8 @@ HARDWARE_EXTENSION = ROOT / "results" / "qai_hardware_santa_fe_extension"
 PAPER = ROOT / "paper" if (ROOT / "paper").is_dir() else ROOT
 TASKS = ("mackey_glass", "santa_fe_laser", "rossler", "sunspots")
 PAPER_TITLE = (
-    "From Raw Shots to Expectation Values: "
-    "Reorganizing Measurement Records in Quantum Machine Learning"
+    "From Quantum Shots to Training Data: "
+    "Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning"
 )
 
 

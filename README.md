@@ -1,4 +1,4 @@
-# From Raw Shots to Expectation Values: Reorganizing Measurement Records in Quantum Machine Learning
+# From Quantum Shots to Training Data: Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning
 
 This repository contains the code, evidence, and paper for the QCE26 submission.
 
