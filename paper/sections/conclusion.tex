@@ -1,30 +1,47 @@
 \section{Discussion}
 \label{sec:discussion}
 
-Adaptive shot aggregation recovers training structure lost by full averaging
-without further quantum executions. It changes only classical processing: $k$
-sets the shots per view, from Raw at $k=1$ to EV at $k=N$, and earlier blocks
-determine $k$ and the ridge strength before test. The circuit and record remain
-fixed.
+The main message is simple. A measurement record contains useful structure that
+the standard expectation-value pipeline does not use for training, and a
+validated choice of aggregation scale recovers part of it at no quantum cost.
 
-The benefit is strongest when many shots are available at relatively few time
-steps. Full averaging leaves few training examples; partial averaging yields
-several denoised views whose differences expose unstable feature directions.
-Equation~\eqref{eq:loss-decomposition} makes this exact: Grouped training is the
-EV loss plus a covariance penalty derived from shot fluctuations.
+Adaptive shot aggregation touches only the classical side of the pipeline. The
+aggregation scale $k$ sets how many shots form each training view, and the two
+familiar conventions remain available as its endpoints, Raw at one shot per view
+and EV at all shots per view. The scale and ridge strength are chosen from
+earlier time blocks, while the held-out test block remains unseen. No circuit is
+rerun and no extra shots are spent.
 
-Cov-EV applies the same type of penalty after full averaging. Its slightly
-lower but closely matched errors support covariance regularization as the shared
-mechanism and show that grouping is a convenient, but not unique, implementation.
+The method helps most in a clear regime. When a record holds many shots at each
+of relatively few time steps, full averaging turns a large measurement effort
+into only a handful of training examples. Partial averaging spends those same
+shots differently. It produces several lightly denoised views of each target,
+and the small differences among the views act as a penalty that discourages the
+readout from trusting feature directions dominated by measurement noise.
+Equation~\eqref{eq:loss-decomposition} makes this exact. Grouped training is
+ordinary averaging plus a penalty read from the observed shot fluctuations.
 
-The effect appears in the six-qubit simulation reservoir and a separate
-ten-qubit circuit on two processors, testing transfer rather than qubit count.
-Alternative scales require individual outcomes: expectation-only storage loses
-this option, while retaining the shot record preserves it.
+Our control confirms this reading. Cov-EV applies the same type of covariance
+penalty after full averaging and reaches slightly lower mean error, yet stays
+close to Grouped on every task. Their similar performance supports covariance
+regularization as a shared mechanism. The small gap shows that grouping is one
+convenient way to obtain this regularization, not the only one, and that the
+benefit arises in the classical fit rather than from additional physical
+information.
 
-The hardware intervals cover one acquisition per task and processor and show
-within-run stability, not cross-campaign reproducibility. Independent campaigns,
-other reservoir families, and richer readouts are the natural next tests.
+The effect also transfers. It appears in the six-qubit simulation reservoir and
+again in a separate ten-qubit circuit on two processors, testing transfer across
+reservoir designs rather than whether more qubits help. Alternative aggregation
+scales can only be formed from individual shot outcomes. An experiment that
+stores only expectation values loses this freedom, while retaining the shot
+record preserves it without further circuit execution.
+
+Two limits are worth stating plainly. The hardware intervals summarize blocks
+from a single acquisition per task and processor, so they establish within-run
+stability rather than reproducibility across campaigns or calibration periods.
+All evidence here also uses compact reservoirs and a linear readout. Independent
+hardware campaigns, other reservoir families, and richer readouts are the
+natural next tests.
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -37,19 +54,3 @@ superconducting processors, and requires no additional quantum cost. Because
 every measurement-based reservoir produces such a record, the choice we make
 explicit here is available to any of them, and the question it raises belongs
 to finite-shot learning in general.
-
-\appendices
-\section{Reproducibility Summary}
-\label{app:reproducibility}
-
-All simulation tasks use the same six-qubit reservoir, preprocessing,
-chronological selection procedure, and execution budgets. Mackey--Glass and
-R\"ossler use five trajectories; Santa Fe and sunspots use five windows with
-disjoint test blocks. Repeated settings are averaged within each unit before
-uncertainty is computed. All methods share the raw record and ridge candidates.
-The three budgets are $(T,N)=(250,40),(500,20),(1000,10)$, each totaling
-10,000 executions. Hardware uses one fixed ten-qubit circuit and one 400-shot
-record per task and processor, split into twenty disjoint $N=20$ blocks. The
-supplement and \ifdefined\ANON artifact\else
-\href{https://github.com/eybmits/split-ensemble-qrc}{artifact}\fi\ provide all
-splits, settings, outputs, hardware job IDs, checksums, and rebuild scripts.

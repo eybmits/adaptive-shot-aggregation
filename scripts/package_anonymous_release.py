@@ -257,10 +257,12 @@ def sanitized_main() -> str:
     return text
 
 
-def sanitized_conclusion() -> str:
-    """Copy the current conclusion while removing any named-only branches."""
+def sanitized_experimental_section() -> str:
+    """Copy the setup while removing its named repository branch."""
 
-    text = (PAPER / "sections" / "conclusion.tex").read_text(encoding="utf-8")
+    text = (PAPER / "sections" / "experimental-section.tex").read_text(
+        encoding="utf-8"
+    )
     artifact_pattern = re.compile(
         r"\\ifdefined\\ANON\s*artifact\\else\s*"
         r"\\href\{https://github\.com/eybmits/split-ensemble-qrc\}"
@@ -271,7 +273,16 @@ def sanitized_conclusion() -> str:
         r"artifact", text, count=1
     )
     if count != 1:
-        raise RuntimeError(f"conclusion: expected one named artifact branch, replaced {count}")
+        raise RuntimeError(f"setup: expected one named artifact branch, replaced {count}")
+    if "\\ifdefined" in text or "github.com" in text.casefold():
+        raise RuntimeError("setup: identifying conditional or public repository URL remains")
+    return text
+
+
+def sanitized_conclusion() -> str:
+    """Copy the current conclusion while removing any named-only branches."""
+
+    text = (PAPER / "sections" / "conclusion.tex").read_text(encoding="utf-8")
     acknowledgment_pattern = re.compile(
         r"\\ifdefined\\ANON\\else\s*\\section\*\{Acknowledgment\}.*?\\fi",
         re.DOTALL,
@@ -353,7 +364,9 @@ def populate_release() -> None:
     write_text(DESTINATION / "main.tex", sanitized_main())
     write_text(DESTINATION / "supplement.tex", sanitized_supplement())
     for name in SECTION_FILES:
-        if name == "conclusion.tex":
+        if name == "experimental-section.tex":
+            write_text(DESTINATION / "sections" / name, sanitized_experimental_section())
+        elif name == "conclusion.tex":
             write_text(DESTINATION / "sections" / name, sanitized_conclusion())
         else:
             copy_file(PAPER / "sections" / name, DESTINATION / "sections" / name)

@@ -1,24 +1,6 @@
 \section{Method}
 \label{sec:method}
 
-\subsection{Simulation reservoir}
-
-The reservoir is a fixed six-qubit circuit that turns each scalar input into
-features. It sees the input twice, through two shallow reuploading layers,
-which let a shallow circuit represent richer functions of the
-input~\cite{perezsalinas2020data}. In each layer every qubit is first rotated
-by an input-dependent amount, using $R_y$ and $R_z$ with a fixed per-qubit
-offset. Neighboring qubits are then entangled by $R_{zz}$ couplings and mixed
-by a small fixed non-Clifford rotation, keeping the circuit outside the
-Clifford-only setting. All angles are drawn once and frozen, so the circuit
-never changes during forecasting, and several independent frozen circuits
-check that the results do not depend on one lucky draw. A single
-computational-basis measurement then yields eleven features at once: the six
-qubit signals $Z_i$ and the five neighbor correlations $Z_iZ_{i+1}$. A leaky
-integrator with leak $0.2$ and the ten most
-recent steps add temporal memory, and a ridge regression maps the features to
-the next value, scored by test NRMSE.
-
 \subsection{Adaptive shot aggregation}
 
 Write $x_t^{(n)}$ for the features produced by shot $n$ at time $t$. We split

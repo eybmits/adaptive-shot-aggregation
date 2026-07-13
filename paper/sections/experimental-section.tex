@@ -7,14 +7,25 @@ every aggregation choice reads the very same measurement record, so any
 difference in accuracy comes only from how the shots are organized and not from
 running the circuit differently.
 
-\subsection{Simulation setup}
+\subsection{Simulation reservoir and setup}
+
+The simulation reservoir is a fixed six-qubit circuit with two shallow data
+reuploading layers~\cite{perezsalinas2020data}. Each layer applies
+input-dependent $R_y$ and $R_z$ rotations with fixed per-qubit offsets,
+neighboring $R_{zz}$ couplings, and fixed non-Clifford mixing rotations. All
+angles are drawn once and then frozen; additional frozen circuits measure
+sensitivity to that draw. Each computational-basis measurement provides six
+local signals $Z_i$ and five neighboring correlations $Z_iZ_{i+1}$. A leaky
+integrator with leak $0.2$ and the ten most recent steps provide temporal
+memory, and ridge regression maps these features to the next value.
+
 We forecast four time series one step ahead. Two are chaotic synthetic systems,
 Mackey--Glass~\cite{mackey1977oscillation} and R\"ossler~\cite{rossler1976equation}.
 Two are measured real-world series, the Santa Fe laser
 intensity~\cite{gershenfeld1993future} and the monthly sunspot
-number~\cite{sidc2026sunspots}. All four pass through the identical frozen
-six-qubit reservoir of Section~\ref{sec:method} and the identical processing
-pipeline, with the same features, memory, scaling, model selection, and budgets.
+number~\cite{sidc2026sunspots}. All four pass through this frozen circuit and
+the identical processing pipeline, with the same features, memory, scaling,
+model selection, and budgets.
 The only thing that changes from task to task is the input sequence. This
 isolates the effect of aggregation from any per-task tuning.
 
@@ -58,6 +69,12 @@ acquisition of $400$ shots at each of $500$ time steps and split it into twenty
 ordered, disjoint records of $20$ shots. The resulting intervals describe how
 much the result varies among the measurement blocks of that single acquisition.
 They do not stand in for independent devices or separate calibration periods.
+
+The three simulation budgets are $(T,N)=(250,40)$, $(500,20)$, and
+$(1000,10)$, each totaling 10,000 circuit executions. The supplement and
+\ifdefined\ANON artifact\else
+\href{https://github.com/eybmits/split-ensemble-qrc}{artifact}\fi\ provide the
+splits, settings, outputs, hardware job IDs, checksums, and rebuild scripts.
 
 \begin{figure}[!t]
   \centering
