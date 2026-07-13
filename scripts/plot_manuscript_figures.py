@@ -360,7 +360,7 @@ def _fig2_panel_c(ax: plt.Axes, validation: pd.DataFrame) -> None:
     ax.legend(
         loc="upper center",
         ncol=2,
-        fontsize=4.8,
+        fontsize=5.3,
         handlelength=1.1,
         handletextpad=0.3,
         columnspacing=0.65,
