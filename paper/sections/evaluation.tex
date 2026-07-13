@@ -64,18 +64,11 @@ Grouped on all four task means.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig3_regime_map.pdf}
-  \caption{\fontsize{7.25}{8.0}\selectfont When aggregation helps most, at a fixed budget of ten thousand
-  circuit executions. The vertical axis shows how much
-  Grouped improves on full averaging, measured as the EV error minus the
-  Grouped error, so a value above the dashed zero line means Grouped wins and a
-  value on the line means a tie. Moving right spends the same budget on more
-  time steps and therefore fewer shots at each step, from $40$ shots at $250$
-  steps to $10$ shots at $1000$ steps. In every task the improvement is largest
-  on the left and shrinks toward zero on the right. The message is simple.
-  Grouping helps most when each step is measured many times and the series is
-  short, because that is exactly when full averaging wastes the most training
-  examples. Points are trajectory or window units, and markers with bars are
-  means with $95\%$ intervals.}
+  \caption{When aggregation helps most, at a fixed budget. Each panel shows the
+  improvement of Grouped over EV, measured as $\mathrm{NRMSE}_{\mathrm{EV}} -
+  \mathrm{NRMSE}_{\mathrm{Grouped}}$, so values above zero favor Grouped. Moving
+  right spends the budget on more steps and fewer shots. The gain is largest with
+  many shots and few steps. Markers and bars are means with $95\%$ intervals.}
   \label{fig:regimes}
 \end{figure}
 
@@ -113,18 +106,11 @@ run-to-run variation. Figure~\ref{fig:controls} collects these controls.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
-  \caption{\fontsize{7.25}{7.75}\selectfont Why the gain is regularization, shown task by task. Each panel
-  places the four methods on the same error axis, where lower is
-  better. Grouped (teal
-  diamond) and Cov-EV (purple square) sit lowest and almost on top of each other
-  on every task, EV (open circle) is behind them, and Raw (yellow, individual
-  shots) is worst. The near-match between Grouped and Cov-EV is the key point.
-  Cov-EV adds Grouped's fluctuation penalty directly to full averaging, so when
-  it reaches the same error the benefit of grouping is regularization of the
-  readout rather than extra information from the device. Faint points are the
-  five trajectory or window means after repeated measurement trials are
-  averaged within each unit. Markers and bars show the means and their $95\%$
-  intervals. The order from top to bottom is EV, Grouped, Raw, and Cov-EV.}
+  \caption{Controls at the balanced setting, lower is better. On every task Grouped
+  (teal diamond) and Cov-EV (purple square) are lowest and nearly equal, EV (open
+  circle) trails, and Raw (yellow) is worst. The Grouped and Cov-EV match shows the
+  gain is readout regularization. Faint points are the five unit means, markers and
+  bars are means with $95\%$ intervals.}
   \label{fig:controls}
 \end{figure}
 
@@ -140,19 +126,11 @@ of $20$ measurement blocks on each processor.
 \begin{figure}[!b]
   \centering
   \includegraphics[width=\columnwidth]{fig5_hardware.pdf}
-  \caption{\fontsize{7.25}{7.75}\selectfont The same effect on real hardware, on two processors. A separate
-  ten-qubit reservoir was run without error mitigation on \emph{ibm\_fez} and
-  \emph{ibm\_marrakesh}. For each task and processor, one acquisition of $400$
-  shots at each of $T=500$ time steps was split into twenty disjoint records
-  with $N=20$. Panels (a,c) show \emph{ibm\_fez}; panels (b,d) show
-  \emph{ibm\_marrakesh}. (a,b)~The aggregation spectrum. On both devices the development
-  error traces the same U shape over the aggregation scale $k$, so an
-  intermediate scale again beats both endpoints on every task. (c,d)~The
-  improvement per task, measured as the EV error minus the Grouped error, where
-  the dashed line is a tie and points to its right favor Grouped. Grouped is
-  more accurate on all four tasks on both machines. Faint points are the
-  individual measurement blocks, and each colored marker with a bar is the mean
-  with its $95\%$ interval. These intervals describe variation among the blocks
-  of a single acquisition, not across independent hardware campaigns.}
+  \caption{Transfer to two unmitigated processors. (a,b)~On \emph{ibm\_fez} and
+  \emph{ibm\_marrakesh} the error is again U-shaped in the aggregation scale $k$.
+  (c,d)~The improvement of Grouped over EV is positive on all four tasks and both
+  devices. One $T=500$ acquisition of $400$ shots per step is split into twenty
+  disjoint $N=20$ records, and intervals describe variation within that single
+  acquisition.}
   \label{fig:hardware}
 \end{figure}
