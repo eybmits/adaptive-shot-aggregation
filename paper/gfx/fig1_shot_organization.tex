@@ -134,43 +134,43 @@
 % arrow: spatial alignment already communicates the processing order.
 % ========================================================================
   \begin{scope}[shift={(0.70,0)}]
-  \node[stage] at (2.15,1.96) {Input series};
+  \node[stage] at (2.15,2.09) {Input series};
   \node[draw=qnodeblue!18,fill=white,rounded corners=5pt,
-        minimum width=3.45cm,minimum height=1.50cm] at (2.15,0.96) {};
-  \def\xstart{0.62}\def\xt{2.93}\def\xtp{3.52}\def\xend{3.68}
+        minimum width=3.75cm,minimum height=1.68cm] at (2.15,1.00) {};
+  \def\xstart{0.50}\def\xt{3.00}\def\xtp{3.62}\def\xend{3.82}
 
   \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.55pt]
-    (\xstart,0.48) -- (\xend,0.48);
+    (\xstart,0.43) -- (\xend,0.43);
   \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.55pt]
-    (\xstart,0.48) -- (\xstart,1.50);
-  \node[font=\scriptsize,text=axisgray,anchor=north west] at
-    ($(\xstart,1.67)+(0.07,0.00)$) {$y$};
+    (\xstart,0.43) -- (\xstart,1.62);
+  \node[font=\scriptsize,text=axisgray,anchor=south east] at
+    ($(\xstart,1.62)+(-0.08,0.03)$) {$y$};
 
   % Both segments evaluate the same analytic sinusoid.  Splitting the path at
   % t changes only the line style, so the forecast has no artificial corner.
-  \draw[truec,line width=1.65pt,line cap=round]
+  \draw[truec,line width=1.82pt,line cap=round]
     plot[domain=\xstart:\xt,samples=70,smooth]
-      (\x,{0.99 + 0.43*sin(360*(\x-0.62)/1.48)});
-  \draw[truec,line width=1.50pt,dash pattern=on 2.2pt off 1.45pt,
+      (\x,{1.03 + 0.47*sin(360*(\x-0.50)/1.58)});
+  \draw[truec,line width=1.68pt,dash pattern=on 2.2pt off 1.45pt,
         line cap=round]
     plot[domain=\xt:\xtp,samples=28,smooth]
-      (\x,{0.99 + 0.43*sin(360*(\x-0.62)/1.48)});
+      (\x,{1.03 + 0.47*sin(360*(\x-0.50)/1.58)});
 
   % Sparse samples make the finite observed record explicit without clutter.
-  \foreach \sx in {0.62,1.10,1.58,2.06,2.54}{
-    \fill[truec] (\sx,{0.99 + 0.43*sin(360*(\sx-0.62)/1.48)}) circle (1.55pt);
+  \foreach \sx in {0.50,1.02,1.54,2.06,2.58}{
+    \fill[truec] (\sx,{1.03 + 0.47*sin(360*(\sx-0.50)/1.58)}) circle (1.70pt);
   }
 
-  \coordinate (tmark) at (\xt,{0.99 + 0.43*sin(360*(\xt-0.62)/1.48)});
-  \coordinate (tpone) at (\xtp,{0.99 + 0.43*sin(360*(\xtp-0.62)/1.48)});
+  \coordinate (tmark) at (\xt,{1.03 + 0.47*sin(360*(\xt-0.50)/1.58)});
+  \coordinate (tpone) at (\xtp,{1.03 + 0.47*sin(360*(\xtp-0.50)/1.58)});
   \draw[accent!70,line width=0.65pt,dash pattern=on 1pt off 1.2pt]
-    (\xt,0.48) -- (tmark);
+    (\xt,0.43) -- (tmark);
   \draw[accent!55,line width=0.65pt,dash pattern=on 1pt off 1.2pt]
-    (\xtp,0.48) -- (tpone);
-  \fill[accent] (tmark) circle (2.0pt);
-  \draw[accent,line width=0.85pt,fill=white] (tpone) circle (2.1pt);
-  \node[font=\scriptsize,text=muted,anchor=north] at (\xt,0.43) {$t$};
-  \node[font=\scriptsize,text=muted,anchor=north] at (\xtp,0.43) {$t+1$};
+    (\xtp,0.43) -- (tpone);
+  \fill[accent] (tmark) circle (2.15pt);
+  \draw[accent,line width=0.90pt,fill=white] (tpone) circle (2.25pt);
+  \node[font=\scriptsize,text=muted,anchor=north] at (\xt,0.39) {$t$};
+  \node[font=\scriptsize,text=muted,anchor=north] at (\xtp,0.39) {$t+1$};
   \end{scope}
 
 % ========================================================================
@@ -178,13 +178,13 @@
 % actual hardware circuit; alternating colors indicate heterogeneous local
 % rotations, not two different qubit species.
 % ========================================================================
-  \begin{scope}[shift={(6.95,0.76)},x=0.82cm,y=0.57cm]
-    \node[stage] at (0,2.11) {Quantum reservoir};
+  \begin{scope}[shift={(7.02,0.76)},x=0.90cm,y=0.64cm]
+    \node[stage] at (0,2.08) {Quantum reservoir};
 
     % A restrained module boundary separates the quantum circuit from the
     % surrounding page without competing with the colored method boxes.
     \node[draw=qnodeblue!18,fill=white,rounded corners=5pt,
-          minimum width=3.45cm,minimum height=1.50cm] (reservoirpanel) at (0,0.36) {};
+          minimum width=3.75cm,minimum height=1.68cm] (reservoirpanel) at (0,0.38) {};
 
     \coordinate (cq0) at (-1.42,-0.02);
     \coordinate (cq1) at (-0.85,0.82);
