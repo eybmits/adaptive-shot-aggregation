@@ -49,7 +49,7 @@ ranging from fewer time steps with more shots to more time steps with fewer
 shots. For each setting we try every group size $k$ that divides $N$, which
 includes Raw at $k=1$ and EV at $k=N$.
 
-Selection respects time order. Using three expanding splits, each candidate
+Using three expanding splits, each candidate
 pair of group size and ridge strength $(k,\lambda)$ is fitted on an earlier
 block and scored on the block that follows. The best pair is then frozen, the
 readout is refitted on all data before the test block, and the final fifth of
