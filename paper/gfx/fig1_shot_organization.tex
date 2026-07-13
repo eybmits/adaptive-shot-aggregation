@@ -27,7 +27,8 @@
 \definecolor{measuregray}{HTML}{737B84}
 \definecolor{reservoirblue}{HTML}{3437A8}
 \definecolor{reservoirred}{HTML}{B52F37}
-\colorlet{accent}{reservoirred}
+\definecolor{inputred}{HTML}{D1495B}
+\colorlet{accent}{inputred}
 
 \tikzset{
   route/.style={
@@ -140,9 +141,8 @@
   \def\xstart{0.50}\def\xt{3.00}\def\xtp{3.62}\def\xend{3.82}
   \pgfmathdeclarefunction{inputsignal}{1}{%
     \pgfmathparse{1.03
-      + (0.34 + 0.09*sin(360*(#1-0.50)/2.65 + 20))
-        * sin(360*(#1-0.50)/1.05 + 133)
-      + 0.055*sin(360*(#1-0.50)/0.53 + 40)}%
+      + 0.35*sin(360*(#1-0.50)/1.08 + 34)
+      + 0.025*sin(360*(#1-0.50)/3.10 + 18)}%
   }
 
   \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.55pt]
@@ -152,13 +152,13 @@
   \node[font=\scriptsize,text=axisgray,anchor=north west] at
     ($(\xstart,1.62)+(0.04,0.18)$) {$y$};
 
-  % A gently modulated carrier plus a restrained second frequency gives the
-  % input a richer temporal structure.  Both segments evaluate the same
-  % analytic function, so the change of line style at t remains continuous.
-  \draw[truec,line width=1.82pt,line cap=round]
+  % A smooth carrier with a very slow modulation remains readable at column
+  % scale. Both segments evaluate the same analytic function, so the style
+  % change at t is continuous.
+  \draw[truec,line width=1.92pt,line cap=round]
     plot[domain=\xstart:\xt,samples=100,smooth]
       (\x,{inputsignal(\x)});
-  \draw[truec,line width=1.68pt,dash pattern=on 2.2pt off 1.45pt,
+  \draw[truec,line width=1.82pt,dash pattern=on 2.2pt off 1.45pt,
         line cap=round]
     plot[domain=\xt:\xtp,samples=40,smooth]
       (\x,{inputsignal(\x)});
@@ -174,8 +174,8 @@
     (\xt,0.43) -- (tmark);
   \draw[accent!55,line width=0.65pt,dash pattern=on 1pt off 1.2pt]
     (\xtp,0.43) -- (tpone);
-  \fill[accent] (tmark) circle (2.15pt);
-  \draw[accent,line width=0.90pt,fill=white] (tpone) circle (2.25pt);
+  \fill[accent] (tmark) circle (2.65pt);
+  \draw[accent,line width=1.05pt,fill=white] (tpone) circle (2.85pt);
   \node[font=\scriptsize,text=muted,anchor=north] at (\xt,0.43) {$t$};
   \node[font=\scriptsize,text=muted,anchor=north] at (\xtp,0.43) {$t+1$};
   \end{scope}
