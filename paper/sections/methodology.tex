@@ -34,9 +34,9 @@ scale chosen by Grouped; it tests whether the same regularization mechanism can
 be applied directly after full averaging. Similar performance from Grouped and
 Cov-EV would therefore support regularization as the source of the gain.
 
-Separately, we verify the exact identity above by comparing direct Grouped
-training with the equivalent EV loss plus $C_{k,t}$ at a fixed $k$; their
-predictions match. Because the leaky integrator and overlapping lags make
+The equivalence is also verified computationally. When $k$ is fixed, Grouped
+training and EV training with the penalty defined by $C_{k,t}$ give identical
+predictions. Because the leaky integrator and overlapping lags make
 neighboring feature vectors dependent, we report uncertainty across
 trajectories or measured windows rather than across the many correlated
 grouped views.
