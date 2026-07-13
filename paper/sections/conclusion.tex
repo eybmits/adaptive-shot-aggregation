@@ -1,26 +1,30 @@
 \section{Discussion}
 \label{sec:discussion}
 
-Adaptive shot aggregation changes only the classical use of a measurement
-record. The aggregation scale $k$ determines how many shots form each training
-view, while Raw and EV remain available as its two endpoints. Earlier time
-blocks choose $k$ and the ridge strength before the test block is evaluated.
+Adaptive shot aggregation recovers training structure lost by full averaging
+without further quantum executions. It changes only classical processing: $k$
+sets the shots per view, from Raw at $k=1$ to EV at $k=N$, and earlier blocks
+determine $k$ and the ridge strength before test. The circuit and record remain
+fixed.
 
-The method requires no additional circuit executions and is most useful when a
-record contains many shots per time step but relatively few time steps. In this
-regime, partial averaging supplies several denoised views of each target.
-Equation~\eqref{eq:loss-decomposition} shows that these views impose a penalty
-derived from the measured shot fluctuations. Cov-EV obtains slightly lower
-mean errors but remains close to Grouped, supporting covariance regularization
-as the mechanism while showing that grouping is not its only implementation.
+The benefit is strongest when many shots are available at relatively few time
+steps. Full averaging leaves few training examples; partial averaging yields
+several denoised views whose differences expose unstable feature directions.
+Equation~\eqref{eq:loss-decomposition} makes this exact: Grouped training is the
+EV loss plus a covariance penalty derived from shot fluctuations.
 
-The positive trend transfers from the six-qubit simulation reservoir to a
-separate ten-qubit circuit on two processors. This comparison tests transfer of
-the aggregation procedure, not the effect of qubit count. Alternative scales
-require individual measurement outcomes and cannot be recovered from stored
-expectation values. The hardware intervals describe blocks from one acquisition
-per task and processor; independent campaigns and other reservoir families are
-the next tests.
+Cov-EV applies the same type of penalty after full averaging. Its slightly
+lower but closely matched errors support covariance regularization as the shared
+mechanism and show that grouping is a convenient, but not unique, implementation.
+
+The effect appears in the six-qubit simulation reservoir and a separate
+ten-qubit circuit on two processors, testing transfer rather than qubit count.
+Alternative scales require individual outcomes: expectation-only storage loses
+this option, while retaining the shot record preserves it.
+
+The hardware intervals cover one acquisition per task and processor and show
+within-run stability, not cross-campaign reproducibility. Independent campaigns,
+other reservoir families, and richer readouts are the natural next tests.
 
 \section{Conclusion}
 \label{sec:conclusion}
