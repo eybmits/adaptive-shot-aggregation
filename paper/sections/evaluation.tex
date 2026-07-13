@@ -49,7 +49,7 @@ about aggregation of a chosen reservoir record, but not quantum advantage.
 The chosen aggregation scale varies across tasks, trajectories, circuit
 parameter settings, measurement samples, and grouping assignments. EV is
 preferred in some cases.
-Equation~\eqref{eq:covariance} shows that changing $k$ changes which feature
+Equation~\eqref{eq:loss-decomposition} shows that changing $k$ changes which feature
 combinations the readout is discouraged from using, not only how strongly it
 is discouraged. Raw generally has higher error, while
 several intermediate aggregation scales remain competitive with EV.
@@ -84,7 +84,7 @@ R\"ossler interval excludes zero. Grouped obtains its fluctuation-based penalty
 directly from the record without introducing another adjustable strength. Cov-EV applies
 the same fluctuation-based penalty directly to EV and chooses its strength from
 earlier data. Their similar performance supports the explanation in
-Eq.~\eqref{eq:covariance}.
+Eq.~\eqref{eq:loss-decomposition}.
 
 Raw has higher error than EV on Mackey--Glass and R\"ossler at the balanced
 setting. The intervals for Santa Fe and sunspots include zero. The exact

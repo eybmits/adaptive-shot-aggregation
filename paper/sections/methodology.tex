@@ -1,36 +1,36 @@
 \subsection{Why grouping regularizes the readout}
 \label{sec:mechanism}
 
-Full averaging gives the readout one clean view of each time step. Individual
-shots give it many views, but every view is noisy. Intermediate groups provide
-several partially denoised versions of the same target. Differences among
-those versions reveal which feature changes are stable across shots and which
-are measurement noise. Training on all grouped versions discourages the
-readout from relying on the unstable changes.
+Full averaging hands the readout one clean picture of each time step.
+Individual shots hand it many pictures, each blurry. Intermediate groups hand
+it a few lightly cleaned pictures of the same target, and the differences
+between those pictures reveal which parts of the feature vector are stable and
+which are only measurement noise. Fitting the readout to all of the views at
+once discourages it from trusting the unstable parts.
 
-For a linear readout with squared loss, this intuition can be written as an
-exact identity. Let $\bar{x}_t$ be the mean of the $G$ grouped
-views and let
-$C_{k,t}=G^{-1}\sum_g(x_t^{(g)}-\bar{x}_t)(x_t^{(g)}-\bar{x}_t)^\top$.
-This quantity summarizes how the measured features fluctuate together around
-their mean. For intercept $b$ and weights $w$,
+For a linear readout with squared loss this becomes an exact identity. Let
+$\bar{x}_t$ be the average of the $G$ grouped views, and let
+$C_{k,t}=\tfrac{1}{G}\sum_g
+(x_t^{(g)}-\bar{x}_t)(x_t^{(g)}-\bar{x}_t)^\top$
+record how those views scatter around their average, that is, how the features
+wobble together from group to group. For any intercept $b$ and weights $w$,
 \begin{equation}
- \frac{1}{G}\sum_g\!\left(y_t-b-w^\top x_t^{(g)}\right)^2
- =\left(y_t-b-w^\top\bar{x}_t\right)^2+w^\top C_{k,t}w .
- \label{eq:covariance}
+  \frac{1}{G}\sum_g \bigl(y_t-b-w^\top x_t^{(g)}\bigr)^2
+  =\bigl(y_t-b-w^\top\bar{x}_t\bigr)^2+w^\top C_{k,t}\,w.
+  \label{eq:loss-decomposition}
 \end{equation}
-The first term on the right is the EV loss. The second adds a larger cost when
-the readout relies on combinations of features that vary strongly across the
-grouped views. Grouped training is therefore exactly EV training plus a
-penalty determined by the observed shot fluctuations. This identity requires
-neither Gaussian noise nor independence across time.
+The first term on the right is exactly the EV loss. The second charges extra
+whenever the weights lean on feature combinations that vary strongly across
+the views. Grouped training is therefore EV training plus a penalty read
+directly off the observed shot fluctuations, and the identity assumes neither
+Gaussian noise nor independence over time.
 
-Cov-EV applies the same fluctuation-based penalty directly to EV and chooses
-its strength separately using the same earlier data as Grouped. If both methods
-perform similarly, the benefit of grouping is explained by this regularization
-rather than by additional physical information. We also compute both forms at
-fixed $k$ and confirm identical predictions as an implementation check.
-The leaky integrator and overlapping lags make adjacent feature sets
-dependent, so uncertainty is computed over trajectories or measured windows,
-not over the many grouped views. The full derivation and statistical details are
-provided in the supplement.
+This yields a clean test of the explanation. Cov-EV applies the very same
+penalty on top of EV and tunes its strength on the same earlier data. If
+Grouped and Cov-EV perform alike, the gain comes from this regularization
+rather than from any extra physical information. As an implementation check we
+also evaluate both at a fixed $k$ and confirm they predict identically. Because
+the leaky integrator and overlapping lags make neighboring feature vectors
+dependent, we report uncertainty across trajectories or measured windows rather
+than across the many correlated grouped views. The full derivation and
+statistical details are in the supplement.

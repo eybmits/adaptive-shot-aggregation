@@ -220,10 +220,10 @@ def sanitized_main() -> str:
     text = _replace_author_block(text, label="main")
     text = text.replace("\\usepackage{orcidlink}\n", "")
     bibliography_balance_pattern = re.compile(
-        r"\\ifdefined\\ANON\s*\\IEEEtriggeratref\{11\}\s*\\fi"
+        r"\\ifdefined\\ANON\s*\\balance\s*\\fi"
     )
     text, count = bibliography_balance_pattern.subn(
-        r"\\IEEEtriggeratref{11}", text, count=1
+        r"\\balance", text, count=1
     )
     if count != 1:
         raise RuntimeError(

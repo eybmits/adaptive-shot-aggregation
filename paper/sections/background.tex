@@ -28,32 +28,37 @@ a varied, nonlinear feature set. They make no claim of quantum advantage.
 
 \subsection{Adaptive shot aggregation}
 
-Let $x_t^{(n)}$ denote the processed features from shot index $n$ at time
-$t$. For a divisor $k$ of $N$, the $N$ shots are partitioned into
-$G=N/k$ disjoint groups, producing
+Write $x_t^{(n)}$ for the features produced by shot $n$ at time $t$. We split
+the $N$ shots of each step into $G=N/k$ groups of equal size $k$ and average
+within each group,
 \begin{equation}
-  x_t^{(g)}=\frac{1}{k}\sum_{n\in g}x_t^{(n)},
-  \qquad g=1,\ldots,G .
+  x_t^{(g)}=\frac{1}{k}\sum_{n\in g}x_t^{(n)}, \qquad g=1,\dots,G.
   \label{eq:grouping}
 \end{equation}
-Each grouped sample shares the same target. At evaluation, the $G$
-predictions for one step are averaged. This equals prediction from their mean
-features, so any difference between EV and Grouped is created during
-training rather than evaluation.
+Every group is a partly averaged view of the same time step, and all views
+share the same target $y_t$. At test time we average the $G$ predictions of a
+step, which is identical to predicting once from the averaged features. The two
+methods are therefore scored in exactly the same way, so any difference between
+EV and Grouped is created during training, not at test time.
 
-Measurement indices do not identify physical trajectories. A random
-permutation is therefore drawn at every time step before groups are formed, and
-the analysis is repeated across random grouping assignments. A fixed assignment across time
-is included as a sensitivity analysis.
+The shot index carries no physical meaning, because shot $n$ at one step and
+shot $n$ at the next come from unrelated circuit runs. We therefore shuffle the
+shots freshly at every time step before forming groups, and we repeat the whole
+analysis over several random groupings. A single grouping fixed across time is
+kept as a sensitivity check.
 
 \subsection{Fixed execution budget and training}
 
-The quantum cost is $TN$ circuit executions. Three specified settings use
-exactly $10{,}000$ executions. They allocate $(T,N)=(250,40)$, $(500,20)$, and
-$(1000,10)$ to the number of time steps and shots. All divisors of $N$ are
-considered, including Raw at $k=1$ and EV at $k=N$. Three expanding
-train-and-check splits preserve time order: each candidate pair $(k,\lambda)$
-is fitted on an earlier block and scored on the following block. The best pair
-is then fixed, the readout is refitted to all data preceding the test block,
-and the final 20\% is evaluated once. Normalization and feature scaling use
-training data only.
+Evaluating $T$ time steps with $N$ shots per step costs $TN$ circuit
+executions. We hold this budget fixed at ten thousand executions and study
+three ways of spending it, $(T,N)=(250,40)$, $(500,20)$, and $(1000,10)$,
+ranging from fewer time steps with more shots to more time steps with fewer
+shots. For each setting we try every group size $k$ that divides $N$, which
+includes Raw at $k=1$ and EV at $k=N$.
+
+Selection respects time order. Using three expanding splits, each candidate
+pair of group size and ridge strength $(k,\lambda)$ is fitted on an earlier
+block and scored on the block that follows. The best pair is then frozen, the
+readout is refitted on all data before the test block, and the final fifth of
+the series is scored once. Normalization and feature scaling use training data
+only, so the test block never influences any choice.

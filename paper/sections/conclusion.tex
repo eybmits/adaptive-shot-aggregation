@@ -18,7 +18,7 @@ time step, while
 individual shots are too noisy. Partial averaging provides several denoised
 views of each target and lets the readout adapt to the available record.
 
-Equation~\eqref{eq:covariance} explains this behavior. Training on grouped
+Equation~\eqref{eq:loss-decomposition} explains this behavior. Training on grouped
 views is mathematically identical to EV training with an added cost for relying
 on feature changes that vary strongly across shots. Cov-EV applies this cost
 directly and nearly matches Grouped. The gain therefore comes from stabilizing
@@ -48,7 +48,7 @@ Adaptive shot aggregation makes the representation of a finite measurement
 record a controllable part of the learning pipeline. Across all four
 forecasting tasks, intermediate aggregation reduced mean test error at the
 balanced execution budget. Unmitigated measurements on both quantum processors
-reproduced the positive trend. Equation~\eqref{eq:covariance} shows that
+reproduced the positive trend. Equation~\eqref{eq:loss-decomposition} shows that
 grouped views stabilize the readout using the observed shot fluctuations while using exactly the
 same shots as Raw and EV. Retaining shot-level records therefore enables a direct
 post-execution improvement without changing the circuit or increasing the
