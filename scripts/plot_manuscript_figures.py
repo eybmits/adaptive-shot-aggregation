@@ -311,9 +311,9 @@ def _fig2_panel_b(ax: plt.Axes, validation: pd.DataFrame) -> None:
     best = int(np.argmin(mean_arr))
     ax.plot(x[best], mean_arr[best], "*", color="#14705f", ms=8.5, mec="white", mew=0.5, zorder=5)
     ax.set_xticks(x, [str(k) for k in K_BALANCED])
-    ax.set_xlabel("Aggregation scale $k$", labelpad=2)
-    ax.set_ylabel("Development NRMSE", labelpad=2)
-    ax.set_title("Aggregation spectrum", fontweight="bold", pad=3.5)
+    ax.set_xlabel("Shots per group $k$", labelpad=2)
+    ax.set_ylabel("Validation error (NRMSE)", labelpad=2)
+    ax.set_title("Choosing the group size", fontweight="bold", pad=3.5)
     ax.yaxis.set_major_locator(MaxNLocator(3))
     _panel_letter(ax, "b", x=-0.16)
     _open_axes(ax)
@@ -348,10 +348,10 @@ def _fig2_panel_c(ax: plt.Axes, validation: pd.DataFrame) -> None:
         )
     ax.axhline(100.0, color=NEUTRAL, lw=0.65, ls=(0, (3, 2)), zorder=0)
     ax.set_xticks(x, [str(k) for k in K_BALANCED])
-    ax.set_xlabel("Aggregation scale $k$", labelpad=2)
-    ax.set_ylabel("Relative NRMSE (%)", labelpad=2)
+    ax.set_xlabel("Shots per group $k$", labelpad=2)
+    ax.set_ylabel("Error relative to EV (%)", labelpad=2)
     ax.set_title(
-        "Across-task aggregation spectrum",
+        "Group-size effect across tasks",
         fontweight="bold",
         fontsize=5.9,
         pad=5.0,
