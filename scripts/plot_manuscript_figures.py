@@ -491,16 +491,6 @@ def figure_3(rows: pd.DataFrame) -> None:
             ax.set_ylabel("EV minus Grouped", labelpad=2)
         _panel_letter(ax, letters[index], x=-0.17 if index % 2 == 0 else -0.13)
         _open_axes(ax)
-    axes[0, 1].text(
-        0.98,
-        0.96,
-        "Grouped better",
-        transform=axes[0, 1].transAxes,
-        ha="right",
-        va="top",
-        fontsize=5.2,
-        color="#14705f",
-    )
     _save(fig, "fig3_regime_map")
 
 
