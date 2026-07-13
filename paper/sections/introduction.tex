@@ -1,32 +1,27 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Quantum learning experiments obtain classical data by executing a circuit
-repeatedly. The resulting measurement record must be converted into feature
-values before training. We study how many repeated measurements should be
-averaged to form each training example.
+Every quantum learning experiment produces a record of individual measurement
+outcomes. Most learning pipelines average all shots from one time step into a
+single expectation-value vector. This reduces measurement noise, but many
+circuit executions then provide only one training example. Keeping each shot
+separate creates more examples, but each example is noisy. We study the useful
+range between these two choices.
 
 Quantum reservoir computing (QRC) provides a controlled setting for this
-comparison. A fixed quantum circuit transforms an input sequence into measured
-features, and training is restricted to a classical readout
-~\cite{fujii2017harnessing,nakajima2019boosting,mujal2021opportunities}.
-The circuit, targets, and measurement record can therefore remain fixed while
-the aggregation supplied to the readout changes.
+comparison~\cite{fujii2017harnessing,nakajima2019boosting,mujal2021opportunities}.
+A fixed quantum circuit transforms an input sequence into measured features,
+and only a classical readout is trained. We can therefore keep the circuit,
+targets, execution budget, and measurement record fixed while changing only
+how the shots are combined.
 
-We compare three representations of the same record. EV averages all
-measurements at each time step, Grouped averages disjoint subsets, and Raw uses
-each measurement separately. The aggregation scale $k$ is the number of shots
-per averaged training view and ranges from $k=1$ for Raw to $k=N$ for EV. It is
-chosen together with the ridge strength using earlier data in time order.
-
-EV provides one sample with low measurement variance per time step. Raw
-provides many samples with high measurement variance. Grouped provides several
-partially averaged samples with a common target. Measurement error can reduce
-fitted coefficients~\cite{fuller1987measurement}, while a small number of
-training examples relative to the number of features can destabilize regression
-~\cite{hsu2012random}. Adaptive shot aggregation calibrates this balance for
-each record. Figure~\ref{fig:organization} shows how the three representations
-are formed from the same measurement record.
+Figure~\ref{fig:organization} shows the three representations. Raw keeps every
+shot separate. EV averages all $N$ shots from one time step. Grouped divides
+the same shots into disjoint groups and averages within each group. The
+aggregation scale $k$ is simply the number of shots in one average. Thus,
+$k=1$ gives Raw, $k=N$ gives EV, and values between them give several partially
+averaged Grouped examples. We compare the settings on earlier time segments and
+fix the best one before evaluating the final test period.
 
 \begin{figure}[!t]
   \centering
@@ -39,9 +34,11 @@ are formed from the same measurement record.
   \label{fig:organization}
 \end{figure}
 
-Our contribution is adaptive shot aggregation, which treats the shots per
-training view as an adjustable readout setting without changing the execution
-budget. We evaluate it on two synthetic systems and two measured series under
-one matched protocol. Three allocations of time steps and shots establish how
-the effect depends on execution conditions, matched controls explain why it
-occurs, and a separate hardware reservoir tests transfer.
+We call this procedure \emph{adaptive shot aggregation}. It treats the amount
+of averaging as a readout setting and requires no additional quantum
+executions. Across two synthetic systems and two measured series, Grouped
+reduces test error relative to EV at the balanced budget on every task.
+Matched controls show that grouping acts mainly as regularization of the
+classical readout. Experiments on two superconducting processors show the same
+positive trend. The study establishes when aggregation matters, why it helps,
+and how it transfers from simulation to hardware.
