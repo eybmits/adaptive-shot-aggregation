@@ -115,6 +115,7 @@
                draw=reservoirred!85!black,line width=0.35pt,
                inner sep=0pt,minimum size=11.5pt},
   graphlink/.style={draw=edgegray,line width=0.52pt,line cap=round},
+  graphlinknext/.style={draw=edgegray!72,line width=0.38pt,line cap=round},
   blueflow/.style={-{Stealth[length=3.2pt,width=2.6pt]},draw=reservoirblue,
                    line width=0.72pt,line cap=round},
   redflow/.style={-{Stealth[length=3.2pt,width=2.6pt]},draw=reservoirred,
@@ -201,6 +202,9 @@
 
     \foreach \a/\b in {cq0/cq1,cq1/cq2,cq2/cq3,cq3/cq4,cq4/cq5}{
       \draw[graphlink] (\a) -- (\b);
+    }
+    \foreach \a/\b in {cq0/cq2,cq1/cq3,cq2/cq4,cq3/cq5}{
+      \draw[graphlinknext] (\a) -- (\b);
     }
 
     \node[qred]  (q0) at (cq0) {};
