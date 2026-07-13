@@ -31,17 +31,22 @@ information.
 
 The effect also transfers. It appears in the six-qubit simulation reservoir and
 again in a separate ten-qubit circuit on two processors, testing transfer across
-reservoir designs rather than whether more qubits help. Alternative aggregation
-scales can only be formed from individual shot outcomes. An experiment that
-stores only expectation values loses this freedom, while retaining the shot
-record preserves it without further circuit execution.
+reservoir designs rather than whether more qubits help.
 
-Two limits are worth stating plainly. The hardware intervals summarize blocks
-from a single acquisition per task and processor, so they establish within-run
-stability rather than reproducibility across campaigns or calibration periods.
-All evidence here also uses compact reservoirs and a linear readout. Independent
-hardware campaigns, other reservoir families, and richer readouts are the
-natural next tests.
+A practical consequence follows. A different group size can only be built from
+the individual shot outcomes, so trying other scales later is possible only if
+those outcomes were kept. An experiment that stores just the averaged
+expectation value has already thrown away the option to regroup, while an
+experiment that keeps its full shot record leaves every group size open for
+free.
+
+The hardware results have a deliberately narrow scope. Their confidence
+intervals are computed from the measurement blocks of one acquisition on each
+task and processor. They therefore show that the effect is stable within a
+single run, not that it repeats across separate runs on different days or
+calibration settings. Confirming that reproducibility is the main open question,
+and the natural next tests are independent hardware campaigns, other reservoir
+families, and richer readouts.
 
 \section{Conclusion}
 \label{sec:conclusion}
