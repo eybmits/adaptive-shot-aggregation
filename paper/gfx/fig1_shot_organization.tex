@@ -69,18 +69,14 @@
     circle,
     shading=ball,
     ball color=qnodeblue!85!white,
-    minimum size=4.35mm,
-    draw=qnodeblue!65!black,
-    line width=0.25pt,
+    minimum size=3.0mm,
     inner sep=0pt
   },
   qnodeR/.style={
     circle,
     shading=ball,
     ball color=qnoderred!95!white,
-    minimum size=4.35mm,
-    draw=qnoderred!65!black,
-    line width=0.25pt,
+    minimum size=3.0mm,
     inner sep=0pt
   },
   halo/.style={
@@ -185,9 +181,9 @@
   \end{scope}
 
 % ========================================================================
-% Frozen six-qubit reservoir.  A compact schematic network keeps the visual
-% language of the original figure without implying a literal device layout.
-% Six nodes remain visible to match the simulated reservoir.
+% Frozen six-qubit reservoir.  The compact network layout restores the visual
+% language of the original figure while retaining the current outward arrows.
+% The complete visible network is centered inside the reservoir panel.
 % ========================================================================
   \begin{scope}[shift={(7.02,0.76)},x=0.90cm,y=0.64cm]
     \node[stage] at (0,2.22) {Quantum reservoir};
@@ -196,32 +192,33 @@
     \node[respanel,fill=white,
           minimum width=3.75cm,minimum height=1.86cm] (reservoirpanel) at (0,0.38) {};
 
-    % Center the complete node envelope on the panel midpoint.
-    \coordinate (cq0) at (-1.28,0.03);
-    \coordinate (cq1) at (-0.76,0.71);
-    \coordinate (cq2) at (-0.20,0.09);
-    \coordinate (cq3) at ( 0.33,0.73);
-    \coordinate (cq4) at ( 0.83,0.07);
-    \coordinate (cq5) at ( 1.28,0.65);
+    \coordinate (cq0) at (-1.14, 0.36);
+    \coordinate (cq1) at (-0.54, 1.04);
+    \coordinate (cq2) at (-0.49,-0.28);
+    \coordinate (cq3) at ( 0.12, 0.57);
+    \coordinate (cq4) at ( 0.42,-0.24);
+    \coordinate (cq5) at ( 1.14, 0.88);
 
-    % Fainter next-nearest-neighbor links add the longer-range structure.
-    \draw[straightedge,line width=0.48pt,opacity=0.62]
-      (cq0)--(cq3) (cq1)--(cq4) (cq2)--(cq5);
-    \draw[straightedge,line width=0.72pt]
-      (cq0)--(cq1) (cq0)--(cq2) (cq1)--(cq2)
-      (cq1)--(cq3) (cq2)--(cq3) (cq2)--(cq4)
-      (cq3)--(cq4) (cq3)--(cq5) (cq4)--(cq5);
+    \foreach \a/\b in {cq0/cq1,cq1/cq2,cq2/cq3,cq3/cq4,cq4/cq5}{
+      \draw[graphlink] (\a) -- (\b);
+    }
 
-    \node[qnodeR] (q0) at (cq0) {};
-    \node[qnodeB] (q1) at (cq1) {};
-    \node[qnodeR] (q2) at (cq2) {};
-    \node[qnodeB] (q3) at (cq3) {};
-    \node[qnodeR] (q4) at (cq4) {};
-    \node[qnodeB] (q5) at (cq5) {};
+    \node[qred]  (q0) at (cq0) {};
+    \node[qblue] (q1) at (cq1) {};
+    \node[qblue] (q2) at (cq2) {};
+    \node[qred]  (q3) at (cq3) {};
+    \node[qred]  (q4) at (cq4) {};
+    \node[qblue] (q5) at (cq5) {};
     % Anchor preserves the meter geometry independently of the visible panel.
     \node[fit=(q0)(q1)(q2)(q3)(q4)(q5),
           inner sep=1.5pt] (resbox) {};
 
+    \draw[redflow]  (q0.south west) -- ++(-0.24,-0.22);
+    \draw[blueflow] (q1.north west) -- ++(-0.18,0.27);
+    \draw[blueflow] (q2.south west) -- ++(-0.20,-0.22);
+    \draw[redflow]  (q3.north) -- ++(0,0.30);
+    \draw[redflow]  (q4.south east) -- ++(0.18,-0.24);
+    \draw[blueflow] (q5.east) -- ++(0.30,0.00);
     \coordinate (reservoirout) at (0.00,-0.82);
   \end{scope}
 
