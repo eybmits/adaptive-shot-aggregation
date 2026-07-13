@@ -1,65 +1,63 @@
 \section{Experimental Setup}
-\label{sec:protocol}
+\label{sec:setup}
+
+We run two studies. The first is a controlled simulation on four forecasting
+tasks. The second repeats the core comparison on real quantum hardware. In both,
+every aggregation choice reads the very same measurement record, so any
+difference in accuracy comes only from how the shots are organized and not from
+running the circuit differently.
 
 \subsection{Simulation setup}
-We evaluate Mackey--Glass~\cite{mackey1977oscillation},
-R\"ossler~\cite{rossler1976equation}, Santa Fe competition Series~A
-far-infrared laser intensity~\cite{gershenfeld1993future}, and monthly
-sunspots~\cite{sidc2026sunspots}. In simulation, all four tasks use the same
-frozen six-qubit
-reservoir, $Z+ZZ$ features, leak, ten lags, washout, training based scaling,
-time-ordered model selection, execution budgets, and candidate settings. The only
-task specific inputs are the source sequence and forecast window origins.
+We forecast four time series one step ahead. Two are chaotic synthetic systems,
+Mackey--Glass~\cite{mackey1977oscillation} and R\"ossler~\cite{rossler1976equation}.
+Two are measured real-world series, the Santa Fe laser
+intensity~\cite{gershenfeld1993future} and the monthly sunspot
+number~\cite{sidc2026sunspots}. All four pass through the identical frozen
+six-qubit reservoir of Section~\ref{sec:method} and the identical processing
+pipeline, with the same features, memory, scaling, model selection, and budgets.
+The only thing that changes from task to task is the input sequence. This
+isolates the effect of aggregation from any per-task tuning.
 
-Each synthetic task contributes five independently generated trajectories.
-Each real-world dataset contributes five chronological windows with disjoint
-test blocks. Three circuit parameter settings, three
-measurement samples, and three grouping assignments repeat the experiment
-within each forecasting unit. We first average these repetitions within each unit and then compute
-paired 95\% intervals across the five separate trajectories or windows. This
-prevents repeated simulations of one sequence from being counted as
-independent forecasting problems.
+Every method reads the same raw record. Next to EV, Grouped, and Raw we include
+three references that separate the aggregation effect from the quantum device.
+Cov-EV adds a shot-covariance penalty to plain averaging, an ideal noise-free
+version of the reservoir removes sampling noise entirely, and the classical
+input processed in the same way removes the reservoir. To keep the statistics
+honest, each synthetic task is run on five independently generated trajectories
+and each real series on five separate time windows with disjoint test blocks.
+Within each of these units we repeat the experiment over three circuit settings,
+three measurement draws, and three random groupings, average those repeats, and
+only then form paired confidence intervals across the five independent units.
+Repeated simulations of one sequence are therefore never counted as independent
+forecasting problems.
 
-The main comparison includes the identically leaked and lagged scalar input,
-ideal reservoir features without sampling noise, EV, Grouped, Raw, and
-independently tuned Cov-EV training. Every sampled method reuses the identical raw
-record, time-ordered splits, ridge candidates, and test access policy. Twenty extra
-grouping assignments at the balanced setting test sensitivity to arbitrary group
-assignments.
-
-After a washout of 30 steps, the last 20\% of each usable sequence is reserved
-for testing and is not inspected while settings are chosen. The earlier block
-is evaluated in three rounds: each round fits on the past and checks the
-forecast on the next block. For every aggregation scale $k$, the ridge value is chosen from
-$\{10^{-3},10^{-2},10^{-1},1,10,10^2,10^3\}$; Cov-EV uses the same ridge values
-with eight predeclared strengths for the fluctuation-based penalty. Scaling is
-recomputed using only the fitting portion in every round. Scoring first
-averages all Grouped predictions back to one forecast per time step. Thus every
-method contributes the same number of forecasts to the comparison. The test
-block is accessed only after all choices have been fixed.
-
-The allocation $(T,N)=(500,20)$ is the primary comparison. The other two
-allocations use the same budget of 10,000 executions and are secondary
-analyses. Reservoir parameters, generators, window origins, repeat identifiers,
-grouping rules, candidate settings, and reporting filters are stored before the test
-blocks are evaluated. The reservoir, aggregation choices, ridge choices, and
-test procedure are identical across tasks.
+Model selection never touches the test data. After a short washout, the final
+fifth of each series is set aside and left untouched while settings are chosen.
+The earlier part is used in three expanding rounds that always fit on the past
+and check on the block that follows, and only after the group size and ridge
+strength are fixed is the reserved fifth scored once. Grouped predictions are
+averaged back to one forecast per step, so every method is judged on the same
+forecasts. The main budget places $20$ shots at each of $500$ time steps. Two
+further ways of spending the same ten thousand executions, more shots with fewer
+steps and fewer shots with more steps, serve as secondary analyses. All
+reservoir parameters, data generators, window origins, and selection rules are
+fixed and stored before any test block is seen.
 
 \subsection{Hardware setup}
-The device study intentionally uses a different reservoir design. Its
-fixed ten-qubit circuit contains one amplitude-encoded input qubit, nine
-Hadamard-initialized memory qubits, one $R_{ZZ}$ ring layer, transverse
-$R_X$ rotations, and ten local-$Z$ outputs. The circuit is mapped to selected
-physical qubits on \emph{ibm\_fez} and \emph{ibm\_marrakesh} and is held fixed
-across all four hardware tasks. It tests whether the same aggregation procedure
-transfers to a second circuit and set of measured features; it is not a hardware
-implementation of the six-qubit simulator or a qubit-count comparison. Within
-each study, every aggregation method receives the same circuit outputs and only
-the classical organization of shots changes. One $T=500$, 400-shot acquisition
-per task and processor is partitioned into twenty
-ordered and disjoint records with $N=20$. Hardware
-intervals describe variation among measurement blocks within one
-acquisition. They do not represent independent devices or calibration periods.
+The hardware study deliberately uses a different reservoir. It is a fixed
+ten-qubit circuit with one input qubit, nine memory qubits, a single ring of
+entangling gates, and ten local outputs, mapped to selected qubits on the
+\emph{ibm\_fez} and \emph{ibm\_marrakesh} processors and held fixed across all
+four tasks. Its purpose is to check whether the same aggregation procedure still
+helps on a second circuit and a different set of measured features. It is not a
+hardware implementation of the six-qubit simulator and not a comparison of
+qubit counts. As in
+simulation, every method receives the same circuit outputs and only the
+classical grouping of shots changes. For each task and processor we take one
+acquisition of $400$ shots at each of $500$ time steps and split it into twenty
+ordered, disjoint records of $20$ shots. The resulting intervals describe how
+much the result varies among the measurement blocks of that single acquisition.
+They do not stand in for independent devices or separate calibration periods.
 
 \begin{figure}[!t]
   \centering
