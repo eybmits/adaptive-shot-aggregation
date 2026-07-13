@@ -3,23 +3,28 @@
 
 \subsection{Simulation reservoir}
 
-The reservoir has six qubits and two shallow data reuploading layers
-~\cite{perezsalinas2020data}. Each layer encodes the scalar input on every
-qubit with heterogeneous $R_y$ and $R_z$ rotations, applies neighboring
-$R_{zz}$ couplings, and mixes locally with frozen non-Clifford angles. The
-circuit parameters are fixed before forecasting, and additional frozen
-realizations quantify sensitivity. One computational basis measurement yields
-six local $Z_i$ signs and five neighboring products $Z_iZ_{i+1}$ at no
-additional quantum cost.
+The reservoir is a fixed six-qubit circuit that turns each scalar input into
+features. It sees the input twice, through two shallow reuploading layers,
+which let a shallow circuit represent richer functions of the
+input~\cite{perezsalinas2020data}. In each layer every qubit is first rotated
+by an input-dependent amount, using $R_y$ and $R_z$ with a fixed per-qubit
+offset. Neighboring qubits are then entangled by $R_{zz}$ couplings and mixed
+by a small fixed non-Clifford rotation, keeping the circuit outside the
+Clifford-only setting. All angles are drawn once and frozen, so the circuit
+never changes during forecasting, and several independent frozen circuits
+check that the results do not depend on one lucky draw. A single
+computational-basis measurement then yields eleven features at once, the six
+qubit signals $Z_i$ and the five neighbor correlations $Z_iZ_{i+1}$, at no
+extra quantum cost.
 
-Ideal statevector simulation is performed before forecasting. All 11 features
-change with the input and exceed the specified nonlinearity threshold. They
-all contribute distinct numerical information. Because several respond in
-similar ways, their effective number is 5.15. A leak of 0.2
-and ten causal lags provide temporal context. Ridge regression produces the
-next step forecast, and performance is measured by test NRMSE. These checks
-show that the reservoir supplies a varied, nonlinear feature set. They do not evaluate
-quantum advantage.
+Before forecasting, an exact noise-free simulation confirms the feature set is
+useful. All eleven features respond to the input and are nonlinear above a
+preset threshold, and they carry distinct information rather than copies of one
+another. Because a few react similarly, their effective number is $5.15$,
+somewhat below eleven. A leaky integrator with leak $0.2$ and the ten most
+recent steps add temporal memory, and a ridge regression maps the features to
+the next value, scored by test NRMSE. These checks show the reservoir supplies
+a varied, nonlinear feature set. They make no claim of quantum advantage.
 
 \subsection{Adaptive shot aggregation}
 

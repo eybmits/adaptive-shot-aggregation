@@ -219,6 +219,16 @@ def sanitized_main() -> str:
         raise RuntimeError("main manuscript title differs from the restored paper title")
     text = _replace_author_block(text, label="main")
     text = text.replace("\\usepackage{orcidlink}\n", "")
+    bibliography_balance_pattern = re.compile(
+        r"\\ifdefined\\ANON\s*\\IEEEtriggeratref\{11\}\s*\\fi"
+    )
+    text, count = bibliography_balance_pattern.subn(
+        r"\\IEEEtriggeratref{11}", text, count=1
+    )
+    if count != 1:
+        raise RuntimeError(
+            "main: expected one anonymous bibliography-balance branch"
+        )
     if "\\input{sections/conclusion.tex}" not in text:
         # Backwards-compatible fail-closed handling if the restored source is
         # temporarily flattened again.
