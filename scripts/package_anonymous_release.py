@@ -258,22 +258,11 @@ def sanitized_main() -> str:
 
 
 def sanitized_experimental_section() -> str:
-    """Copy the setup while removing its named repository branch."""
+    """Copy the setup after confirming that it contains no identifiers."""
 
     text = (PAPER / "sections" / "experimental-section.tex").read_text(
         encoding="utf-8"
     )
-    artifact_pattern = re.compile(
-        r"\\ifdefined\\ANON\s*artifact\\else\s*"
-        r"\\href\{https://github\.com/eybmits/split-ensemble-qrc\}"
-        r"\{artifact\}\\fi",
-        re.DOTALL,
-    )
-    text, count = artifact_pattern.subn(
-        r"artifact", text, count=1
-    )
-    if count != 1:
-        raise RuntimeError(f"setup: expected one named artifact branch, replaced {count}")
     if "\\ifdefined" in text or "github.com" in text.casefold():
         raise RuntimeError("setup: identifying conditional or public repository URL remains")
     return text
