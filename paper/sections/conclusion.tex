@@ -25,12 +25,14 @@ the next tests.
 \section{Conclusion}
 \label{sec:conclusion}
 
-Adaptive shot aggregation turns a fixed measurement record into training views
-at a scale suited to the task. Intermediate aggregation reduces mean test error
-on all four tasks at the balanced budget, and both processors reproduce the
-positive trend. Retaining shot-level records therefore enables a practical
-post-execution improvement without changing the circuit or increasing the
-quantum execution budget.
+Turning a shot record into training data has always involved a choice, and the
+field has answered it by reflex, averaging everything. We show the reflex is
+beatable. Choosing the aggregation scale by validation lowers mean test error
+on chaotic and real-world forecasting at the balanced budget, holds on two
+superconducting processors, and requires no additional quantum cost. Because
+every measurement-based reservoir produces such a record, the choice we make
+explicit here is available to any of them, and the question it raises belongs
+to finite-shot learning in general.
 
 \appendices
 \section{Reproducibility Summary}
