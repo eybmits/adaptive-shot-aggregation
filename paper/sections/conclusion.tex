@@ -1,56 +1,34 @@
 \section{Discussion}
 \label{sec:discussion}
 
-Adaptive shot aggregation is a small change to the classical side of a quantum
-learning pipeline. The complete measurement record is retained, and each
-aggregation scale $k$ decides how many shots are combined into each training
-view. Earlier time blocks are used to choose $k$ together with the ridge
-strength $\lambda$ before the test block is opened. Raw ($k=1$) and EV ($k=N$)
-are included as the two extremes, so either conventional representation is
-kept when partial averaging is not useful.
+Adaptive shot aggregation changes only the classical use of a measurement
+record. The aggregation scale $k$ determines how many shots form each training
+view, while Raw and EV remain available as its two endpoints. Earlier time
+blocks choose $k$ and the ridge strength before the test block is evaluated.
 
-The practical advantage is that the method makes better use of measurements
-that have already been acquired. It requires no additional
-circuits, shots, mitigation, or trainable quantum parameters. Its largest gains
-appear when a record contains many shots per time step but relatively few time
-steps. In this regime, full averaging leaves only one training example for each
-time step, while
-individual shots are too noisy. Partial averaging provides several denoised
-views of each target and lets the readout adapt to the available record.
+The method requires no additional circuit executions and is most useful when a
+record contains many shots per time step but relatively few time steps. In this
+regime, partial averaging supplies several denoised views of each target.
+Equation~\eqref{eq:loss-decomposition} shows that these views impose a penalty
+derived from the measured shot fluctuations. Cov-EV obtains slightly lower
+mean errors but remains close to Grouped, supporting covariance regularization
+as the mechanism while showing that grouping is not its only implementation.
 
-Equation~\eqref{eq:loss-decomposition} explains this behavior. Training on grouped
-views is mathematically identical to EV training with an added cost for relying
-on feature changes that vary strongly across shots. Cov-EV applies this cost
-directly and nearly matches Grouped. The gain therefore comes from stabilizing
-the classical readout, not from creating additional physical information.
-
-The same pattern appears across synthetic dynamics, measured time series, and
-unmitigated hardware records. The feature audit verifies that the simulation
-reservoir responds to the input, provides nonlinear information, and contains
-no redundant measured feature. The separate
-ten-qubit hardware circuit then tests whether the aggregation procedure
-transfers to another reservoir design. It is not a qubit-count comparison,
-but the positive trend on both processors shows that the method is not tied to
-the six-qubit simulation circuit.
-
-The method requires individual measurement outcomes because alternative
-aggregation scales cannot be reconstructed from stored expectation values.
-When bitstrings are retained, however, adaptive aggregation can be added after
-execution and evaluated at negligible cost. The present study covers two
-synthetic systems, two real-world datasets, linear readouts, and one acquisition
-per task and processor. Independent hardware campaigns and additional
-reservoir families are the natural next tests.
+The positive trend transfers from the six-qubit simulation reservoir to a
+separate ten-qubit circuit on two processors. This comparison tests transfer of
+the aggregation procedure, not the effect of qubit count. Alternative scales
+require individual measurement outcomes and cannot be recovered from stored
+expectation values. The hardware intervals describe blocks from one acquisition
+per task and processor; independent campaigns and other reservoir families are
+the next tests.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-Adaptive shot aggregation makes the representation of a finite measurement
-record a controllable part of the learning pipeline. Across all four
-forecasting tasks, intermediate aggregation reduced mean test error at the
-balanced execution budget. Unmitigated measurements on both quantum processors
-reproduced the positive trend. Equation~\eqref{eq:loss-decomposition} shows that
-grouped views stabilize the readout using the observed shot fluctuations while using exactly the
-same shots as Raw and EV. Retaining shot-level records therefore enables a direct
+Adaptive shot aggregation turns a fixed measurement record into training views
+at a scale suited to the task. Intermediate aggregation reduces mean test error
+on all four tasks at the balanced budget, and both processors reproduce the
+positive trend. Retaining shot-level records therefore enables a practical
 post-execution improvement without changing the circuit or increasing the
 quantum execution budget.
 
@@ -58,17 +36,14 @@ quantum execution budget.
 \section{Reproducibility Summary}
 \label{app:reproducibility}
 
-All four simulation tasks use the same six-qubit reservoir, preprocessing,
-time-ordered train-and-check procedure, and execution budgets. Mackey--Glass
-and R\"ossler use five independent trajectories; Santa Fe and sunspots use five
-windows with disjoint test blocks. Repeated circuit settings, measurement
-samples, and grouping assignments are averaged within each trajectory or
-window before uncertainty is computed. Every method receives the same raw
-record and candidate ridge strengths. The three budgets are
-$(T,N)=(250,40),(500,20),(1000,10)$, each totaling 10,000 executions. Hardware
-uses one fixed ten-qubit circuit and one ordered 400-shot record per task and
-processor, divided into twenty disjoint $N=20$ blocks. Complete time splits,
-settings, raw outputs, hardware jobs, checksums, and rebuilding scripts are
-provided in the supplement and artifact.
-\ifdefined\ANON\else The named artifact is available at
-\url{https://github.com/eybmits/split-ensemble-qrc}.\fi
+All simulation tasks use the same six-qubit reservoir, preprocessing,
+chronological selection procedure, and execution budgets. Mackey--Glass and
+R\"ossler use five trajectories; Santa Fe and sunspots use five windows with
+disjoint test blocks. Repeated settings are averaged within each unit before
+uncertainty is computed. All methods share the raw record and ridge candidates.
+The three budgets are $(T,N)=(250,40),(500,20),(1000,10)$, each totaling
+10,000 executions. Hardware uses one fixed ten-qubit circuit and one 400-shot
+record per task and processor, split into twenty disjoint $N=20$ blocks. The
+supplement and \ifdefined\ANON artifact\else
+\href{https://github.com/eybmits/split-ensemble-qrc}{artifact}\fi provide all
+splits, settings, outputs, hardware job IDs, checksums, and rebuild scripts.

@@ -1,19 +1,27 @@
 \section{Evaluation}
-\label{sec:results}
+\label{sec:evaluation}
+
+We report accuracy as test NRMSE, a normalized error for which lower is better
+and where one means predicting the mean. Three ways of turning the shot record
+into features are compared throughout. EV averages all shots of a step into one
+clean feature vector. Raw keeps every shot as its own noisy example. Grouped is
+our method and sits between them. A fourth entry, Cov-EV, is a control that adds
+an independently tuned covariance penalty to plain averaging. We summarize the
+benefit of Grouped as the paired difference EV minus Grouped, so a positive
+value means Grouped is more accurate. Each difference comes with a $95\%$
+confidence interval. An interval above zero provides evidence of a positive
+mean improvement; an interval containing zero is inconclusive. The balanced
+setting spends the fixed budget on $500$ time steps with $20$ shots each.
 
 \subsection{Balanced setting}
 
-Table~\ref{tab:balanced} and Fig.~\ref{fig:operating} summarize the balanced
-setting. Grouped lowers mean NRMSE relative to EV by \QAIMackeyEVGrouped{} on Mackey--Glass
-(95\% CI $[\QAIMackeyEVGroupedLow,\QAIMackeyEVGroupedHigh]$),
-\QAISantaFeEVGrouped{} on Santa Fe laser
-($[\QAISantaFeEVGroupedLow,\QAISantaFeEVGroupedHigh]$),
-\QAIRosslerEVGrouped{} on R\"ossler
-($[\QAIRosslerEVGroupedLow,\QAIRosslerEVGroupedHigh]$), and
-\QAISunspotsEVGrouped{} on sunspots
-($[\QAISunspotsEVGroupedLow,\QAISunspotsEVGroupedHigh]$). The intervals exclude
-zero for both real-world datasets and R\"ossler. The interval for Mackey--Glass
-includes zero.
+At the balanced budget, Grouped lowers mean NRMSE relative to EV on all four
+tasks (Table~\ref{tab:balanced}, Fig.~\ref{fig:operating}). The improvement is
+$0.0138$ on Mackey--Glass ($95\%$ CI $[-0.0023, 0.0300]$), $0.0848$ on Santa Fe
+laser ($[0.0174, 0.1522]$), $0.0349$ on R\"ossler ($[0.0139, 0.0559]$), and
+$0.0360$ on sunspots ($[0.0103, 0.0616]$). The interval stays above zero on the
+two real-world datasets, Santa Fe laser and sunspots, and on R\"ossler. Only
+Mackey--Glass is inconclusive.
 
 \begin{table}[t]
 \caption{Mean test NRMSE at the balanced setting. Repeated measurement trials
@@ -32,27 +40,26 @@ Task & Class. & Ideal & EV & Grouped & Raw & Cov-EV \\
 \end{tabular}
 \end{table}
 
-Santa Fe has the largest difference at the balanced setting. Adaptive shot
-aggregation reduces EV from 0.764 to 0.680. Each of the five disjoint windows
-favors Grouped. Joint tuning favors $k=10$ most often and an intermediate
-aggregation scale in 94\% of repeated trials. Cov-EV reaches 0.677, nearly
-matching Grouped, while the Grouped gain decreases from 0.143 with 40 shots per
-step to 0.010 with 10 shots per step. This pattern is consistent with
-grouping changing the readout differently for different tasks and execution
-allocations.
+Santa Fe laser shows the largest effect. Grouped reduces the error from $0.764$
+to $0.680$, and all five disjoint test windows favor Grouped. When $k$ and the
+ridge strength are tuned together, the search lands on $k=10$ most often and
+on an intermediate scale, neither Raw nor EV, in $94\%$ of repeated trials.
+Cov-EV reaches $0.677$, almost the same as Grouped, which already suggests that
+the gain is a regularization effect rather than new physical information. The
+gain also depends on how the budget is spent. On Santa Fe it shrinks from
+$0.143$ with $40$ shots per step to $0.010$ with $10$ shots per step because
+grouping has more shots to reorganize when shots are plentiful.
 
-The ideal QRC model performs worse than the identically processed classical
-input on Mackey--Glass and sunspots, better on Santa Fe, and yields an
-inconclusive difference on R\"ossler. The experiments therefore support claims
-about aggregation of a chosen reservoir record, but not quantum advantage.
-
-The chosen aggregation scale varies across tasks, trajectories, circuit
-parameter settings, measurement samples, and grouping assignments. EV is
-preferred in some cases.
-Equation~\eqref{eq:loss-decomposition} shows that changing $k$ changes which feature
-combinations the readout is discouraged from using, not only how strongly it
-is discouraged. Raw generally has higher error, while
-several intermediate aggregation scales remain competitive with EV.
+We also compare an ideal noise-free reservoir with a classical baseline that
+uses identical preprocessing. The quantum reservoir is worse on Mackey--Glass
+and sunspots, better on Santa Fe, and inconclusive on R\"ossler. Our claims are
+therefore about organizing a chosen reservoir record, not quantum advantage.
+The preferred aggregation scale varies across tasks, trajectories, circuit
+settings, measurement draws, and grouping assignments, and EV is occasionally
+best. Equation~\eqref{eq:loss-decomposition} explains this variation: changing
+$k$ changes which feature combinations the readout is discouraged from using,
+not merely the strength of that regularization. Raw is less accurate than
+Grouped on all four task means.
 
 \begin{figure}[t]
   \centering
@@ -65,39 +72,46 @@ several intermediate aggregation scales remain competitive with EV.
   \label{fig:regimes}
 \end{figure}
 
-\subsection{Time steps and shots}
+\subsection{Trading time steps against shots}
 
-Figure~\ref{fig:regimes} compares three allocations of the same 10,000
-executions. With 40 shots at each of 250 time steps, every task has a positive
-mean difference between 0.086 and 0.170. The intervals exclude zero for
-Mackey--Glass, Santa Fe, and R\"ossler, while the sunspot result varies across
-windows. With 10 shots at each of 1,000 time steps, the mean differences fall
-between 0.008 and 0.016. The intervals exclude zero for Mackey--Glass and
-sunspots and include zero for Santa Fe and R\"ossler. Grouping has its largest
-effect when the record contains many shots per time step and fewer time steps.
+The fixed budget of ten thousand executions can be spent in different ways,
+and Fig.~\ref{fig:regimes} compares three of them. When each of $250$ time
+steps receives $40$ shots, Grouped improves every task, with mean gains from
+$0.086$ to $0.170$. The interval stays above zero for Mackey--Glass, Santa Fe
+laser, and R\"ossler, while the sunspot result varies across windows. When the
+same budget is spread over $1000$ time steps with only $10$ shots each, the
+gains shrink to between $0.008$ and $0.016$, and the interval stays above zero
+only for Mackey--Glass and sunspots. Grouping helps most when a step is measured
+many times and the series is short, because full averaging then produces very
+few training views from a shot-rich record.
 
-\subsection{Controls and grouping robustness}
+\subsection{Why the gain is regularization}
 
-Cov-EV has a lower mean than Grouped on all four tasks at the balanced setting.
-The paired differences range from 0.0021 to 0.0116 NRMSE, and only the
-R\"ossler interval excludes zero. Grouped obtains its fluctuation-based penalty
-directly from the record without introducing another adjustable strength. Cov-EV applies
-the same fluctuation-based penalty directly to EV and chooses its strength from
-earlier data. Their similar performance supports the explanation in
-Eq.~\eqref{eq:loss-decomposition}.
+The central control is Cov-EV, which keeps EV features and adds a penalty based
+on how the individual shots fluctuate together. At the balanced setting Cov-EV
+has a slightly lower mean error than Grouped on all four tasks, by $0.0021$ to
+$0.0116$ NRMSE, and only the R\"ossler interval excludes zero. Grouped obtains
+its penalty directly when the views are formed, whereas Cov-EV separately
+chooses the covariance-penalty strength on earlier data. Their near-match is
+the main evidence that the benefit described by
+Eq.~\eqref{eq:loss-decomposition} comes from regularizing the readout rather
+than from extra information from the quantum device.
 
-Raw has higher error than EV on Mackey--Glass and R\"ossler at the balanced
-setting. The intervals for Santa Fe and sunspots include zero. The exact
-two-form calculation matches Grouped ridge at fixed $k$ to numerical precision
-and verifies the implementation. It differs from Cov-EV, which chooses the
-strength of the fluctuation-based penalty independently. Across twenty repeated
-settings in the sensitivity analysis, EV minus Grouped means are $-0.0064$
-on Mackey--Glass, $0.1103$ on Santa Fe, $0.0177$ on R\"ossler, and $0.0493$ on
-sunspots; only the sunspot interval excludes zero. Fixed-group minus
-per-time-regrouped mean differences are at most 0.0021 NRMSE in magnitude and
-every clustered interval contains zero. The grouping convention therefore has
-little effect relative to variation across repeated settings. Figure~\ref{fig:controls}
-summarizes the matched controls for all four tasks.
+Two further checks support this interpretation. Raw is less accurate than EV
+on Mackey--Glass and R\"ossler and inconclusive on the two real-world datasets,
+so noisy single shots are not simply better data. The exact two-term form of
+Eq.~\eqref{eq:loss-decomposition} also reproduces the grouped ridge fit at a
+fixed $k$ to numerical precision. Cov-EV is a separate control: it uses the
+full shot covariance and independently chooses its strength.
+
+Grouping is also robust to how the groups are drawn. Across twenty repeated
+settings the average improvements are $-0.0064$ on Mackey--Glass, $0.1103$ on
+Santa Fe laser, $0.0177$ on R\"ossler, and $0.0493$ on sunspots. Only the
+sunspot interval stays above zero, reflecting the wide variation across
+settings. Fixing one grouping across time instead of reshuffling at every step
+changes the error by at most $0.0021$ NRMSE, with every interval containing
+zero. The grouping convention therefore matters far less than ordinary
+run-to-run variation. Figure~\ref{fig:controls} collects these controls.
 
 \begin{figure}[t]
   \centering
@@ -109,21 +123,23 @@ summarizes the matched controls for all four tasks.
   \label{fig:controls}
 \end{figure}
 
-\subsection{Hardware transfer}
+\subsection{Transfer to hardware}
 
-All four tasks have positive mean EV minus Grouped differences on both processors
-(Fig.~\ref{fig:hardware}): 0.038--0.153 NRMSE on \emph{ibm\_fez} and
-0.031--0.103 on \emph{ibm\_marrakesh}. For Santa Fe, EV decreases from
-\QAIHardwareFezSantaEV{} to \QAIHardwareFezSantaGrouped{} on Fez, a gain of
-\QAIHardwareFezSantaGain{} ($[\QAIHardwareFezSantaGainLow,
-\QAIHardwareFezSantaGainHigh]$), and from \QAIHardwareMarrakeshSantaEV{} to
-\QAIHardwareMarrakeshSantaGrouped{} on Marrakesh, a gain of
-\QAIHardwareMarrakeshSantaGain{} ($[\QAIHardwareMarrakeshSantaGainLow,
-\QAIHardwareMarrakeshSantaGainHigh]$). Grouped wins \QAIHardwareSantaWins{}
-blocks on each processor. Santa Fe was acquired later using the same circuit,
-physical layouts, and analysis. These paired intervals are descriptive of
-variation among measurement blocks within one acquisition. They do not measure
-variation across independent hardware campaigns.
+The same experiment was run without error mitigation on two superconducting
+processors, \emph{ibm\_fez} and \emph{ibm\_marrakesh}
+(Fig.~\ref{fig:hardware}). Grouped improves every task on both machines, with
+mean gains from $0.038$ to $0.153$ NRMSE on \emph{ibm\_fez} and from $0.031$ to
+$0.103$ on \emph{ibm\_marrakesh}. On Santa Fe laser, the error falls from
+$0.750$ to $0.711$ on \emph{ibm\_fez}, a gain of $0.038$
+($[0.027,0.050]$), and from $0.744$ to $0.713$ on
+\emph{ibm\_marrakesh}, a gain of $0.031$ ($[0.023,0.039]$).
+Grouped is more accurate in $19$ of $20$ measurement blocks on each processor.
+Santa Fe was collected later with the same circuit, qubit layout, and analysis.
+
+These intervals describe variation among the twenty measurement blocks of a
+single acquisition. They do not measure variation across independent hardware
+campaigns, so the hardware results demonstrate consistent transfer of the
+effect rather than a precise device-level comparison.
 
 \begin{figure}[!b]
   \centering

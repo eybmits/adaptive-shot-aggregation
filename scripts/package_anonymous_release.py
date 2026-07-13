@@ -219,15 +219,9 @@ def sanitized_main() -> str:
         raise RuntimeError("main manuscript title differs from the restored paper title")
     text = _replace_author_block(text, label="main")
     text = text.replace("\\usepackage{orcidlink}\n", "")
-    bibliography_balance_pattern = re.compile(
-        r"\\ifdefined\\ANON\s*\\balance\s*\\fi"
-    )
-    text, count = bibliography_balance_pattern.subn(
-        r"\\balance", text, count=1
-    )
-    if count != 1:
+    if text.count("\\balance") != 1:
         raise RuntimeError(
-            "main: expected one anonymous bibliography-balance branch"
+            "main: expected one bibliography-balance command"
         )
     if "\\input{sections/conclusion.tex}" not in text:
         # Backwards-compatible fail-closed handling if the restored source is
@@ -268,11 +262,13 @@ def sanitized_conclusion() -> str:
 
     text = (PAPER / "sections" / "conclusion.tex").read_text(encoding="utf-8")
     artifact_pattern = re.compile(
-        r"\\ifdefined\\ANON\\else\s*The named artifact is available.*?\\fi",
+        r"\\ifdefined\\ANON\s*artifact\\else\s*"
+        r"\\href\{https://github\.com/eybmits/split-ensemble-qrc\}"
+        r"\{artifact\}\\fi",
         re.DOTALL,
     )
     text, count = artifact_pattern.subn(
-        r"The anonymous artifact will be available at \\AnonymousArtifactURL.", text, count=1
+        r"artifact", text, count=1
     )
     if count != 1:
         raise RuntimeError(f"conclusion: expected one named artifact branch, replaced {count}")
