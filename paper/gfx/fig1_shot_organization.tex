@@ -181,45 +181,45 @@
   \end{scope}
 
 % ========================================================================
-% Frozen six-qubit line reservoir.  The six nodes and five links match the
-% actual hardware circuit; alternating colors indicate heterogeneous local
-% rotations, not two different qubit species.
+% Frozen six-qubit reservoir.  The compact network layout restores the visual
+% language of the original figure while retaining the current outward arrows.
+% The six nodes and five links still represent the simulated nearest-neighbor
+% circuit; colors indicate heterogeneous local rotations.
 % ========================================================================
   \begin{scope}[shift={(7.02,0.76)},x=0.90cm,y=0.64cm]
     \node[stage] at (0,2.22) {Quantum reservoir};
 
-    % A restrained module boundary separates the quantum circuit from the
-    % surrounding page without competing with the colored method boxes.
-    \node[draw=qnodeblue!18,fill=white,rounded corners=5pt,
+    % A softly lifted white panel separates the circuit from the page.
+    \node[respanel,fill=white,
           minimum width=3.75cm,minimum height=1.86cm] (reservoirpanel) at (0,0.38) {};
 
-    \coordinate (cq0) at (-1.42,-0.02);
-    \coordinate (cq1) at (-0.85,0.82);
-    \coordinate (cq2) at (-0.28,-0.02);
-    \coordinate (cq3) at ( 0.28,0.82);
-    \coordinate (cq4) at ( 0.85,-0.02);
-    \coordinate (cq5) at ( 1.42,0.82);
+    \coordinate (cq0) at (-1.18, 0.02);
+    \coordinate (cq1) at (-0.58, 0.70);
+    \coordinate (cq2) at (-0.53,-0.62);
+    \coordinate (cq3) at ( 0.08, 0.23);
+    \coordinate (cq4) at ( 0.38,-0.58);
+    \coordinate (cq5) at ( 1.10, 0.54);
 
     \foreach \a/\b in {cq0/cq1,cq1/cq2,cq2/cq3,cq3/cq4,cq4/cq5}{
       \draw[graphlink] (\a) -- (\b);
     }
 
-    \node[qred]  (r1) at (cq0) {};
-    \node[qblue] (b1) at (cq1) {};
-    \node[qred]  (r2) at (cq2) {};
-    \node[qblue] (b2) at (cq3) {};
-    \node[qred]  (r3) at (cq4) {};
-    \node[qblue] (b3) at (cq5) {};
+    \node[qred]  (q0) at (cq0) {};
+    \node[qblue] (q1) at (cq1) {};
+    \node[qblue] (q2) at (cq2) {};
+    \node[qred]  (q3) at (cq3) {};
+    \node[qred]  (q4) at (cq4) {};
+    \node[qblue] (q5) at (cq5) {};
     % Anchor preserves the meter geometry independently of the visible panel.
-    \node[fit=(r1)(b1)(r2)(b2)(r3)(b3),
+    \node[fit=(q0)(q1)(q2)(q3)(q4)(q5),
           inner sep=1.5pt] (resbox) {};
 
-    \draw[redflow]  (r1.south west) -- ++(-0.26,-0.20);
-    \draw[blueflow] (b1.north) -- ++(0,0.31);
-    \draw[redflow]  (r2.south) -- ++(0,-0.31);
-    \draw[blueflow] (b2.north) -- ++(0,0.31);
-    \draw[redflow]  (r3.south) -- ++(0,-0.31);
-    \draw[blueflow] (b3.east) -- ++(0.30,0.00);
+    \draw[redflow]  (q0.south west) -- ++(-0.24,-0.22);
+    \draw[blueflow] (q1.north west) -- ++(-0.18,0.27);
+    \draw[blueflow] (q2.south west) -- ++(-0.20,-0.22);
+    \draw[redflow]  (q3.north) -- ++(0,0.30);
+    \draw[redflow]  (q4.south east) -- ++(0.18,-0.24);
+    \draw[blueflow] (q5.east) -- ++(0.30,0.00);
     \coordinate (reservoirout) at (0.00,-0.82);
   \end{scope}
 
