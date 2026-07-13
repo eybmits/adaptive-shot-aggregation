@@ -274,7 +274,6 @@ def _fig2_panel_a(ax: plt.Axes, balanced: pd.DataFrame) -> None:
     ax.set_yticks(y, [str(i + 1) for i in range(len(y))])
     ax.set_ylim(-0.55, len(y) - 0.45)
     ax.set_xlabel("Test error (NRMSE)", labelpad=2)
-    ax.set_title("Five Mackey–Glass series", fontweight="bold", fontsize=6.8, pad=4.2)
     ax.xaxis.set_major_locator(MaxNLocator(3))
     ax.tick_params(axis="y", length=0)
     _panel_letter(ax, "a", x=-0.16)
@@ -313,7 +312,6 @@ def _fig2_panel_b(ax: plt.Axes, validation: pd.DataFrame) -> None:
     ax.set_xticks(x, [str(k) for k in K_BALANCED])
     ax.set_xlabel("Shots per group $k$", labelpad=2)
     ax.set_ylabel("Validation error (NRMSE)", labelpad=2)
-    ax.set_title("Choosing the group size", fontweight="bold", pad=3.5)
     ax.yaxis.set_major_locator(MaxNLocator(3))
     _panel_letter(ax, "b", x=-0.16)
     _open_axes(ax)
@@ -350,12 +348,6 @@ def _fig2_panel_c(ax: plt.Axes, validation: pd.DataFrame) -> None:
     ax.set_xticks(x, [str(k) for k in K_BALANCED])
     ax.set_xlabel("Shots per group $k$", labelpad=2)
     ax.set_ylabel("Error relative to EV (%)", labelpad=2)
-    ax.set_title(
-        "Group size across tasks",
-        fontweight="bold",
-        fontsize=5.9,
-        pad=5.0,
-    )
     ax.yaxis.set_major_locator(MaxNLocator(4))
     ax.legend(
         loc="upper center",
@@ -402,12 +394,6 @@ def _fig2_panel_d(ax: plt.Axes, balanced: pd.DataFrame) -> None:
     ax.set_yticks(y, [TASK_SHORT[task] for task in TASKS])
     ax.set_ylim(-0.55, len(TASKS) - 0.45)
     ax.set_xlabel("Test error (NRMSE)", labelpad=2)
-    ax.set_title(
-        "Final test comparison",
-        fontweight="bold",
-        fontsize=6.1,
-        pad=5.0,
-    )
     ax.xaxis.set_major_locator(MaxNLocator(3))
     ax.tick_params(axis="y", length=0, pad=1.0)
     _panel_letter(ax, "d", x=-0.22)
@@ -483,7 +469,6 @@ def figure_3(rows: pd.DataFrame) -> None:
         span = max(high_bound - low_bound, 0.025)
         ax.set_ylim(low_bound - 0.10 * span, high_bound + 0.13 * span)
         ax.set_xticks(x, [str(value) for value in TIME_STEPS])
-        ax.set_title(TASK_TITLES[task], fontweight="bold", pad=3.5)
         ax.yaxis.set_major_locator(MaxNLocator(4))
         if index >= 2:
             ax.set_xlabel("Observed time steps $T$", labelpad=2)
@@ -543,7 +528,6 @@ def figure_4(rows: pd.DataFrame) -> None:
                 capthick=1.0,
                 zorder=4,
             )
-        ax.set_title(TASK_TITLES[task], fontweight="bold", pad=3.5)
         ax.set_yticks(y, [METHOD_LABELS[m] for m in methods])
         ax.set_ylim(-0.55, len(methods) - 0.45)
         ax.tick_params(axis="y", length=0, pad=1.5)

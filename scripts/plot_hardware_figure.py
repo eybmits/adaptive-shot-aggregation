@@ -121,7 +121,6 @@ def main() -> None:
                 handles.append(line)
         axis.set_xticks(x, [str(k) for k in k_values])
         axis.set_xlabel("Aggregation scale $k$")
-        axis.set_title(name, fontweight="bold")
         axis.text(-0.30 if column == 0 else -0.10, 1.05, "ab"[column], transform=axis.transAxes, fontsize=9, fontweight="bold")
     axes[0, 0].set_ylabel("Development NRMSE")
     axes[0, 0].legend(

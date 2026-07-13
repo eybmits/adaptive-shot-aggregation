@@ -65,7 +65,8 @@ Grouped on all four task means.
   \centering
   \includegraphics[width=\columnwidth]{fig3_regime_map.pdf}
   \caption{\fontsize{7.25}{8.0}\selectfont When aggregation helps most, at a fixed budget of ten thousand
-  circuit executions. Each panel is one task. The vertical axis shows how much
+  circuit executions. Panels (a)--(d) show Mackey--Glass, Santa Fe laser,
+  R\"ossler, and sunspots, respectively. The vertical axis shows how much
   Grouped improves on full averaging, measured as the EV error minus the
   Grouped error, so a value above the dashed zero line means Grouped wins and a
   value on the line means a tie. Moving right spends the same budget on more
@@ -113,8 +114,10 @@ run-to-run variation. Figure~\ref{fig:controls} collects these controls.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
-  \caption{\fontsize{7.25}{8.0}\selectfont Why the gain is regularization, shown task by task. Each panel places
-  the four methods on the same error axis, where lower is better. Grouped (teal
+  \caption{\fontsize{7.25}{7.75}\selectfont Why the gain is regularization, shown task by task. Panels (a)--(d)
+  show Mackey--Glass, Santa Fe laser, R\"ossler, and sunspots, respectively.
+  Each panel places the four methods on the same error axis, where lower is
+  better. Grouped (teal
   diamond) and Cov-EV (purple square) sit lowest and almost on top of each other
   on every task, EV (open circle) is behind them, and Raw (yellow, individual
   shots) is worst. The near-match between Grouped and Cov-EV is the key point.
@@ -139,11 +142,12 @@ of $20$ measurement blocks on each processor.
 \begin{figure}[!b]
   \centering
   \includegraphics[width=\columnwidth]{fig5_hardware.pdf}
-  \caption{\fontsize{7.25}{8.0}\selectfont The same effect on real hardware, on two processors. A separate
+  \caption{\fontsize{7.25}{7.75}\selectfont The same effect on real hardware, on two processors. A separate
   ten-qubit reservoir was run without error mitigation on \emph{ibm\_fez} and
   \emph{ibm\_marrakesh}. For each task and processor, one acquisition of $400$
   shots at each of $T=500$ time steps was split into twenty disjoint records
-  with $N=20$. (a,b)~The aggregation spectrum. On both devices the development
+  with $N=20$. Panels (a,c) show \emph{ibm\_fez}; panels (b,d) show
+  \emph{ibm\_marrakesh}. (a,b)~The aggregation spectrum. On both devices the development
   error traces the same U shape over the aggregation scale $k$, so an
   intermediate scale again beats both endpoints on every task. (c,d)~The
   improvement per task, measured as the EV error minus the Grouped error, where
