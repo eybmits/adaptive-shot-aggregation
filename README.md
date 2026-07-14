@@ -22,7 +22,17 @@ Grouped training averages disjoint sets of shots. The group size `k` and ridge
 strength are chosen on chronological development data. The circuit, targets,
 raw measurements, and test procedure remain fixed across methods.
 
-![Shot grouping overview](docs/assets/shot_grouping_overview.png)
+<p align="center">
+  <a href="paper/gfx/fig1_shot_organization.pdf">
+    <img src="docs/assets/shot_grouping_overview.svg"
+         alt="Shot grouping overview: EV, Grouped, and Raw representations of one measurement record"
+         width="760">
+  </a>
+</p>
+
+<p align="center">
+  <a href="paper/gfx/fig1_shot_organization.pdf">Open Figure 1 as a publication-quality vector PDF</a>
+</p>
 
 ## Main result
 
