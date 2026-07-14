@@ -1,4 +1,4 @@
-% Standalone supplementary material for the QCE26 NIER short paper.
+% Standalone supplementary material for the main paper.
 % Named build:     latexmk -pdf -interaction=nonstopmode -halt-on-error supplement.tex
 % Anonymous build: latexmk -pdf -interaction=nonstopmode -halt-on-error supplement_anon.tex
 \documentclass[10pt,conference]{IEEEtran}
@@ -23,7 +23,7 @@
   citecolor=citegreen,
   urlcolor=paperblue,
   pdfborder={0 0 0},
-  pdftitle={Supplementary Material: From Quantum Shots to Training Data: Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning},
+  pdftitle={Supplementary Material: From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning},
   pdfsubject={Robust protocol, exact covariance identity, ablations, hardware provenance, and reproducibility}
 }
 \urlstyle{same}
@@ -40,7 +40,7 @@
 
 \title{Supplementary Material for\\
 \emph{From Quantum Shots to Training Data:\\
-Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning}}
+Reorganizing Measurement Records in Quantum Machine Learning}}
 
 \ifdefined\ANON
   \hypersetup{pdfauthor={}}
@@ -107,6 +107,18 @@ $G^{-1}\sum_g(w^\top d_t^{(g)})^2=w^\top C_{k,t}w$.  Averaging over $t$ gives
 \end{equation}
 which is deterministic and assumes neither Gaussian noise, isotropy, nor
 independence across time.
+
+For a fixed set of $N$ shot-level feature vectors on one common scale, define
+$S_{\mathrm{shot},t}=N^{-1}\sum_n(x_t^{(n)}-\bar x_t)
+(x_t^{(n)}-\bar x_t)^\top$. A group mean is a sample without replacement, so
+the finite-population covariance formula gives
+\begin{equation}
+  \mathbb E_{\mathcal P}[C_{k,t}]
+  =\frac{N-k}{k(N-1)}S_{\mathrm{shot},t}.
+  \label{eq:supp-expected-group-covariance}
+\end{equation}
+The factor is one for Raw and zero for EV. This statement precedes the
+representation-specific standardization used to fit each candidate $k$.
 
 \subsection{Scaling used in the implementation}
 

@@ -20,7 +20,7 @@ PAPER = ROOT / "paper" if (ROOT / "paper").is_dir() else ROOT
 TASKS = ("mackey_glass", "santa_fe_laser", "rossler", "sunspots")
 PAPER_TITLE = (
     "From Quantum Shots to Training Data: "
-    "Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning"
+    "Reorganizing Measurement Records in Quantum Machine Learning"
 )
 
 
@@ -195,6 +195,10 @@ def main() -> None:
     require("Lorenz" not in headline_table,
             "removed task is absent from the active headline table")
     require("Santa Fe" in manuscript_sources, "Santa Fe is present in manuscript sources")
+    normalized_main_sections = " ".join(main_section_sources.casefold().split())
+    require("exploratory extension" in normalized_main_sections
+            and "not a preregistered confirmation" in normalized_main_sections,
+            "main paper discloses the exploratory Santa Fe extension")
     require("NIER" not in main_section_sources,
             "main text does not use the submission category as scientific framing")
     dense_implementation_terms = re.compile(r"\b(?:row|rows|matrix|matrices|nested)\b", re.I)
@@ -217,7 +221,7 @@ def main() -> None:
             "hardware transfer is distinguished from the simulation reservoir")
     require(r"\documentclass[10pt,conference]{IEEEtran}" in main_source
             and "a4paper" not in main_source,
-            "manuscript uses the QCE26 IEEEtran class declaration")
+            "manuscript uses the IEEE conference class declaration")
     require(not any(term in manuscript_sources for term in ("NO-GO", "post-hoc", "replaces Lorenz")),
             "main and supplement avoid obsolete decision-gate framing")
     obsolete_hardware = (

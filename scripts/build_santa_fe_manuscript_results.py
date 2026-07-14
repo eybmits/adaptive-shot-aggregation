@@ -9,6 +9,7 @@ that the merged directory cannot be mistaken for a preregistered campaign.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -62,7 +63,7 @@ def merge_csv(name: str) -> dict[str, object]:
     return {"rows": int(len(merged)), "sha256": sha256(output)}
 
 
-def main() -> None:
+def build() -> None:
     OUTPUT.mkdir(parents=True, exist_ok=True)
     outputs = {name: merge_csv(name) for name in CSV_FILES}
 
@@ -102,6 +103,53 @@ def main() -> None:
     print(f"wrote {manifest_path}")
     for name, metadata in outputs.items():
         print(f"wrote {OUTPUT / name} ({metadata['rows']} rows)")
+
+
+def validate() -> None:
+    """Validate the frozen merge without modifying any evidence file."""
+
+    manifest_path = OUTPUT / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("status") != "complete-exploratory-posthoc-santa-fe-substitution":
+        raise RuntimeError("unexpected merged-evidence status")
+    if tuple(manifest.get("tasks", ())) != TASKS:
+        raise RuntimeError("unexpected merged-evidence task order")
+    sources = manifest.get("source_results", {})
+    expected_sources = {
+        "original_three_tasks": ORIGINAL / "manifest.json",
+        "santa_fe_laser": SANTA_FE / "manifest.json",
+    }
+    for key, path in expected_sources.items():
+        expected = sources.get(key, {}).get("manifest_sha256")
+        if expected != sha256(path):
+            raise RuntimeError(f"{key}: source manifest hash mismatch")
+    outputs = manifest.get("outputs", {})
+    for name in CSV_FILES:
+        path = OUTPUT / name
+        metadata = outputs.get(name, {})
+        if metadata.get("sha256") != sha256(path):
+            raise RuntimeError(f"{name}: SHA-256 mismatch")
+        if int(metadata.get("rows", -1)) != len(pd.read_csv(path)):
+            raise RuntimeError(f"{name}: row-count mismatch")
+    print(f"validated {manifest_path} and {len(CSV_FILES)} frozen tables")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--validate-only",
+        action="store_true",
+        help="check the frozen merged evidence without rewriting it",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    if args.validate_only:
+        validate()
+    else:
+        build()
 
 
 if __name__ == "__main__":

@@ -30,6 +30,12 @@ from scipy import stats
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = ROOT / "results" / "qai_robust_protocol_santa_fe_manuscript"
 FIGURE_DIR = ROOT / "paper" / "figures"
+PDF_METADATA = {
+    "Creator": "Adaptive shot aggregation publication pipeline",
+    "Producer": "Matplotlib",
+    "CreationDate": None,
+    "ModDate": None,
+}
 
 # Original manuscript palette.
 FULL_AVERAGE = "#4a6fa5"
@@ -89,20 +95,48 @@ K_BALANCED = (1, 2, 4, 5, 10, 20)
 TIME_STEPS = (250, 500, 1000)
 TIME_TO_SETTING = {250: "shot_rich", 500: "balanced", 1000: "data_rich"}
 
+# Level 2 publication enlargement.  The physical figure dimensions and data
+# geometry stay fixed; only strokes, markers, and typography are enlarged.
+LINE_SCALE = 1.70
+MARKER_SCALE = 1.50
+TEXT_SCALE = 1.15
+
+
+def _lw(value: float) -> float:
+    return value * LINE_SCALE
+
+
+def _ms(value: float) -> float:
+    return value * MARKER_SCALE
+
+
+def _mew(value: float) -> float:
+    return value * MARKER_SCALE
+
+
+def _ma(value: float) -> float:
+    """Scale scatter-marker area while preserving marker shape."""
+
+    return value * MARKER_SCALE**2
+
+
+def _fs(value: float) -> float:
+    return value * TEXT_SCALE
+
 plt.rcParams.update(
     {
         "font.family": "sans-serif",
         "font.sans-serif": ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"],
         "mathtext.fontset": "dejavusans",
-        "font.size": 7.0,
-        "axes.titlesize": 7.5,
-        "axes.labelsize": 7.0,
-        "xtick.labelsize": 6.3,
-        "ytick.labelsize": 6.3,
-        "legend.fontsize": 5.7,
-        "axes.linewidth": 0.7,
-        "xtick.major.width": 0.7,
-        "ytick.major.width": 0.7,
+        "font.size": _fs(7.0),
+        "axes.titlesize": _fs(7.5),
+        "axes.labelsize": _fs(7.0),
+        "xtick.labelsize": _fs(6.3),
+        "ytick.labelsize": _fs(6.3),
+        "legend.fontsize": _fs(5.7),
+        "axes.linewidth": _lw(0.7),
+        "xtick.major.width": _lw(0.7),
+        "ytick.major.width": _lw(0.7),
         "xtick.major.size": 2.5,
         "ytick.major.size": 2.5,
         "xtick.direction": "out",
@@ -119,9 +153,9 @@ plt.rcParams.update(
 def _open_axes(ax: plt.Axes) -> None:
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_linewidth(0.7)
-    ax.spines["bottom"].set_linewidth(0.7)
-    ax.tick_params(width=0.7, length=2.5, pad=1.8)
+    ax.spines["left"].set_linewidth(_lw(0.7))
+    ax.spines["bottom"].set_linewidth(_lw(0.7))
+    ax.tick_params(width=_lw(0.7), length=2.5, pad=1.8)
     ax.grid(False)
 
 
@@ -135,7 +169,7 @@ def _panel_letter(ax: plt.Axes, letter: str, *, x: float = -0.13) -> None:
         transform=ax.transAxes,
         ha="left",
         va="bottom",
-        fontsize=9.0,
+        fontsize=_fs(9.0),
         fontweight="bold",
         clip_on=False,
     )
@@ -151,7 +185,7 @@ def _task_label(ax: plt.Axes, task: str) -> None:
         transform=ax.transAxes,
         ha="right",
         va="top",
-        fontsize=6.2,
+        fontsize=_fs(6.2),
         fontweight="bold",
         color=BLACK,
         bbox={"boxstyle": "round,pad=0.16", "facecolor": "white", "edgecolor": "none", "alpha": 0.90},
@@ -267,7 +301,7 @@ def _save(fig: plt.Figure, stem: str) -> None:
     FIGURE_DIR.mkdir(parents=True, exist_ok=True)
     pdf = FIGURE_DIR / f"{stem}.pdf"
     png = FIGURE_DIR / f"{stem}.png"
-    fig.savefig(pdf)
+    fig.savefig(pdf, metadata=PDF_METADATA)
     fig.savefig(png, dpi=600)
     plt.close(fig)
     print(f"wrote {pdf}")
@@ -287,14 +321,14 @@ def _fig2_panel_a(ax: plt.Axes, balanced: pd.DataFrame) -> None:
             [row["ev"], row["split"]],
             [yi, yi],
             color=SPLIT,
-            lw=1.25,
+            lw=_lw(1.25),
             alpha=0.82,
             solid_capstyle="round",
             zorder=2,
         )
-        ax.plot(row["raw"], yi, "o", color=RAW, ms=3.7, mec="white", mew=0.5, zorder=3)
-        ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=0.9, ms=4.1, zorder=4)
-        ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=0.55, ms=4.0, zorder=5)
+        ax.plot(row["raw"], yi, "o", color=RAW, ms=_ms(3.7), mec="white", mew=_mew(0.5), zorder=3)
+        ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=_mew(0.9), ms=_ms(4.1), zorder=4)
+        ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=_mew(0.55), ms=_ms(4.0), zorder=5)
     ax.set_yticks(y, [str(i + 1) for i in range(len(y))])
     ax.set_ylim(-0.55, len(y) - 0.45)
     ax.set_xlabel("Test error (NRMSE)", labelpad=2)
@@ -318,7 +352,7 @@ def _fig2_panel_b(ax: plt.Axes, validation: pd.DataFrame) -> None:
         ax.scatter(
             x[K_BALANCED.index(k)] + jitter,
             values,
-            s=8,
+            s=_ma(8),
             color=SPLIT,
             alpha=0.18,
             linewidth=0,
@@ -328,14 +362,14 @@ def _fig2_panel_b(ax: plt.Axes, validation: pd.DataFrame) -> None:
     low_arr = np.asarray(lows)
     high_arr = np.asarray(highs)
     ax.fill_between(x, low_arr, high_arr, color=SPLIT, alpha=0.12, linewidth=0, zorder=2)
-    ax.plot(x, mean_arr, color=SPLIT, lw=1.35, marker="o", ms=3.2, mec="white", mew=0.55, zorder=3)
-    ax.plot(x[0], mean_arr[0], "s", color=RAW, ms=4.3, mec="white", mew=0.55, zorder=4)
-    ax.plot(x[-1], mean_arr[-1], "s", color=FULL_AVERAGE, ms=4.3, mec="white", mew=0.55, zorder=4)
+    ax.plot(x, mean_arr, color=SPLIT, lw=_lw(1.35), marker="o", ms=_ms(3.2), mec="white", mew=_mew(0.55), zorder=3)
+    ax.plot(x[0], mean_arr[0], "s", color=RAW, ms=_ms(4.3), mec="white", mew=_mew(0.55), zorder=4)
+    ax.plot(x[-1], mean_arr[-1], "s", color=FULL_AVERAGE, ms=_ms(4.3), mec="white", mew=_mew(0.55), zorder=4)
     best = int(np.argmin(mean_arr))
-    ax.plot(x[best], mean_arr[best], "*", color="#14705f", ms=8.5, mec="white", mew=0.5, zorder=5)
+    ax.plot(x[best], mean_arr[best], "*", color="#14705f", ms=_ms(8.5), mec="white", mew=_mew(0.5), zorder=5)
     ax.set_xticks(x, [str(k) for k in K_BALANCED])
     ax.set_xlabel("Shots per group $k$", labelpad=2)
-    ax.set_ylabel("Validation error (NRMSE)", labelpad=2)
+    ax.set_ylabel("NRMSE", labelpad=2)
     ax.yaxis.set_major_locator(MaxNLocator(3))
     _panel_letter(ax, "b", x=-0.16)
     _open_axes(ax)
@@ -361,28 +395,37 @@ def _fig2_panel_c(ax: plt.Axes, validation: pd.DataFrame) -> None:
             x,
             means,
             color=color,
-            lw=1.12,
+            lw=_lw(1.12),
             marker=TASK_MARKERS[task],
-            ms=2.8,
+            ms=_ms(2.8),
             mec="white",
-            mew=0.45,
-            label=TASK_SHORT[task],
+            mew=_mew(0.45),
+            label="M-Glass" if task == "mackey_glass" else TASK_SHORT[task],
         )
-    ax.axhline(100.0, color=NEUTRAL, lw=0.65, ls=(0, (3, 2)), zorder=0)
+    ax.axhline(100.0, color=NEUTRAL, lw=_lw(0.65), ls=(0, (3, 2)), zorder=0)
     ax.set_xticks(x, [str(k) for k in K_BALANCED])
     ax.set_xlabel("Shots per group $k$", labelpad=2)
     ax.set_ylabel("Error relative to EV (%)", labelpad=2)
     ax.yaxis.set_major_locator(MaxNLocator(4))
-    ax.legend(
+    # Keep the enlarged two-row legend in a clear header above every band.
+    ax.set_ylim(80.0, 152.0)
+    legend = ax.legend(
         loc="upper center",
         ncol=2,
-        fontsize=5.3,
+        fontsize=_fs(4.9),
+        frameon=True,
+        facecolor="white",
+        edgecolor="#d6dbe3",
+        framealpha=1.0,
+        fancybox=True,
+        borderpad=0.30,
         handlelength=1.1,
         handletextpad=0.3,
         columnspacing=0.65,
         labelspacing=0.25,
         borderaxespad=0.15,
     )
+    legend.get_frame().set_linewidth(_lw(0.8))
     _panel_letter(ax, "c", x=-0.23)
     _open_axes(ax)
 
@@ -399,22 +442,23 @@ def _fig2_panel_d(ax: plt.Axes, balanced: pd.DataFrame) -> None:
             [row["ev"], row["split"]],
             [yi, yi],
             color=SPLIT,
-            lw=1.5,
+            lw=_lw(1.5),
             solid_capstyle="round",
             zorder=2,
         )
-        ax.plot(row["raw"], yi, "o", color=RAW, ms=3.8, mec="white", mew=0.5, zorder=3)
-        ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=0.95, ms=4.4, zorder=4)
-        ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=0.55, ms=4.2, zorder=5)
+        ax.plot(row["raw"], yi, "o", color=RAW, ms=_ms(3.8), mec="white", mew=_mew(0.5), zorder=3)
+        ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=_mew(0.95), ms=_ms(4.4), zorder=4)
+        ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=_mew(0.55), ms=_ms(4.2), zorder=5)
 
     xmin, xmax = min(all_values), max(all_values)
     span = xmax - xmin
-    ax.set_xlim(xmin - 0.10 * span, xmax + 0.55 * span)
+    # Reserve room for the enlarged result labels without changing any data.
+    ax.set_xlim(xmin - 0.10 * span, xmax + 0.68 * span)
     label_x = xmax + 0.12 * span
     for yi, task in zip(y, TASKS):
         row = wide.loc[task]
         delta = float(row["ev"] - row["split"])
-        ax.text(label_x, yi, f"{delta:.3f} lower", ha="left", va="center", fontsize=5.2, color="#14705f")
+        ax.text(label_x, yi, f"{delta:.3f} lower", ha="left", va="center", fontsize=_fs(5.2), color="#14705f")
     ax.set_yticks(y, [TASK_SHORT[task] for task in TASKS])
     ax.set_ylim(-0.55, len(TASKS) - 0.45)
     ax.set_xlabel("Test error (NRMSE)", labelpad=2)
@@ -463,29 +507,29 @@ def figure_3(rows: pd.DataFrame) -> None:
             ax.scatter(
                 np.full(len(values), xpos) + jitter,
                 values,
-                s=10,
+                s=_ma(10),
                 color=TASK_COLORS[task],
                 alpha=0.22,
                 linewidth=0,
                 zorder=1,
             )
         color = TASK_COLORS[task]
-        ax.axhline(0.0, color=NEUTRAL, lw=0.65, ls=(0, (3, 2)), zorder=0)
+        ax.axhline(0.0, color=NEUTRAL, lw=_lw(0.65), ls=(0, (3, 2)), zorder=0)
         ax.fill_between(x, lows, highs, color=color, alpha=0.10, linewidth=0, zorder=2)
-        ax.plot(x, means, color=color, lw=1.25, solid_capstyle="round", zorder=3)
+        ax.plot(x, means, color=color, lw=_lw(1.25), solid_capstyle="round", zorder=3)
         ax.errorbar(
             x,
             means,
             yerr=[np.asarray(means) - np.asarray(lows), np.asarray(highs) - np.asarray(means)],
             fmt=TASK_MARKERS[task],
-            ms=4.0,
+            ms=_ms(4.0),
             mfc=color,
             mec="white",
-            mew=0.55,
+            mew=_mew(0.55),
             ecolor=color,
-            elinewidth=0.9,
+            elinewidth=_lw(0.9),
             capsize=2.0,
-            capthick=0.9,
+            capthick=_lw(0.9),
             zorder=4,
         )
         low_bound = min(0.0, min(lows), float(sub["gain"].min()))
@@ -530,7 +574,7 @@ def figure_4(rows: pd.DataFrame) -> None:
             ax.scatter(
                 values,
                 np.full(len(values), yi) + jitter,
-                s=9,
+                s=_ma(9),
                 color=color,
                 alpha=0.22,
                 linewidth=0,
@@ -543,18 +587,19 @@ def figure_4(rows: pd.DataFrame) -> None:
                 yi,
                 xerr=[[mean - low], [high - mean]],
                 fmt=marker,
-                ms=4.3 if method != "split" else 4.7,
+                ms=_ms(4.3 if method != "split" else 4.7),
                 mfc=marker_face,
                 mec=color if method == "ev" else "white",
-                mew=0.85 if method == "ev" else 0.55,
+                mew=_mew(0.85 if method == "ev" else 0.55),
                 ecolor=color,
-                elinewidth=1.0,
+                elinewidth=_lw(1.0),
                 capsize=2.2,
-                capthick=1.0,
+                capthick=_lw(1.0),
                 zorder=4,
             )
         ax.set_yticks(y, [METHOD_LABELS[m] for m in methods])
-        ax.set_ylim(-0.55, len(methods) - 0.45)
+        # Keep a clear header strip for the enlarged in-panel task label.
+        ax.set_ylim(-0.55, len(methods) - 0.15)
         ax.tick_params(axis="y", length=0, pad=1.5)
         ax.xaxis.set_major_locator(MaxNLocator(3))
         if index >= 2:

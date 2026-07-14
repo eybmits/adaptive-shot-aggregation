@@ -1,6 +1,10 @@
 PYTHON ?= python
+SOURCE_DATE_EPOCH ?= 1783987200
+FORCE_SOURCE_DATE ?= 1
+TZ ?= UTC
+export SOURCE_DATE_EPOCH FORCE_SOURCE_DATE TZ
 
-.PHONY: help test verify figures hardware paper release all clean
+.PHONY: help test verify figures hardware paper release arxiv all clean
 
 help:
 	@printf '%s\n' \
@@ -9,14 +13,16 @@ help:
 	  'make figures   Rebuild all five manuscript figures from source evidence' \
 	  'make hardware  Reanalyze archived IBM records and rebuild Fig. 5' \
 	  'make paper     Build named and anonymous papers and supplements' \
-	  'make release   Build and verify the anonymous source package' \
-	  'make all       Run test, figures, paper, verify, and release' \
+	  'make release   Build and verify the anonymous review package' \
+	  'make arxiv     Build and verify the named arXiv source ZIP' \
+	  'make all       Run tests and rebuild every publication artifact' \
 	  'make clean     Remove local caches and TeX intermediates'
 
 test:
 	$(PYTHON) -m pytest -q
 
 verify:
+	$(PYTHON) scripts/build_santa_fe_manuscript_results.py --validate-only
 	$(PYTHON) scripts/verify_santa_fe_manuscript.py
 
 figures:
@@ -37,19 +43,22 @@ paper:
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error supplement.tex
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error supplement_anon.tex
 	mkdir -p output/pdf
-	rm -f output/pdf/split_ensemble_qrc_*.pdf
-	cp paper/main.pdf output/pdf/QCE26_NIER_split_ensemble_qrc_named.pdf
-	cp paper/main_anon.pdf output/pdf/QCE26_NIER_split_ensemble_qrc_anonymous.pdf
-	cp paper/supplement.pdf output/pdf/QCE26_NIER_split_ensemble_qrc_supplement.pdf
-	cp paper/supplement_anon.pdf output/pdf/QCE26_NIER_split_ensemble_qrc_supplement_anonymous.pdf
-	cd output/pdf && shasum -a 256 QCE26_NIER_split_ensemble_qrc_named.pdf QCE26_NIER_split_ensemble_qrc_anonymous.pdf QCE26_NIER_split_ensemble_qrc_supplement.pdf QCE26_NIER_split_ensemble_qrc_supplement_anonymous.pdf > SHA256SUMS
+	rm -f output/pdf/*.pdf output/pdf/SHA256SUMS
+	cp paper/main.pdf output/pdf/quantum_shots_to_training_data.pdf
+	cp paper/main_anon.pdf output/pdf/quantum_shots_to_training_data_anonymous.pdf
+	cp paper/supplement.pdf output/pdf/quantum_shots_to_training_data_supplement.pdf
+	cp paper/supplement_anon.pdf output/pdf/quantum_shots_to_training_data_supplement_anonymous.pdf
+	cd output/pdf && shasum -a 256 quantum_shots_to_training_data.pdf quantum_shots_to_training_data_anonymous.pdf quantum_shots_to_training_data_supplement.pdf quantum_shots_to_training_data_supplement_anonymous.pdf > SHA256SUMS
 
 release:
 	$(PYTHON) scripts/package_anonymous_release.py
-	$(PYTHON) release/qce2026_nier_anonymous/verify_release.py
-	$(PYTHON) release/qce2026_nier_anonymous/verify_release.py --build
+	$(PYTHON) release/anonymous_review_package/verify_release.py
+	$(PYTHON) release/anonymous_review_package/verify_release.py --build
 
-all: test figures paper verify release
+arxiv:
+	$(PYTHON) scripts/package_arxiv_source.py
+
+all: test hardware figures paper verify release arxiv
 
 clean:
 	rm -rf .pytest_cache scripts/__pycache__ tests/__pycache__ paper/.pytest_cache

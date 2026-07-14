@@ -1,4 +1,4 @@
-% QCE26 NIER short paper.
+% Main paper source.
 % Named build:     latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 % Anonymous build: latexmk -pdf -interaction=nonstopmode -halt-on-error main_anon.tex
 \documentclass[10pt,conference]{IEEEtran}
@@ -24,8 +24,8 @@
   citecolor=citegreen,
   urlcolor=paperblue,
   pdfborder={0 0 0},
-  pdftitle={From Quantum Shots to Training Data: Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning},
-  pdfsubject={QCE26 NIER short paper on validation based measurement aggregation for quantum reservoir computing},
+  pdftitle={From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning},
+  pdfsubject={Measurement record aggregation for finite shot quantum machine learning},
   pdfkeywords={quantum reservoir computing, finite shot learning, measurement aggregation, time series forecasting}
 }
 \urlstyle{same}
@@ -42,7 +42,7 @@
 \begin{document}
 
 \title{From Quantum Shots to Training Data:\\
-Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning}
+Reorganizing Measurement Records in Quantum Machine Learning}
 
 \ifdefined\ANON
   \hypersetup{pdfauthor={}}
@@ -73,7 +73,7 @@ Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning}
 \input{sections/evaluation.tex}
 \input{sections/conclusion.tex}
 
-\vspace*{-4pt}
+\vspace*{-10pt}
 \balance
 \bibliographystyle{IEEEtranDoi}
 \bibliography{bstcontrol,references}

@@ -14,15 +14,22 @@ the aggregation procedure transfers to another fixed circuit. It is not a
 hardware reproduction of the six-qubit simulation and does not compare qubit
 counts. EV, Grouped, and Raw are always compared within the same circuit record.
 
-| Processor | Santa Fe job | QPU time |
-|---|---|---:|
-| `ibm_fez` | `d99mf4t2su3c739kl9k0` | 55 s |
-| `ibm_marrakesh` | `d99mf52f47jc73a99fj0` | 56 s |
+| Task | `ibm_fez` job | QPU time | `ibm_marrakesh` job | QPU time |
+|---|---|---:|---|---:|
+| Mackey-Glass | `d97pu4d2su3c739ie2d0` | 55 s | `d97ueld2su3c739ijt40` | 56 s |
+| Santa Fe laser | `d99mf4t2su3c739kl9k0` | 55 s | `d99mf52f47jc73a99fj0` | 56 s |
+| Rössler | `d97q01otcv6s73dl9950` | 55 s | `d97uem4qp3as739s93a0` | 56 s |
+| Sunspots | `d97q02d2su3c739ie670` | 55 s | `d97uem8tcv6s73dlet3g` | 56 s |
 
 The raw Santa Fe records are stored once in each processor directory under
 `results/qai_hardware/`. The acquisition manifest with budget, job state,
 hashes, and archived layouts is
 `results/qai_hardware_santa_fe_extension/manifest.json`.
+
+The original processor manifests also retain probe jobs and a legacy Lorenz
+acquisition. Those immutable entries document the acquisition history but are
+not used by the current four-task paper. The table above lists every paper-task
+job.
 
 The twenty records are parts of one acquisition. They quantify variation
 across shot blocks, not across devices, jobs, calibration periods, or hardware

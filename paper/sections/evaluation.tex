@@ -56,21 +56,11 @@ and sunspots, better on Santa Fe, and inconclusive on R\"ossler. Our claims are
 therefore about organizing a chosen reservoir record, not quantum advantage.
 The preferred aggregation scale varies across tasks, trajectories, circuit
 settings, measurement draws, and grouping assignments, and EV is occasionally
-best. Equation~\eqref{eq:loss-decomposition} explains this variation: changing
-$k$ changes which feature combinations the readout is discouraged from using,
-not merely the strength of that regularization. Raw is less accurate than
+best. On a fixed feature scale, Eq.~\eqref{eq:penalty-scale}
+clarifies the role of $k$: it mainly sets the strength of the covariance
+penalty, while a finite random grouping can also change the realized penalty.
+Raw is less accurate than
 Grouped on all four task means.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\columnwidth]{fig3_regime_map.pdf}
-  \caption{When aggregation helps most, at a fixed budget. Each panel shows the
-  improvement of Grouped over EV, measured as $\mathrm{NRMSE}_{\mathrm{EV}} -
-  \mathrm{NRMSE}_{\mathrm{Grouped}}$, so values above zero favor Grouped. Moving
-  right spends the budget on more steps and fewer shots. The gain is largest with
-  many shots and few steps. Markers and bars are means with $95\%$ intervals.}
-  \label{fig:regimes}
-\end{figure}
 
 \subsection{Trading time steps against shots}
 
@@ -91,8 +81,9 @@ supports the regularization mechanism in Eq.~\eqref{eq:loss-decomposition}
 rather than extra device information (Fig.~\ref{fig:controls}). Raw is less
 accurate than EV on Mackey--Glass and R\"ossler and inconclusive on the two
 real-world datasets. At fixed $k$, the exact two-term loss reproduces the
-Grouped ridge fit to numerical precision; Cov-EV independently tunes the
-strength of the full shot-covariance penalty.
+Grouped ridge fit to numerical precision. On a fixed feature scale,
+Eq.~\eqref{eq:penalty-scale} shows how the induced penalty changes
+with $k$, whereas Cov-EV tunes the full shot-covariance penalty directly.
 
 Grouping is also robust to how the groups are drawn. Across twenty repeated
 settings the average improvements are $-0.0064$ on Mackey--Glass, $0.1103$ on
@@ -106,11 +97,11 @@ run-to-run variation. Figure~\ref{fig:controls} collects these controls.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
-  \caption{Controls at the balanced setting, lower is better. On every task Grouped
-  (teal diamond) and Cov-EV (purple square) are lowest and nearly equal, EV (open
-  circle) trails, and Raw (yellow) is worst. The Grouped and Cov-EV match shows the
-  gain is readout regularization. Faint points are the five unit means, markers and
-  bars are means with $95\%$ intervals.}
+  \caption{Controls at the balanced setting, lower is better. On every task
+  Grouped (teal diamond) and Cov-EV (purple square) are lowest and nearly equal,
+  while EV (open circle) and Raw (yellow) trail. Their near-match supports a
+  readout-regularization explanation. Faint points are the five unit means,
+  markers and bars are means with $95\%$ intervals.}
   \label{fig:controls}
 \end{figure}
 

@@ -1,109 +1,124 @@
-# From Quantum Shots to Training Data: Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning
+# From Quantum Shots to Training Data
 
-This repository contains the code, evidence, and paper for the QCE26 submission.
+[![CI](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml/badge.svg)](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-The submission is a **QCE26 New Ideas and Emergent Results (NIER) short
-paper**. Its focused claim is that adaptive shot aggregation can tune how many
-shots form each training view without additional quantum executions. It does not present the
-idea as a universal law or a completed quantum advantage result.
+Reproducibility package for **From Quantum Shots to Training Data:
+Reorganizing Measurement Records in Quantum Machine Learning**.
 
-The build follows the
-[QCE26 technical-paper instructions](https://qce.quantum.ieee.org/2026/call-for-technical-papers/):
-NIER is declared in the submission filenames, the source uses
-`\documentclass[10pt,conference]{IEEEtran}`, and the main document is six pages
-including its reference page.
+Quantum experiments produce repeated measurement outcomes. A learning pipeline
+must decide how those outcomes become training examples. This repository studies
+that decision under a fixed execution budget. It compares three representations
+of the same shot record:
 
-Quantum reservoir computing normally averages all repeated measurements at a
-time step into one expectation value feature vector. This work treats the
-number of measurements per average as a readout hyperparameter:
-
-| Representation | Aggregation scale | Training samples per time step |
+| Representation | Shots per training view | Views per time step |
 |---|---:|---:|
-| Raw | `k = 1` | `N` individual measurements |
-| Grouped | `1 < k < N` | `N / k` partial averages |
-| EV | `k = N` | one full average |
+| Raw | `k = 1` | `N` |
+| Grouped | `1 < k < N` | `N / k` |
+| Expectation value (EV) | `k = N` | `1` |
 
-All candidates use the same measurement record and execution budget. The
-aggregation scale and ridge penalty are tuned jointly on chronological
-development folds. The tuned pair is frozen before the test block is evaluated.
+Grouped training averages disjoint sets of shots. The group size `k` and ridge
+strength are chosen on chronological development data. The circuit, targets,
+raw measurements, and test procedure remain fixed across methods.
+
+![Shot grouping overview](docs/assets/shot_grouping_overview.png)
 
 ## Main result
 
-The simulation benchmark contains Mackey Glass, Santa Fe laser, Rössler, and
-sunspots. Every task uses the same six-qubit reservoir, feature set,
-preprocessing, execution budgets, development folds, and parameter grids.
+At the balanced budget of 500 time steps and 20 shots per step, Grouped lowers
+mean test NRMSE on all four tasks. Relative reductions are computed as
+`(EV - Grouped) / EV`.
 
-At the primary setting, `T = 500` and `N = 20`, positive values favor Grouped:
+| Task | EV | Grouped | Relative error reduction | 95% interval for EV minus Grouped |
+|---|---:|---:|---:|---:|
+| Mackey-Glass | 0.4676 | 0.4537 | 2.96% | [-0.0023, 0.0300] |
+| Santa Fe laser | 0.7644 | 0.6797 | **11.09%** | **[0.0174, 0.1522]** |
+| Rossler | 0.4137 | 0.3788 | **8.44%** | **[0.0139, 0.0559]** |
+| Sunspots | 0.5531 | 0.5171 | **6.50%** | **[0.0103, 0.0616]** |
 
-| Task | EV minus Grouped NRMSE | 95% interval |
-|---|---:|---:|
-| Mackey Glass | 0.0138 | [-0.0023, 0.0300] |
-| Santa Fe laser | **0.0848** | **[0.0174, 0.1522]** |
-| Rössler | **0.0349** | **[0.0139, 0.0559]** |
-| Sunspots | **0.0360** | **[0.0103, 0.0616]** |
+The mean NRMSE across the four tasks falls from 0.5497 to 0.5073, a 7.71%
+reduction at unchanged quantum execution cost. Mackey-Glass has a positive mean
+difference but its interval contains zero. The other three intervals remain
+above zero.
 
-The Cov EV control performs similarly to Grouped. This agrees with the exact
-identity between grouped squared loss and EV loss with an empirical covariance
-penalty. The paper does not claim quantum advantage or a universal aggregation scale.
+The original confirmatory campaign contained Mackey-Glass, Rössler, and
+sunspots. Santa Fe was added later with the same frozen evaluation protocol,
+after the first campaign had been analyzed, so its interval is exploratory.
+The merged evidence manifest preserves this distinction explicitly.
 
-## Repository map
+The covariance-regularized EV control closely matches Grouped. This agrees with
+the exact squared-loss identity in the paper: grouped views add a covariance
+penalty estimated from the record's own shot fluctuations. The result concerns
+finite-shot data organization. It is not a claim of quantum advantage or a
+universal group size.
+
+## Repository structure
 
 ```text
-configs/benchmark.json       current four task simulation protocol
-configs/qai_robust_*.json    immutable configs hashed by source manifests
-config.json                  compact preprocessing grid for hardware analysis
-data/                        pinned Santa Fe and sunspot source series
-scripts/                     simulation, analysis, plotting, and release tools
-results/                     frozen evidence used by the paper
-paper/                       named and anonymous manuscript sources
-output/pdf/                  submission PDFs and checksums
-docs/                        concise results and reproducibility notes
-tests/                       tests for the retained implementation
-release/qce2026_nier_anonymous/ generated anonymous source package
+configs/       Frozen simulation protocols and the full rerun configuration
+data/          Pinned Santa Fe laser and sunspot source series
+docs/          Reproducibility, hardware, data, and result documentation
+output/pdf/    Named and anonymous papers, supplements, and checksums
+paper/         LaTeX sources and final vector figures
+results/       Frozen numerical evidence and provenance manifests
+scripts/       Simulation, analysis, plotting, packaging, and verification
+tests/         Unit and contract tests for the retained implementation
 ```
 
-The result directories retain their original artifact identifiers because
-their manifests bind paths, hashes, and row counts. Their roles are:
-
-| Directory | Contents |
-|---|---|
-| `results/expressive_reservoir/` | ideal feature audit |
-| `results/qai_robust_protocol_full/` | frozen source rows for three tasks |
-| `results/qai_santa_fe_laser_screen/` | frozen Santa Fe source rows |
-| `results/qai_robust_protocol_santa_fe_manuscript/` | merged four task paper evidence |
-| `results/qai_hardware/` | Fez and Marrakesh records and analysis tables |
-| `results/qai_hardware_santa_fe_extension/` | Santa Fe IBM job and budget manifest |
+The result directories keep their original identifiers because their manifests
+bind file paths, hashes, and row counts. The paper reads the consolidated
+four-task evidence in
+`results/qai_robust_protocol_santa_fe_manuscript/`.
 
 ## Quick start
 
-Python 3.11 or newer is recommended. Install the dependencies in an isolated
-environment:
+Python 3.11 or newer is recommended.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
-```
-
-The supported commands are listed by:
-
-```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements-lock.txt
 make help
 ```
 
-The complete local verification is:
+`requirements-lock.txt` is the tested Python 3.11 environment. Use
+`requirements.txt` instead when intentionally resolving newer compatible
+versions.
+
+Run the complete verification from frozen evidence:
 
 ```bash
 make all
 ```
 
-This runs the test suite, verifies all admitted numerical results, regenerates
-the paper figures, builds the named and anonymous papers and supplements, and
-checks the anonymous release.
+This command runs the tests, regenerates all figures, builds the named and
+anonymous papers and supplements, verifies the numerical and manuscript
+contracts, rebuilds the anonymous review package, and creates a checked arXiv
+source archive.
 
-## Reproduce the simulations
+The main commands can also be run separately:
 
-Inspect the current four task plan without running simulations:
+```bash
+make test       # implementation tests
+make figures    # Figures 1 through 5 from source and frozen evidence
+make paper      # named and anonymous papers and supplements
+make verify     # hashes, values, figures, page limits, metadata, and privacy
+make release    # isolated anonymous review package
+make arxiv      # named arXiv source ZIP with an isolated test build
+```
+
+## Full simulation rerun
+
+The checked result tables are sufficient to rebuild and verify the paper. A
+full rerun is optional and substantially more expensive. Frozen manifests bind
+the original campaigns to their configuration and implementation hashes. The
+current runner preserves the published protocol but is maintained separately
+from those immutable campaign snapshots, so it creates a new provenance chain
+instead of overwriting the archived one.
+
+Inspect the execution plan without running it:
 
 ```bash
 python scripts/run_robust_evaluation.py \
@@ -112,7 +127,7 @@ python scripts/run_robust_evaluation.py \
   --dry-run
 ```
 
-Run or resume the full benchmark:
+Run or resume the benchmark:
 
 ```bash
 python scripts/run_robust_evaluation.py \
@@ -122,60 +137,54 @@ python scripts/run_robust_evaluation.py \
   --resume
 ```
 
-The checked paper package is already included, so reproducing the expensive
-simulation is not required to verify the published numbers.
-
-## Reproduce the paper from frozen evidence
-
-```bash
-make figures
-make paper
-make verify
-```
-
-Final PDFs:
-
-- [`output/pdf/QCE26_NIER_split_ensemble_qrc_named.pdf`](output/pdf/QCE26_NIER_split_ensemble_qrc_named.pdf)
-- [`output/pdf/QCE26_NIER_split_ensemble_qrc_anonymous.pdf`](output/pdf/QCE26_NIER_split_ensemble_qrc_anonymous.pdf)
-- [`output/pdf/QCE26_NIER_split_ensemble_qrc_supplement.pdf`](output/pdf/QCE26_NIER_split_ensemble_qrc_supplement.pdf)
-- [`output/pdf/QCE26_NIER_split_ensemble_qrc_supplement_anonymous.pdf`](output/pdf/QCE26_NIER_split_ensemble_qrc_supplement_anonymous.pdf)
+Each shard records its configuration and implementation hashes. A resumed run
+is accepted only when those hashes match.
 
 ## Hardware evidence
 
-The hardware panel uses archived ordered measurements from `ibm_fez` and
-`ibm_marrakesh`. This is deliberately a transfer test on a different reservoir:
-simulation uses a six-qubit, two-layer data reuploading circuit with local Z
-and neighboring ZZ features, whereas hardware uses a ten-qubit, depth-one
-transverse field Ising ring with local Z features. The hardware evidence does
-not compare these architectures or claim to reproduce the six-qubit simulation.
-Within each study, all aggregation methods receive the same fixed circuit
-record.
+The hardware study uses archived, unmitigated records from `ibm_fez` and
+`ibm_marrakesh`. Simulation uses a six-qubit data-reuploading reservoir with
+local Z and neighboring ZZ features. Hardware uses a separate ten-qubit Ising
+ring with local Z readout. The hardware experiment therefore tests transfer of
+the aggregation procedure, not equivalence between the two circuits.
 
-Each hardware task and processor has one acquisition with 500 time steps and
-400 shots per step. The analysis partitions each acquisition into twenty
-disjoint records with `N = 20`. These records measure variation within one
-acquisition, not independent calibration periods.
+Each task and processor has one acquisition with 500 time steps and 400 shots
+per step. The analysis divides each acquisition into twenty disjoint records of
+20 shots per time step. Its intervals describe within-acquisition variation,
+not independent devices or calibration periods.
 
-The Santa Fe jobs used 55 and 56 QPU seconds, for 111 seconds in total. No IBM
-connection is needed to reproduce the analysis:
+Reanalyze the archived records without IBM access:
 
 ```bash
 make hardware
+make verify
 ```
 
-See [`docs/HARDWARE.md`](docs/HARDWARE.md) for job identifiers and scope.
+Job identifiers, layouts, checksums, and scope are documented in
+[`docs/HARDWARE.md`](docs/HARDWARE.md).
 
-## Scientific scope
+## Paper and source packages
 
-- Aggregation scale is tuned on development data only.
-- All finite measurement methods reuse the same raw record.
-- Uncertainty is computed across trajectories or chronological windows after
-  nested reservoir, shot, and grouping repetitions are averaged.
-- The ideal reservoir is nonlinear and full rank, but it does not consistently
-  outperform the matched classical input.
-- The hardware intervals describe measurement blocks within an acquisition.
-- No result establishes quantum advantage, a universal aggregation scale, or
-  robustness across hardware calibration periods.
+- [Named paper](output/pdf/quantum_shots_to_training_data.pdf)
+- [Anonymous paper](output/pdf/quantum_shots_to_training_data_anonymous.pdf)
+- [Supplement](output/pdf/quantum_shots_to_training_data_supplement.pdf)
+- [Anonymous supplement](output/pdf/quantum_shots_to_training_data_supplement_anonymous.pdf)
+- [Reproducibility guide](docs/REPRODUCIBILITY.md)
+- [Method guide](docs/METHOD.md)
+- [Result guide](docs/RESULTS.md)
+- [Data provenance](docs/DATA.md)
 
-Detailed protocol and artifact information is in
-[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+Generated source packages are written under `release/` and intentionally remain
+outside version control. Their contents are rebuilt and verified from tracked
+files.
+
+## Citation
+
+Please use the metadata in [`CITATION.cff`](CITATION.cff). GitHub exposes the
+same record through **Cite this repository**.
+
+## License
+
+The software and original documentation are released under the
+[MIT License](LICENSE). Included benchmark data retain the terms of their
+original providers. See [`docs/DATA.md`](docs/DATA.md) for provenance.

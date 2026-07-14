@@ -1,42 +1,52 @@
 \subsection{Why grouping regularizes the readout}
 \label{sec:mechanism}
 
-Full averaging hands the readout one clean picture of each time step.
-Individual shots hand it many pictures, each blurry. Intermediate groups hand
-it a few lightly cleaned pictures of the same target, and the differences
-between those pictures reveal which parts of the feature vector are stable and
-which are only measurement noise. Fitting the readout to all of the views at
-once discourages it from trusting the unstable parts.
+Full averaging gives the readout one relatively stable feature vector per time
+step. Raw gives it many noisier vectors. Grouping lies between them, providing
+several partly averaged views of the same time step with the same target.
 
-For a linear readout with squared loss this becomes an exact identity. Let
-$\bar{x}_t$ be the average of the $G$ grouped views, and let
+Stable feature combinations should predict similarly across these views,
+whereas shot-sensitive combinations do not. Fitting every view to the same
+target therefore discourages reliance on finite-shot fluctuations.
+
+For a linear readout with squared loss, this effect is exact. Let $\bar{x}_t$ be
+the average of the grouped views, and let
 $C_{k,t}=\tfrac{1}{G}\sum_g
 (x_t^{(g)}-\bar{x}_t)(x_t^{(g)}-\bar{x}_t)^\top$
-record how those views scatter around their average, that is, how the features
-wobble together from group to group. For any intercept $b$ and weights $w$,
+be their covariance around that average. For any intercept $b$ and weights $w$,
 \begin{equation}
-  \frac{1}{G}\sum_g \bigl(y_t-b-w^\top x_t^{(g)}\bigr)^2
-  =\bigl(y_t-b-w^\top\bar{x}_t\bigr)^2+w^\top C_{k,t}\,w.
+  \frac{1}{G}\sum_{g=1}^{G}\bigl(y_t-b-w^\top x_t^{(g)}\bigr)^2
+  =\bigl(y_t-b-w^\top\bar{x}_t\bigr)^2+w^\top C_{k,t}w.
   \label{eq:loss-decomposition}
 \end{equation}
-The first term on the right is exactly the EV loss. The second charges extra
-whenever the weights lean on feature combinations that vary strongly across
-the views. Grouped training is therefore EV training plus a penalty read
-directly off the observed shot fluctuations, and the identity assumes neither
-Gaussian noise nor independence over time.
+The first term is the EV loss. The second penalizes feature combinations that
+fluctuate across views. Grouped training is therefore EV training with a
+regularizer obtained from observed shot fluctuations. The identity requires
+neither Gaussian noise nor independent time steps.
 
-The identity motivates a matched baseline: covariance-regularized
-expectation-value training (Cov-EV). Cov-EV keeps the fully averaged EV
-features and adds a penalty estimated from how the individual shots fluctuate
-together. Its strength and the ordinary ridge strength are chosen using the
-same earlier data as the other methods. Cov-EV does not reuse the aggregation
-scale chosen by Grouped; it tests whether the same regularization mechanism can
-be applied directly after full averaging. Similar performance from Grouped and
-Cov-EV would therefore support regularization as the source of the gain.
+On a fixed common feature scale, let $S_{\mathrm{shot},t}$ be the $1/N$
+covariance of the $N$ shot-level features. Before representation-specific
+standardization, averaging over random partitions $\mathcal{P}$ gives
+\begin{equation}
+  \mathbb{E}_{\mathcal{P}}[C_{k,t}]
+  =\frac{N-k}{k(N-1)}S_{\mathrm{shot},t}.
+  \label{eq:penalty-scale}
+\end{equation}
+The multiplier is one at $k=1$ and zero at $k=N$. Thus, $k$ mainly controls
+regularization strength: smaller groups retain more shot variation, while
+larger groups average it away. A finite partition can also change the realized
+penalty, especially when only a few groups are available.
 
-The equivalence is also verified computationally. When $k$ is fixed, Grouped
-training and EV training with the penalty defined by $C_{k,t}$ give identical
-predictions. Because the leaky integrator and overlapping lags make
-neighboring feature vectors dependent, we report uncertainty across
-trajectories or measured windows rather than across the many correlated
-grouped views.
+This motivates covariance-regularized expectation-value training (Cov-EV),
+which retains EV features and adds a penalty estimated from shot fluctuations.
+Its covariance and ridge strengths are selected on the same validation data,
+independently of Grouped's $k$. Similar performance from Grouped and Cov-EV
+would support covariance regularization as the mechanism behind the gain.
+
+As a check on our implementation, at a fixed group size and ridge strength we
+compute the Grouped fit in two mathematically equal ways. The first fits ridge
+directly on all grouped training views. The second uses the two-term form of
+Eq.~\eqref{eq:loss-decomposition}, fitting on the mean view with the added
+covariance penalty. With the same feature standardization, the two agree to
+numerical precision, which confirms that the decomposition is implemented
+correctly.

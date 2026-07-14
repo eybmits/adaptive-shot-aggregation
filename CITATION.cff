@@ -1,0 +1,55 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the accompanying paper."
+title: "From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning"
+type: software
+version: 1.0.0
+date-released: 2026-07-14
+license: MIT
+repository-code: "https://github.com/eybmits/split-ensemble-qrc"
+url: "https://github.com/eybmits/split-ensemble-qrc"
+abstract: >-
+  Reproducibility package for adaptive shot aggregation in finite-shot quantum
+  machine learning. It contains the simulation and hardware evidence, paper
+  sources, figures, tests, and verified source-packaging workflows.
+keywords:
+  - quantum machine learning
+  - quantum reservoir computing
+  - finite-shot learning
+  - shot grouping
+  - time-series forecasting
+authors:
+  - family-names: Baumann
+    given-names: Markus
+    orcid: "https://orcid.org/0009-0007-3575-1006"
+  - family-names: Zorn
+    given-names: Maximilian
+    orcid: "https://orcid.org/0009-0006-2750-7495"
+  - family-names: Gabor
+    given-names: Thomas
+    orcid: "https://orcid.org/0000-0003-2048-8667"
+  - family-names: Linnhoff-Popien
+    given-names: Claudia
+    orcid: "https://orcid.org/0000-0001-6284-9286"
+  - family-names: Stein
+    given-names: Jonas
+    orcid: "https://orcid.org/0000-0001-5727-9151"
+preferred-citation:
+  type: article
+  title: "From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning"
+  year: 2026
+  authors:
+    - family-names: Baumann
+      given-names: Markus
+      orcid: "https://orcid.org/0009-0007-3575-1006"
+    - family-names: Zorn
+      given-names: Maximilian
+      orcid: "https://orcid.org/0009-0006-2750-7495"
+    - family-names: Gabor
+      given-names: Thomas
+      orcid: "https://orcid.org/0000-0003-2048-8667"
+    - family-names: Linnhoff-Popien
+      given-names: Claudia
+      orcid: "https://orcid.org/0000-0001-6284-9286"
+    - family-names: Stein
+      given-names: Jonas
+      orcid: "https://orcid.org/0000-0001-5727-9151"

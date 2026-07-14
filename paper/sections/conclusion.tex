@@ -1,47 +1,47 @@
 \section{Discussion}
 \label{sec:discussion}
 
-A measurement record contains training structure that full expectation-value
-averaging discards. Choosing the aggregation scale on earlier time blocks
-recovers part of it without further quantum executions. Adaptive shot
-aggregation changes only classical processing: $k$ moves from Raw at $k=1$ to
-EV at $k=N$. The scale and ridge strength are fixed before the held-out test;
-the circuit and record remain unchanged.
+A quantum experiment produces a measurement record, not a ready made training
+set. Combining repeated shots into feature vectors is therefore part of the
+learning algorithm. EV averages all $N$ shots at each step. Adaptive shot
+aggregation instead averages groups of size $k$, from Raw at $k=1$ to EV at
+$k=N$, without changing the circuit or record. The settings are fixed before
+testing, and gains arise during training at no additional quantum cost.
 
-The method helps most in a clear regime. When a record holds many shots at each
-of relatively few time steps, full averaging turns a large measurement effort
-into only a handful of training examples. Partial averaging spends those same
-shots differently. It produces several lightly denoised views of each target,
-and the small differences among the views act as a penalty that discourages the
-readout from trusting feature directions dominated by measurement noise.
-Equation~\eqref{eq:loss-decomposition} makes this exact. Grouped training is
-ordinary averaging plus a penalty read from the observed shot fluctuations.
+The choice matters most when many shots are collected at relatively few time
+steps. Full averaging then spends a large measurement budget on a small number
+of highly precise examples. Grouping creates moderately denoised views from
+the same shots. Their differences reveal which feature directions are stable
+under finite shot fluctuations. With fewer shots per step, the freedom to
+reorganize the record and the benefit both shrink. The aggregation scale
+should therefore be validated rather than fixed by convention.
 
-Our control confirms this reading. Cov-EV applies the same type of covariance
-penalty after full averaging and reaches slightly lower mean error, yet stays
-close to Grouped on every task. Their similar performance supports covariance
-regularization as a shared mechanism. The small gap shows that grouping is one
-convenient way to obtain this regularization, not the only one, and that the
-benefit arises in the classical fit rather than from additional physical
-information.
+For a linear readout, this effect has an exact interpretation.
+Equation~\eqref{eq:loss-decomposition} separates the grouped loss into the EV
+loss and a quadratic covariance penalty. Since every view shares the same
+target, the penalty discourages large weights on feature combinations that
+vary between groups. On a common feature scale, Eq.~\eqref{eq:penalty-scale}
+shows that smaller groups produce stronger regularization and $k=N$ recovers
+EV.
 
-The effect also transfers. It shows up in the six-qubit simulation reservoir
-and again in a separate ten-qubit circuit run on two processors.
+The Cov EV control supports this explanation. It keeps the fully averaged
+features but adds a tuned covariance penalty estimated from shot fluctuations.
+It stays close to Grouped on every task and reaches slightly lower mean error
+overall, pointing to a shared mechanism. Cov EV tunes the penalty directly,
+while Grouped uses strengths produced by the available group sizes. Grouping
+is therefore a simple route to this regularization, but not the only one.
 
-A practical consequence follows. A different group size can only be built from
-the individual shot outcomes, so trying other scales later is possible only if
-those outcomes were kept. An experiment that stores just the averaged
-expectation value has already thrown away the option to regroup, while an
-experiment that keeps its full shot record leaves every group size open for
-free.
+Individual shot outcomes should be retained. Once a record has been reduced to expectation
+values, alternative aggregation scales cannot be reconstructed. Keeping the
+full record preserves this option without repeating the quantum experiment.
 
-The hardware results have a deliberately narrow scope. Their confidence
-intervals are computed from the measurement blocks of one acquisition on each
-task and processor. They therefore show that the effect is stable within a
-single run, not that it repeats across separate runs on different days or
-calibration settings. Confirming that reproducibility is the main open question,
-and the natural next tests are independent hardware campaigns, other reservoir
-families, and richer readouts.
+The effect transfers to a separate ten qubit circuit run without mitigation on
+two superconducting processors, where Grouped improves on EV across all tasks.
+The hardware intervals measure blocks within one acquisition per task and
+processor, not reproducibility across runs, calibration states, or days.
+Independent hardware campaigns, other reservoirs, and richer readouts are the
+next tests. More broadly, finite shot processing is part of the learning
+algorithm.
 
 \section{Conclusion}
 \label{sec:conclusion}

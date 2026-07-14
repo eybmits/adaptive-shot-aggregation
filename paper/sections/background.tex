@@ -25,16 +25,21 @@ analysis over several random groupings.
 
 Evaluating $T$ time steps with $N$ shots per step costs $TN$ circuit
 executions. We hold this budget fixed at ten thousand executions and study
-three ways of spending it, $(T,N)=(250,40)$, $(500,20)$, and $(1000,10)$,
+three ways of spending it, $(T,N) = (250,40)$, $(500,20)$, and $(1000,10)$,
 ranging from fewer time steps with more shots to more time steps with fewer
 shots. For each setting we try every group size $k$ that divides $N$, which
 includes Raw at $k=1$ and EV at $k=N$.
 
-Using three expanding splits, each candidate
-pair of group size and ridge strength $(k,\lambda)$ is fitted on an earlier
-block and scored on the block that follows. The best pair is then frozen, the
-readout is refitted on all data before the test block, and the final fifth of
-the series is scored once. Normalization and feature scaling use training data
+Selection and testing respect time order. After a short washout, the earlier
+part of each series is the selection data used to choose settings, and the
+final fifth is held out as the test block and left untouched until the end. On
+the selection data we pick the group size and ridge strength $(k,\lambda)$ by
+forward-chaining validation. In three successive rounds we fit on an earlier
+stretch and score on the stretch that immediately follows, so training always
+precedes validation in time, and each candidate pair is ranked by its
+validation error averaged over the three rounds. The best pair is then frozen,
+the readout is refitted on the whole selection data, and the test block is
+scored once. Normalization and feature scaling are computed from training data
 only, so the test block never influences any choice.
 
 \begin{figure}[!t]

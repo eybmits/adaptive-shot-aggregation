@@ -14,9 +14,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PAPER = ROOT / "paper"
-DESTINATION = ROOT / "release" / "qce2026_nier_anonymous"
+DESTINATION = ROOT / "release" / "anonymous_review_package"
 SOURCE_DATE_EPOCH = "1783641600"
-PAPER_TITLE = "From Quantum Shots to Training Data: Reorganizing Measurement Records for Improved Finite-Shot Quantum Learning"
+PAPER_TITLE = "From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning"
 
 SECTION_FILES = (
     "abstract.tex",
@@ -123,7 +123,7 @@ IDENTIFYING_LITERALS = (
     "Bavarian StMWi",
 )
 
-README = """# Anonymous QCE26 NIER source release
+README = """# Anonymous review source package
 
 This directory is a standalone, identity-redacted source release for double-blind review.
 The six-page main paper uses the eight-section source layout; each released section
@@ -186,6 +186,13 @@ def write_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+def contains_publication_title(text: str) -> bool:
+    """Compare the title after removing TeX-only line breaks and whitespace."""
+
+    normalized = " ".join(text.replace("\\\\", " ").split())
+    return PAPER_TITLE in normalized
+
+
 def _replace_author_block(text: str, *, label: str) -> str:
     """Replace the named/anonymous author conditional with anonymous-only source."""
 
@@ -215,7 +222,7 @@ def sanitized_main() -> str:
     """Create the anonymous equivalent of the live restored ``paper/main.tex``."""
 
     text = (PAPER / "main.tex").read_text(encoding="utf-8")
-    if PAPER_TITLE not in text:
+    if not contains_publication_title(text):
         raise RuntimeError("main manuscript title differs from the restored paper title")
     text = _replace_author_block(text, label="main")
     text = text.replace("\\usepackage{orcidlink}\n", "")
@@ -246,8 +253,8 @@ def sanitized_main() -> str:
             raise RuntimeError(f"main: expected one acknowledgment branch, replaced {count}")
     text = _insert_artifact_macro(text, label="main")
     text = re.sub(
-        r"^% QCE26 NIER short paper\..*?^\\documentclass",
-        lambda _: "% Anonymous-only QCE26 NIER short paper.\n\\documentclass",
+        r"^% Main paper source\..*?^\\documentclass",
+        lambda _: "% Anonymous-only main paper source.\n\\documentclass",
         text,
         count=1,
         flags=re.DOTALL | re.MULTILINE,
