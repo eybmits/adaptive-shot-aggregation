@@ -332,8 +332,9 @@ def load_config(path: Path) -> Dict[str, object]:
         raise ValueError("the frozen primary confirmatory setting must be balanced")
     if float(decision_gate.get("practical_noninferiority_margin_absolute_nrmse", np.nan)) != 0.05:
         raise ValueError("the frozen practical non-inferiority margin must be 0.05 NRMSE")
-    verify_sunspot_dataset_pin(data)
-    sunspot_test_index_ranges(data)
+    if "sunspots" in data["datasets"]:
+        verify_sunspot_dataset_pin(data)
+        sunspot_test_index_ranges(data)
     if "santa_fe_laser" in data["datasets"]:
         if "santa_fe_dataset_pin" not in data or "santa_fe_origin_spacing_samples" not in data:
             raise ValueError("Santa Fe runs require a pinned dataset and origin spacing")
@@ -953,13 +954,19 @@ def make_manifest(
         "reservoir_seeds": list(config["reservoir_seeds"]),
         "shot_seeds": list(config["shot_seeds"]),
         "partition_seeds": list(config["partition_seeds"]),
-        "sunspot_origin_spacing_months": int(config["sunspot_origin_spacing_months"]),
-        "sunspot_test_index_ranges_by_setting": sunspot_test_index_ranges(config),
-        "sunspot_test_blocks_pairwise_disjoint": True,
         "partition_robustness_subset": config["partition_robustness_subset"],
         "fixed_lane_ablation": config["fixed_lane_ablation"],
     }
-    data_provenance = {"sunspots": verify_sunspot_dataset_pin(config)}
+    data_provenance = {}
+    if "sunspots" in config["datasets"]:
+        nested_design.update(
+            {
+                "sunspot_origin_spacing_months": int(config["sunspot_origin_spacing_months"]),
+                "sunspot_test_index_ranges_by_setting": sunspot_test_index_ranges(config),
+                "sunspot_test_blocks_pairwise_disjoint": True,
+            }
+        )
+        data_provenance["sunspots"] = verify_sunspot_dataset_pin(config)
     if "santa_fe_laser" in config["datasets"]:
         nested_design.update(
             {

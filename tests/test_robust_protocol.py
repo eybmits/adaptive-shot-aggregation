@@ -399,6 +399,27 @@ def test_short_sunspot_origin_spacing_is_rejected(tmp_path: Path) -> None:
         runner.load_config(path)
 
 
+def test_non_sunspot_confirmation_ignores_irrelevant_sunspot_windows(
+    tmp_path: Path,
+) -> None:
+    source = json.loads((ROOT / "configs" / "benchmark.json").read_text())
+    source["datasets"] = ["mackey_glass"]
+    source["trajectory_indices"] = list(range(5, 25))
+    source["evaluation_scopes"]["headline"]["budget_settings"] = ["balanced"]
+    source["partition_robustness_subset"]["partition_seeds"] = []
+    source["fixed_lane_ablation"]["partition_seeds"] = []
+    path = tmp_path / "mackey_glass_confirmation.json"
+    path.write_text(json.dumps(source), encoding="utf-8")
+
+    config = runner.load_config(path)
+    jobs = runner.planned_jobs(config, path, smoke=False)
+
+    assert config["trajectory_indices"] == list(range(5, 25))
+    assert len(jobs) == 60
+    assert {job["dataset"] for job in jobs} == {"mackey_glass"}
+    assert {job["setting"]["name"] for job in jobs} == {"balanced"}
+
+
 def test_sunspot_dataset_pin_is_verified_and_tampering_is_rejected(tmp_path: Path) -> None:
     config_path = ROOT / "configs" / "qai_robust_protocol.json"
     config = runner.load_config(config_path)
