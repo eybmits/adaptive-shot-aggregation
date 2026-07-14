@@ -45,6 +45,7 @@ EXPECTED_SECTIONS = {
     "sections/experimental-section.tex",
     "sections/evaluation.tex",
     "sections/conclusion.tex",
+    "sections/reproducibility-appendix.tex",
 }
 BUILD_TRACE_SUFFIXES = {
     ".aux",

@@ -30,6 +30,7 @@ SECTION_FILES = (
     "experimental-section.tex",
     "evaluation.tex",
     "conclusion.tex",
+    "reproducibility-appendix.tex",
 )
 FIGURE_FILES = (
     "fig2_composite.pdf",

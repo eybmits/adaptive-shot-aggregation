@@ -27,6 +27,7 @@ SECTION_FILES = (
     "experimental-section.tex",
     "evaluation.tex",
     "conclusion.tex",
+    "reproducibility-appendix.tex",
 )
 
 FIGURE_FILES = (
@@ -291,6 +292,33 @@ def sanitized_conclusion() -> str:
     return text
 
 
+def sanitized_reproducibility_appendix() -> str:
+    """Replace the public artifact branch with the anonymous review macro."""
+
+    text = (PAPER / "sections" / "reproducibility-appendix.tex").read_text(
+        encoding="utf-8"
+    )
+    artifact_pattern = re.compile(
+        r"The\s+named artifact is available at\s*"
+        r"\\ifdefined\\ANON.*?\\else.*?\\fi",
+        re.DOTALL,
+    )
+    text, count = artifact_pattern.subn(
+        r"The anonymous artifact will be available at \\AnonymousArtifactURL.",
+        text,
+        count=1,
+    )
+    if count != 1:
+        raise RuntimeError(
+            f"reproducibility appendix: expected one artifact branch, replaced {count}"
+        )
+    if "\\ifdefined" in text or "github.com" in text.casefold():
+        raise RuntimeError(
+            "reproducibility appendix: identifying conditional or public URL remains"
+        )
+    return text
+
+
 def sanitized_supplement() -> str:
     text = (PAPER / "supplement.tex").read_text(encoding="utf-8")
     if PAPER_TITLE not in text:
@@ -364,6 +392,11 @@ def populate_release() -> None:
             write_text(DESTINATION / "sections" / name, sanitized_experimental_section())
         elif name == "conclusion.tex":
             write_text(DESTINATION / "sections" / name, sanitized_conclusion())
+        elif name == "reproducibility-appendix.tex":
+            write_text(
+                DESTINATION / "sections" / name,
+                sanitized_reproducibility_appendix(),
+            )
         else:
             copy_file(PAPER / "sections" / name, DESTINATION / "sections" / name)
     write_text(DESTINATION / "anonymous_artifact_url.tex", ARTIFACT_PLACEHOLDER)
