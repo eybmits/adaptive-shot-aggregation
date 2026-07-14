@@ -1,0 +1,19 @@
+\begin{abstract}
+Between keeping every shot as a noisy training example and averaging all shots
+into one clean feature lies an entire spectrum of data organizations that
+quantum machine learning usually leaves implicit. We make that choice explicit.
+Shot grouping partitions a fixed measurement record into disjoint groups and
+averages within each group, tuning smoothly between the two conventions with a
+single validated parameter and no additional quantum executions. We evaluate
+the method on chaotic synthetic benchmarks and on real-world data under strict
+execution budgets. An intermediate grouping consistently outperforms the
+standard expectation-value pipeline. Matched controls show that the gain acts
+as correctly scaled regularization of the classical readout. Unmitigated runs
+on two superconducting processors confirm the trend on every task. Shot
+grouping therefore offers a practical way to improve finite-shot quantum
+learning at no added quantum cost.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Quantum computing, Machine learning, Reservoir computing, Time series analysis
+\end{IEEEkeywords}

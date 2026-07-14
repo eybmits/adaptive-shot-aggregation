@@ -1,0 +1,13 @@
+dataset,budget_setting,reservoir_variant,feature_set,baseline,method,clusters,delta_classical_minus_ideal,cluster_ci95_low,cluster_ci95_high,cluster_win_rate,inference_unit
+lorenz,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.15932281963274342,-0.26514688281324794,-0.05349875645223888,0.0,trajectory_or_sunspot_window
+lorenz,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.04755494992742874,-0.07679779402750919,-0.018312105827348275,0.0,trajectory_or_sunspot_window
+lorenz,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-1.7379415129483498,-5.343024636314021,1.8671416104173213,0.0,trajectory_or_sunspot_window
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.07751735409505804,-0.15215724216488324,-0.002877466025232825,0.2,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.054837544566794925,-0.09459843117038898,-0.015076657963200873,0.0,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.3403793232575101,-0.5508578339553473,-0.1299008125596729,0.0,trajectory_or_sunspot_window
+rossler,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,0.04198071267079841,-0.0004853147406300093,0.08444674008222683,0.8,trajectory_or_sunspot_window
+rossler,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,0.04910971491683297,0.029378899262205906,0.06884053057146003,1.0,trajectory_or_sunspot_window
+rossler,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.2423501552073765,-0.28315567442782735,-0.20154463598692565,0.0,trajectory_or_sunspot_window
+sunspots,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.08673453287271218,-0.1711727946553992,-0.0022962710900251704,0.0,trajectory_or_sunspot_window
+sunspots,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.06465325285986864,-0.12208252415741136,-0.007223981562325926,0.0,trajectory_or_sunspot_window
+sunspots,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.4703789949705405,-0.7256868098573428,-0.2150711800837381,0.0,trajectory_or_sunspot_window

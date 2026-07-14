@@ -1,0 +1,3 @@
+dataset,budget_setting,reservoir_variant,feature_set,scope_role,method,clusters,cluster_mean_nrmse,cluster_ci95_low,cluster_ci95_high,inference_unit
+santa_fe_laser,balanced,expressive_reuploading,z_plus_zz,partition_robustness,ev,5,0.7611412579357493,0.5497442228795838,0.9725382929919147,trajectory_or_sunspot_window
+santa_fe_laser,balanced,expressive_reuploading,z_plus_zz,partition_robustness,split,5,0.6508741884014251,0.38448459756118475,0.9172637792416654,trajectory_or_sunspot_window

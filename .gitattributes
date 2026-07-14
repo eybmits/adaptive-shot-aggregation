@@ -1,0 +1,27 @@
+# Preserve archival datasets and binary publication artifacts byte for byte.
+*.dat binary
+*.npz binary
+*.pdf binary
+
+# Keep human-readable project sources consistent across platforms.
+*.py text eol=lf
+*.tex text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.cff text eol=lf
+*.txt text eol=lf
+LICENSE text eol=lf
+
+# Keep archived text evidence readable on GitHub with stable LF bytes.
+# Vendor-provided DAT files and all binary artifacts remain byte-preserved.
+data/**/*.csv text eol=lf
+results/**/*.csv text eol=lf
+results/**/*.json text eol=lf
+data/**/*.dat binary
+
+# Preserve the exact upstream IEEE class and bibliography style files.
+paper/IEEEtran.cls binary
+paper/IEEEtranDoi.bst binary

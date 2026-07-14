@@ -1,0 +1,215 @@
+{
+  "architecture": {
+    "name": "expressive_reuploading_qrc",
+    "circuit_version": "expressive_reuploading_v2",
+    "parameter_seed": 31415,
+    "seed_status": "fixed before redesigned forecasting experiments",
+    "q": 6,
+    "layers": 2,
+    "input_encoding": "RY and RZ on every qubit, re-uploaded in both layers",
+    "entanglement": "heterogeneous nearest-neighbour RZZ line",
+    "layer_order": [
+      "multi-qubit input RY/RZ",
+      "nearest-neighbour line RZZ",
+      "heterogeneous local RX/RY/RZ readout mixing"
+    ],
+    "measurement": "one Z-basis circuit; local Z and adjacent ZZ from the same bitstrings",
+    "input_y_weights": [
+      [
+        0.9997203965754466,
+        -0.6536822852310457,
+        -1.325959502736538,
+        -1.303660617592197,
+        -0.7376656726818314,
+        1.4363208905063694
+      ],
+      [
+        1.1832426033109973,
+        -0.771002796632206,
+        -1.2893680940167733,
+        -0.7444305162539426,
+        0.5527430225050926,
+        0.935869336942967
+      ]
+    ],
+    "input_z_weights": [
+      [
+        -0.2378738461299466,
+        0.28182983472155954,
+        0.46461588580232704,
+        -0.31039400572287845,
+        0.6184384753823101,
+        0.3789494573822242
+      ],
+      [
+        -0.678520896204479,
+        -0.38207019551934435,
+        0.445112785421819,
+        -0.6554930168208276,
+        -0.4290896981905822,
+        -0.4868179802837284
+      ]
+    ],
+    "local_angles_rad": [
+      [
+        [
+          -0.9727307914962426,
+          2.8601268853861512,
+          -2.617302804390357
+        ],
+        [
+          -2.8518142870717957,
+          -0.27671166320955715,
+          1.144338996254473
+        ],
+        [
+          -2.3614980847305524,
+          -2.3073599078078217,
+          2.910779668935488
+        ],
+        [
+          2.0730379778037227,
+          -2.746843941566051,
+          2.4744243161362145
+        ],
+        [
+          -1.1425888193973948,
+          2.1684861426422386,
+          -2.1251153463480947
+        ],
+        [
+          -2.8831360145423286,
+          0.4212848173996372,
+          0.9071818153754975
+        ]
+      ],
+      [
+        [
+          1.8115346787346085,
+          -1.0415069901511813,
+          -0.30238197833864405
+        ],
+        [
+          2.8645201455238842,
+          -2.2613712535304433,
+          0.3191911427089923
+        ],
+        [
+          -0.820017631671236,
+          2.645854998561818,
+          2.308165694116532
+        ],
+        [
+          -2.5530391741779837,
+          -2.2048623220333887,
+          1.1545554466526056
+        ],
+        [
+          0.4445950045323901,
+          -1.8251458359508312,
+          -1.2268584107999172
+        ],
+        [
+          0.7245066094400154,
+          1.1201304280865698,
+          -1.921480306070035
+        ]
+      ]
+    ],
+    "coupling_angles_rad": [
+      [
+        0.9414788474606881,
+        2.226702358720481,
+        -2.7852160113268067,
+        2.631253905764841,
+        -1.2776639139066301
+      ],
+      [
+        2.818307109807042,
+        2.69541311597734,
+        0.9684585307409335,
+        0.6185766627692967,
+        0.23078708227829894
+      ]
+    ],
+    "parameter_sha256": "6499943726def98c1127715584a31cc341f3601fea8db6b5d4462834c9179ab8",
+    "architecture_sha256": "04506c14c63867ef671bef4dc84cb4a95103e9b0a2696690c5175c715faae637",
+    "feature_set": "z_plus_zz",
+    "feature_dimension": 11,
+    "eta": 0.2,
+    "window": 10,
+    "legacy_ablation": "base_impl.ExactQRCReservoir"
+  },
+  "passed": true,
+  "diagnostic_status": "PASS",
+  "criteria": {
+    "most_features_depend_on_input": true,
+    "several_features_are_nonlinear": true,
+    "feature_matrix_has_meaningful_rank": true,
+    "second_layer_couplings_change_z_features": true,
+    "not_linear_equivalent_to_filtered_input": true
+  },
+  "input_grid_points": 257,
+  "input_dependent_features": 11,
+  "input_dependent_fraction": 1.0,
+  "feature_ranges": [
+    1.5216684145546104,
+    1.6449766560903822,
+    1.1981371879864064,
+    1.2850686099143507,
+    1.1224529298744914,
+    1.560072765923546,
+    1.2946996996401858,
+    1.0459914764888987,
+    1.5757523776832212,
+    0.5482009430698644,
+    1.0945362534700946
+  ],
+  "second_layer_coupling_sensitive_features": 11,
+  "second_layer_coupling_max_effect": 1.6570393240389665,
+  "second_layer_coupling_effect_by_feature": [
+    1.6570393240389665,
+    0.37257721280208256,
+    1.038575374355243,
+    0.8084832664100632,
+    0.30614579771986167,
+    0.15448009803044493,
+    1.5651071847440066,
+    0.932548566116877,
+    1.3846514438755357,
+    0.29441218309943024,
+    0.37868750750866276
+  ],
+  "nonlinear_features": 11,
+  "nonlinear_fraction": 1.0,
+  "affine_unexplained_variance": [
+    0.6567607154708764,
+    0.9825216802335276,
+    0.9975737429611602,
+    0.3949184027012221,
+    0.8569444682409012,
+    0.6370717579561349,
+    0.9726739749232766,
+    0.9683227372061554,
+    0.758259413099577,
+    0.972969063801373,
+    0.9864823265902849
+  ],
+  "numerical_rank": 11,
+  "effective_rank": 5.099054497115167,
+  "feature_dimension": 11,
+  "classical_filtered_rank": 10,
+  "joint_classical_quantum_rank": 120,
+  "classical_to_quantum_relative_projection_error": 0.8226274465599273,
+  "thresholds": {
+    "input_dependence_range": 0.001,
+    "nonlinear_unexplained_variance": 0.05,
+    "non_equivalence_relative_error": 0.1,
+    "minimum_dependent_fraction": 0.75,
+    "minimum_nonlinear_features": 3,
+    "minimum_numerical_rank": 4,
+    "minimum_effective_rank": 2.0,
+    "second_layer_coupling_effect": 0.001
+  },
+  "interpretation": "Ideal statevector feature validity only; this is neither a forecasting result nor evidence of quantum advantage."
+}

@@ -1,0 +1,2 @@
+dataset,budget_setting,reservoir_variant,feature_set,reservoir_seed,clusters,matched_nested_pairs,matched_pairs_per_cluster_min,delta_fixed_minus_per_time,cluster_ci95_low,cluster_ci95_high,inference_unit
+santa_fe_laser,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,0.0003546401116253624,-0.03199527906712386,0.03270455929037459,trajectory_or_sunspot_window

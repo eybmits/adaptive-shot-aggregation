@@ -1,0 +1,39 @@
+\section{Related Work}
+\label{sec:related}
+
+Finite sampling can be addressed at three stages of a quantum learning
+pipeline: before execution, by allocating the measurement budget; after
+averaging, by correcting expectation-value estimates; or at the measurement
+record itself, by deciding how repeated outcomes become training examples. Our
+method focuses on this third stage.
+
+A brief instance of subset averaging appears in Cemin \emph{et al.}~
+\cite{cemin2024channels}, where it is used as an implementation heuristic to
+enlarge the training set for reduced quantum channel learning. We develop this
+idea into a tunable procedure: the group size spans the full range from
+individual shots to complete expectation-value averaging, is selected jointly
+with readout regularization, and is evaluated under fixed execution budgets.
+For linear readouts, grouping also has an exact regularization interpretation,
+connecting it to classical work on training with noisy inputs~
+\cite{bishop1995training}.
+
+Complementary work addresses the other stages of finite-shot learning.
+Resource-aware optimization allocates measurements before execution~
+\cite{moussa2023resource}. After averaging, noise-aware training rules~
+\cite{ahmed2025optimal} and variance regularization~
+\cite{kreplin2024reduction} reduce the effect of sampling noise, while
+fundamental limits for learning from finitely sampled physical systems have
+also been studied~\cite{hu2023tackling}. Shot grouping instead reorganizes an
+existing measurement record. It requires no additional quantum executions and
+can be applied retrospectively whenever individual outcomes have been retained.
+
+Within QRC, prior work has examined how noise, dissipation, measurement, finite
+Hilbert-space dimension, and input transformations shape temporal features~
+\cite{kubota2022noise,palacios2024role,kubota2023temporal,
+martinezpena2023finite,mujal2023timeseries,suzuki2022natural,
+sannia2024dissipation,govia2022nonlinear,martinezpena2023capacity,
+kalfus2022hilbert,fry2023noiseinduced,govia2021singleoscillator}. We hold the
+reservoir and measurement record fixed and change only how repeated outcomes
+are presented to the classical readout. Shot grouping is therefore
+complementary to these approaches and is not tied to a particular reservoir
+design.

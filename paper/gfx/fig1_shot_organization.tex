@@ -1,0 +1,365 @@
+\documentclass[tikz,border=10pt]{standalone}
+
+\usepackage{amsmath,amssymb}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usetikzlibrary{arrows.meta,calc,fit,positioning,backgrounds,shadows.blur,decorations.pathmorphing}
+
+% --- MODERN PALETTE ------------------------------------------------
+\definecolor{evc}{RGB}{33, 150, 243}
+\definecolor{splitc}{RGB}{0, 191, 165}
+\definecolor{rawc}{RGB}{255, 145, 0}
+\definecolor{truec}{RGB}{41, 45, 50}
+
+% Reservoir colors
+\definecolor{qnodeblue}{RGB}{92, 107, 192}
+\definecolor{qnoderred}{RGB}{236, 64, 122}
+\definecolor{qnodebg}{RGB}{248, 249, 250}
+\definecolor{haloc}{RGB}{180, 195, 180}
+
+% Accent
+\definecolor{accentpink}{RGB}{255, 64, 129}
+
+\definecolor{axisgray}{HTML}{9AA0A6}
+\definecolor{muted}{HTML}{71767C}
+\definecolor{edgegray}{HTML}{A7A9AC}
+\definecolor{measuregray}{HTML}{000000}
+\definecolor{reservoirblue}{HTML}{3437A8}
+\definecolor{reservoirred}{HTML}{B52F37}
+\definecolor{inputred}{HTML}{D1495B}
+\colorlet{accent}{inputred}
+
+\tikzset{
+  route/.style={
+    line width=2.295pt,
+    line cap=round,
+    opacity=0.42,
+    smooth
+  },
+  stagelabel/.style={
+    font=\bfseries\fontsize{12.42}{13.8}\selectfont,
+    text=truec
+  },
+  respanel/.style={
+    draw=qnodeblue!15,
+    line width=0.68pt,
+    fill=qnodebg,
+    rounded corners=10pt,
+    blur shadow={
+      shadow blur steps=6,
+      shadow xshift=0pt,
+      shadow yshift=-2pt,
+      shadow opacity=10
+    }
+  },
+  methodbox/.style={
+    rounded corners=6pt,
+    fill=white,
+    minimum width=3.10cm,
+    minimum height=1.18cm,
+    align=center,
+    inner sep=2pt,
+    blur shadow={
+      shadow blur steps=4,
+      shadow yshift=-1.5pt,
+      shadow opacity=20
+    }
+  },
+  qnodeB/.style={
+    circle,
+    shading=ball,
+    ball color=qnodeblue!85!white,
+    minimum size=3.0mm,
+    inner sep=0pt
+  },
+  qnodeR/.style={
+    circle,
+    shading=ball,
+    ball color=qnoderred!95!white,
+    minimum size=3.0mm,
+    inner sep=0pt
+  },
+  halo/.style={
+    circle,
+    draw=haloc,
+    densely dashed,
+    minimum size=4.8mm,
+    inner sep=0pt,
+    fill=haloc!15,
+    opacity=0.6
+  },
+  straightedge/.style={
+    draw=black!15,
+    line width=0.6pt
+  },
+  wavyblue/.style={
+    draw=qnodeblue!60,
+    line width=0.75pt,
+    decorate,
+    decoration={snake, amplitude=0.3mm, segment length=2.2mm}
+  },
+  wavypink/.style={
+    draw=accentpink!60,
+    line width=0.75pt,
+    decorate,
+    decoration={snake, amplitude=0.3mm, segment length=2.2mm}
+  }
+}
+
+\tikzset{
+  stage/.style={font=\bfseries\fontsize{12.42}{13.8}\selectfont,text=truec},
+  qblue/.style={circle,shade,shading=radial,
+                inner color=white,outer color=reservoirblue,
+                draw=none,inner sep=0pt,minimum size=13.0pt},
+  qred/.style={circle,shade,shading=radial,
+               inner color=white,outer color=reservoirred,
+               draw=none,inner sep=0pt,minimum size=13.0pt},
+  graphlink/.style={draw=edgegray,line width=1.054pt,line cap=round},
+  graphlinknext/.style={draw=edgegray!76,line width=0.782pt,line cap=round},
+  blueflow/.style={-{Stealth[length=4.1pt,width=3.5pt]},draw=reservoirblue,
+                   line width=1.632pt,line cap=round},
+  redflow/.style={-{Stealth[length=4.1pt,width=3.5pt]},draw=reservoirred,
+                  line width=1.632pt,line cap=round},
+}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+% Shared horizontal alignment
+\coordinate (EVc)    at (2.00,-4.75);
+\coordinate (Splitc) at (5.35,-4.75);
+\coordinate (Rawc)   at (8.70,-4.75);
+
+% ========================================================================
+% Input series: a smooth, irregular Mackey--Glass-like trace with a restrained
+% forecast window.  It is deliberately not connected to the reservoir by an
+% arrow: spatial alignment already communicates the processing order.
+% ========================================================================
+  \begin{scope}[shift={(0.70,0)}]
+  \node[stage] at (2.15,2.18) {Input series};
+  \node[draw=qnodeblue!18,fill=white,line width=0.68pt,rounded corners=5pt,
+        minimum width=3.75cm,minimum height=1.86cm] at (2.15,1.00) {};
+  \def\xstart{0.50}\def\xt{3.00}\def\xtp{3.62}\def\xend{3.82}
+  \pgfmathdeclarefunction{inputsignal}{1}{%
+    \pgfmathparse{1.03
+      + 0.35*sin(360*(#1-0.50)/1.08 + 34)
+      + 0.025*sin(360*(#1-0.50)/3.10 + 18)}%
+  }
+
+  \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.935pt]
+    (\xstart,0.43) -- (\xend,0.43);
+  \draw[-{Stealth[length=3.0pt,width=2.5pt]},axisgray,line width=0.935pt]
+    (\xstart,0.43) -- (\xstart,1.62);
+  \node[font=\fontsize{8.05}{9.2}\selectfont,text=axisgray,anchor=north west] at
+    ($(\xstart,1.62)+(0.04,0.18)$) {$y$};
+
+  % A smooth carrier with a very slow modulation remains readable at column
+  % scale. Both segments evaluate the same analytic function, so the style
+  % change at t is continuous.
+  \draw[truec,line width=2.78pt,line cap=round]
+    plot[domain=\xstart:\xt,samples=100,smooth]
+      (\x,{inputsignal(\x)});
+  \draw[truec,line width=2.63pt,dash pattern=on 0.1pt off 4.0pt,
+        line cap=round]
+    plot[domain=\xt:\xtp,samples=40,smooth]
+      (\x,{inputsignal(\x)});
+
+  % Sparse samples make the finite observed record explicit without clutter.
+  \foreach \sx in {0.50,0.92,1.34,1.76,2.18,2.60}{
+    \fill[truec] (\sx,{inputsignal(\sx)}) circle (2.55pt);
+  }
+
+  \coordinate (tmark) at (\xt,{inputsignal(\xt)});
+  \coordinate (tpone) at (\xtp,{inputsignal(\xtp)});
+  \draw[accent!70,line width=1.105pt,dash pattern=on 1.7pt off 2.04pt]
+    (\xt,0.43) -- (tmark);
+  \draw[accent!55,line width=1.105pt,dash pattern=on 1.7pt off 2.04pt]
+    (\xtp,0.43) -- (tpone);
+  \fill[accent] (tmark) circle (3.975pt);
+  \draw[accent,line width=1.575pt,fill=white] (tpone) circle (4.275pt);
+  \node[font=\fontsize{8.05}{9.2}\selectfont,text=muted,anchor=north] at (\xt,0.43) {$t$};
+  \node[font=\fontsize{8.05}{9.2}\selectfont,text=muted,anchor=north] at (\xtp,0.43) {$t+1$};
+  \end{scope}
+
+% ========================================================================
+% Abstract reservoir interaction graph.  Smaller central-glow atoms allow a
+% denser recurrent network, while full-diameter arrows show local state flow.
+% ========================================================================
+  \begin{scope}[shift={(7.02,0.76)},x=0.90cm,y=0.64cm]
+    \node[stage] at (0,2.22) {Quantum reservoir};
+
+    % A softly lifted white panel separates the circuit from the page.
+    \node[respanel,fill=white,
+          minimum width=3.75cm,minimum height=1.86cm] (reservoirpanel) at (0,0.38) {};
+
+    % Four red nodes highlight one interacting neighborhood.  Six blue nodes
+    % complete the recurrent graph.  Nodes are schematic reservoir elements.
+    \coordinate (cq0) at (-1.25, 0.28);
+    \coordinate (cq1) at (-0.42, 0.33);
+    \coordinate (cq2) at (-0.95,-0.55);
+    \coordinate (cq3) at (-0.05,-0.56);
+    \coordinate (cq4) at (-0.91, 1.17);
+    \coordinate (cq5) at (-0.02, 1.24);
+    \coordinate (cq6) at ( 0.89, 1.13);
+    \coordinate (cq7) at ( 0.39, 0.31);
+    \coordinate (cq8) at ( 1.26, 0.31);
+    \coordinate (cq9) at ( 0.91,-0.55);
+
+    % Local and longer-range interactions, drawn behind the nodes.
+    \foreach \a/\b in {cq0/cq1,cq0/cq2,cq0/cq4,
+                         cq1/cq2,cq1/cq3,cq1/cq4,cq1/cq5,cq1/cq7,
+                         cq2/cq3,cq2/cq4,cq3/cq5,cq3/cq7,cq3/cq9,
+                         cq4/cq5,cq5/cq6,cq5/cq7,cq6/cq7,cq6/cq8,
+                         cq7/cq8,cq7/cq9,cq8/cq9}{
+      \draw[graphlink] (\a) -- (\b);
+    }
+    \foreach \a/\b in {cq0/cq5,cq2/cq5,cq3/cq6,cq4/cq7,cq5/cq8,cq6/cq9}{
+      \draw[graphlinknext] (\a) -- (\b);
+    }
+
+    % Directional arrows cross the full atom diameter and are drawn first so
+    % the glowing spheres sit naturally above their central shafts.
+    \draw[redflow]  ($(cq0)+(0.34,0.00)$) -- ($(cq0)+(-0.50,0.00)$);
+    \draw[redflow]  ($(cq1)+(-0.29,0.34)$) -- ($(cq1)+(0.41,-0.41)$);
+    \draw[redflow]  ($(cq2)+(0.28,-0.33)$) -- ($(cq2)+(-0.41,0.43)$);
+    \draw[redflow]  ($(cq3)+(-0.36,0.00)$) -- ($(cq3)+(0.50,0.00)$);
+    \draw[blueflow] ($(cq4)+(0.29,-0.33)$) -- ($(cq4)+(-0.41,0.44)$);
+    \draw[blueflow] ($(cq5)+(0.38,0.00)$) -- ($(cq5)+(-0.50,0.00)$);
+    \draw[blueflow] ($(cq6)+(-0.30,0.34)$) -- ($(cq6)+(0.42,-0.42)$);
+    \draw[blueflow] ($(cq7)+(0.30,-0.33)$) -- ($(cq7)+(-0.41,0.44)$);
+    \draw[blueflow] ($(cq8)+(-0.37,0.00)$) -- ($(cq8)+(0.51,0.00)$);
+    \draw[blueflow] ($(cq9)+(-0.30,0.34)$) -- ($(cq9)+(0.42,-0.42)$);
+
+    \node[qred]  (q0) at (cq0) {};
+    \node[qred]  (q1) at (cq1) {};
+    \node[qred]  (q2) at (cq2) {};
+    \node[qred]  (q3) at (cq3) {};
+    \node[qblue] (q4) at (cq4) {};
+    \node[qblue] (q5) at (cq5) {};
+    \node[qblue] (q6) at (cq6) {};
+    \node[qblue] (q7) at (cq7) {};
+    \node[qblue] (q8) at (cq8) {};
+    \node[qblue] (q9) at (cq9) {};
+    % Anchor preserves the meter geometry independently of the visible panel.
+    \node[fit=(q0)(q1)(q2)(q3)(q4)(q5)(q6)(q7)(q8)(q9),
+          inner sep=1.5pt] (resbox) {};
+    \coordinate (reservoirout) at (0.00,-0.82);
+  \end{scope}
+
+% ===================================================================
+% (3) REPEATED MEASUREMENTS
+% ===================================================================
+\foreach \i/\x in {1/2.85,2/3.85,3/4.85,4/5.85,5/6.85,6/7.85}{
+  \node[circle, fill=truec, draw=white, line width=1.2pt, inner sep=3pt] (s\i) at (\x,-2.13) {};
+}
+
+\coordinate (mPos) at ($(reservoirpanel.south)+(0.00,-0.62)$);
+\node[draw=black, fill=white, minimum width=0.7cm, minimum height=0.6cm, line width=2.04pt, rounded corners=1pt] (meas) at (mPos) {};
+\coordinate (mBase) at ($(meas.center)+(0,-0.12)$);
+\draw[black, line width=1.7pt] ($(mBase)+(-0.22,0)$) arc[start angle=180, end angle=0, radius=0.22];
+\draw[-{Stealth[length=1.5mm, width=1.2mm]}, black, line width=2.04pt] (mBase) -- ++(60:0.32);
+
+\draw[measuregray, line width=1.785pt]
+  (reservoirpanel.south) -- (meas.north);
+\coordinate (mstemBot) at ($(meas.south)+(0.00,-0.18)$);
+\draw[measuregray, line width=1.785pt] (meas.south) -- (mstemBot);
+
+\foreach \i/\target in {1/s1,2/s2,3/s3,4/s4,5/s5,6/s6}{
+  \draw[-{Stealth[length=2mm, width=1.5mm]}, measuregray,
+        line width=1.7pt]
+        ($(\target)+(0,0.42)$) -- (\target);
+}
+
+\node[stagelabel, anchor=center, fill=white, rounded corners=2pt, inner xsep=5pt, inner ysep=2pt] at (5.35,-1.40) {Repeated measurements};
+
+% ===================================================================
+% (4) WATERFALL ROUTES + BARS
+% ===================================================================
+\coordinate (EVbaseSW) at (2.15,-4.00);
+\coordinate (EVbaseNE) at (2.55,-2.90);
+\coordinate (EVjoin)   at (2.35,-3.00);
+
+\coordinate (SplitA) at (5.00,-3.14);
+\coordinate (SplitB) at (5.35,-2.92);
+\coordinate (SplitC) at (5.70,-3.28);
+
+\foreach \name/\x/\h in {rawA/7.675/0.72, rawB/7.945/0.52, rawC/8.215/0.88, rawD/8.485/0.60, rawE/8.755/0.82, rawF/9.025/0.44}{
+  \coordinate (\name) at (\x,{ -4.00 + \h });
+}
+
+\foreach \i in {1,...,6}{
+  \draw[evc, route] (s\i) to[out=-90, in=90] (EVjoin);
+}
+\foreach \i/\target in {1/SplitA,2/SplitB,3/SplitC,4/SplitA,5/SplitB,6/SplitC}{
+  \draw[splitc, route] (s\i) to[out=-90, in=90] (\target);
+}
+\foreach \i/\target in {1/rawA,2/rawB,3/rawC,4/rawD,5/rawE,6/rawF}{
+  \draw[rawc, route] (s\i) to[out=-90, in=90] (\target);
+}
+
+\path[top color=evc!90, bottom color=evc!30, rounded corners=2.5pt] (EVbaseSW) rectangle (EVbaseNE);
+\foreach \x/\h in {4.885/0.86,5.235/1.08,5.585/0.72}{
+  \path[top color=splitc!90, bottom color=splitc!30, rounded corners=2.5pt] (\x,-4.00) rectangle ++(0.23,\h);
+}
+\foreach \x/\h in {7.595/0.72,7.865/0.52,8.135/0.88,8.405/0.60,8.675/0.82,8.945/0.44}{
+  \path[top color=rawc!90, bottom color=rawc!30, rounded corners=2pt] (\x,-4.00) rectangle ++(0.16,\h);
+}
+
+% ===================================================================
+% (5) METHOD BOXES -- simple labels only
+% ===================================================================
+\node[methodbox, draw=evc, line width=2.04pt] (EVlab) at (EVc) {%
+  {\bfseries\fontsize{12.1}{12.65}\selectfont\color{evc}EV}\\[-0.2ex]
+  {\bfseries\fontsize{8.97}{9.66}\selectfont\color{truec}all shots averaged}
+};
+
+\node[
+  methodbox,
+  draw=splitc,
+  line width=2.04pt,
+  minimum width=3.18cm
+] (Splitlab) at (Splitc) {%
+  {\bfseries\fontsize{12.1}{12.65}\selectfont\color{splitc}Grouped}\\[-0.2ex]
+  {\bfseries\fontsize{7.71}{8.51}\selectfont\color{truec}shots averaged in groups}
+};
+
+\node[methodbox, draw=rawc, line width=2.04pt] (Rawlab) at (Rawc) {%
+  {\bfseries\fontsize{12.1}{12.65}\selectfont\color{rawc}Raw}\\[-0.2ex]
+  {\bfseries\fontsize{8.74}{9.55}\selectfont\color{truec}individual shots}
+};
+
+% ===================================================================
+% (6) LINEAR READOUT
+% ===================================================================
+\node[
+  draw=black!12,
+  fill=white,
+  rounded corners=8pt,
+  minimum width=4.35cm,
+  minimum height=0.82cm,
+  align=center,
+  line width=0.68pt,
+  inner ysep=1.5pt,
+  blur shadow={shadow blur steps=8, shadow yshift=-3pt, shadow opacity=18}
+] (readout) at (5.35,-6.40) {%
+  {\bfseries\fontsize{14.38}{14.95}\selectfont\color{truec}Linear readout}
+};
+
+\draw[-{Stealth[length=2.5mm, width=2mm]}, evc, line width=2.55pt]
+  (EVlab.south) .. controls +(0,-0.75) and +(-1.2,0) .. (readout.west);
+
+\draw[-{Stealth[length=2.5mm, width=2mm]}, splitc, line width=2.55pt]
+  (Splitlab.south) .. controls +(0,-0.55) and +(0,0.8) .. (readout.north);
+
+\draw[-{Stealth[length=2.5mm, width=2mm]}, rawc, line width=2.55pt]
+  (Rawlab.south) .. controls +(0,-0.75) and +(1.2,0) .. (readout.east);
+
+% Freeze the pre-enlargement canvas so the level-2 styling fills the same
+% physical frame when the PDF is included at column width.
+\pgfresetboundingbox
+\path[use as bounding box]
+  (12.20364pt,-193.9631pt) rectangle (292.24062pt,70.43568pt);
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,5 @@
+dataset,budget_setting,reservoir_variant,feature_set,reservoir_seed,clusters,matched_nested_pairs,matched_pairs_per_cluster_min,delta_fixed_minus_per_time,cluster_ci95_low,cluster_ci95_high,inference_unit
+lorenz,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.0030312313697041906,-0.02119449923875433,0.015132036499345951,trajectory_or_sunspot_window
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.00205527771884225,-0.01650558829337479,0.012395032855690293,trajectory_or_sunspot_window
+rossler,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.0017894054524600796,-0.013363939249971509,0.009785128345051351,trajectory_or_sunspot_window
+sunspots,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.0017001012964624877,-0.007932843803114846,0.004532641210189871,trajectory_or_sunspot_window

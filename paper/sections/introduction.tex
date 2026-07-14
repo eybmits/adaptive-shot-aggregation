@@ -1,0 +1,73 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Every quantum learning experiment ends the same way: a circuit runs many
+times, and each run returns one measured bitstring. Before anything can be
+learned, this pile of shots must become training data. The step looks like
+bookkeeping, and it is usually treated that way. Almost every pipeline averages
+all shots of a time step into a single expectation-value estimate and moves on.
+This paper asks what that habit costs.
+
+The habit has a respectable origin. Expectation values are the native currency
+of quantum mechanics: they are what theory predicts and what experiments are
+built to estimate. A learning pipeline, however, does not consume observables.
+It consumes training examples, and it cares about two things only: how many
+there are and how noisy each one is. The moment a measurement record becomes
+training data, a physics convention quietly turns into a statistical decision:
+spend all measurements on making one example clean, or make several examples
+that are merely clean enough. No single choice can suit every task, budget,
+and noise level.
+
+Averaging everything is one end of a dial. It buys the cleanest possible
+feature vector but pays with scarcity. Thousands of circuit executions collapse
+into a handful of training examples, and too few examples relative to the
+number of features destabilizes regression~\cite{hsu2012random}. The opposite
+end, keeping every shot as its own example, buys abundance but pays with noise,
+and noisy features systematically shrink fitted
+coefficients~\cite{fuller1987measurement}. Between these extremes lies an
+entire range of aggregations. Nothing in the record forces either convention,
+and the record does not care which one tradition prefers.
+
+Quantum reservoir computing (QRC) is a clean place to study this
+dial~\cite{fujii2017harnessing,nakajima2019boosting,mujal2021opportunities}. A
+fixed quantum circuit transforms an input sequence into measured features, and
+only a classical readout is trained. The circuit, the targets, and the
+measurement record can therefore be held completely fixed while the aggregation
+alone changes. Whatever happens to the forecast is attributable to the
+aggregation because nothing else moved.
+
+We compare three representations of one record
+(Fig.~\ref{fig:organization}). The expectation-value representation (EV)
+averages all measurements at each time step. Raw uses each measurement
+separately. Grouped averages disjoint subsets, and its aggregation scale $k$,
+the number of shots per averaged training view, slides smoothly from $k=1$
+(Raw) to $k=N$ (EV).
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig1_shot_organization.pdf}
+  \caption{Three ways to turn one shot record into training data. A fixed quantum
+  reservoir is measured many times per step, and only the classical step changes:
+  EV averages all shots, Raw keeps each shot, and Grouped averages disjoint groups.
+  All feed the same linear readout.}
+  \label{fig:organization}
+\end{figure}
+
+The dial turns out to matter. Under one matched protocol and fixed execution
+budgets, an intermediate aggregation lowers test error relative to full
+averaging on every task we evaluate, including two synthetic systems and two
+real-world datasets. The best aggregation scale depends on the record, so no
+single convention is appropriate. The gain requires nothing quantum. Matched
+controls support a covariance-regularization explanation for the classical
+readout, supplied automatically by the record's own
+fluctuations. Because aggregation is classical post-processing, it costs no
+additional quantum executions and applies retroactively to any archived record.
+
+Our contribution is \emph{adaptive shot aggregation}. The number of shots per
+training view becomes a setting of the classical readout, selected by
+validation like any other hyperparameter, at no additional quantum cost. We map
+when the choice matters through three budget allocations of time steps and
+shots. We explain why it works through matched controls that isolate the
+regularization mechanism. We test where it transfers through unmitigated
+experiments with a separate hardware reservoir on two superconducting
+processors.

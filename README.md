@@ -1,97 +1,190 @@
-# Split-Ensemble QRC ground-truth paper repo
+# From Quantum Shots to Training Data
 
-This repository is the canonical local paper package for the current Split-Ensemble QRC manuscript. The tracked `results/`, `figures/`, `tex/`, and `docs/` directories are the source of truth for the current paper state.
+[![CI](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml/badge.svg)](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## Canonical sources
+Reproducibility package for **From Quantum Shots to Training Data:
+Reorganizing Measurement Records in Quantum Machine Learning**.
 
-- Manuscript source: `tex/main.tex`
-- Results overview: `docs/results_summary.md`
-- Active plotting / experiment code:
-  - `scripts/replot_manuscript_exp2.py`
-  - `scripts/run_20seed_experiments.py`
-  - `scripts/compute_paired_stats.py`
-  - `scripts/run_ibm_hardware_validation_best.py`
+Quantum experiments produce repeated measurement outcomes. A learning pipeline
+must decide how those outcomes become training examples. This repository studies
+that decision under a fixed execution budget. It compares three representations
+of the same shot record:
 
-Generated PDFs such as `docs/full_paper.pdf` and `figures/experiment_*.pdf` are local build products and are intentionally ignored by Git.
+| Representation | Shots per training view | Views per time step |
+|---|---:|---:|
+| Raw | `k = 1` | `N` |
+| Grouped | `1 < k < N` | `N / k` |
+| Expectation value (EV) | `k = N` | `1` |
 
-## Experiment map
+Grouped training averages disjoint sets of shots. The group size `k` and ridge
+strength are chosen on chronological development data. The circuit, targets,
+raw measurements, and test procedure remain fixed across methods.
 
-1. `experiment_1.pdf`: common operating-point comparison with representative traces and 20-seed outcome summaries
-2. `experiment_2.pdf`: empirical EV-versus-Split gap as a function of `rho_EV`
-3. `experiment_3.pdf`: larger-reservoir / more-qubits robustness sweep
-4. `experiment_4.pdf`: baseline controls at the common operating point
-5. `experiment_5.pdf`: duplication-control sweep (`EV`, `EV-dup`, `Split`)
-7. `experiment_7.pdf`: reservoir-architecture ablation at the common operating point
-8. `experiment_8.pdf`: ridge-regularization sweep at the common operating point
+![Shot grouping overview](docs/assets/shot_grouping_overview.png)
 
-Supplementary reproducibility artifacts:
-- `lambda_*.csv`: ridge-regularization sweep at the common operating point
-- `experiment_*_paired_stats.csv`: paired delta / CI / win-rate / Wilcoxon tables backing the revised claims
-- `reservoir_size_*.csv`: full-format version of the Experiment 3 size sweep
-- `hardware_validation_experiment2_best_*`: full audit bundle for the best-regime IBM validation rerun
+## Main result
 
-Appendix-only robustness figures extend the story with the `experiment_7` reservoir-architecture ablation at fixed `Q=4` and a targeted `Q=12` follow-up on the strongest variants, plus `experiment_8` for the ridge-regularization sweep at the same common operating point.
+At the balanced budget of 500 time steps and 20 shots per step, Grouped lowers
+mean test NRMSE on all four tasks. Relative reductions are computed as
+`(EV - Grouped) / EV`.
 
-The manuscript additionally imports a narrow hardware validation as a table-backed result via `results/hardware_validation_summary.csv`.
+| Task | EV | Grouped | Relative error reduction | 95% interval for EV minus Grouped |
+|---|---:|---:|---:|---:|
+| Mackey-Glass | 0.4676 | 0.4537 | 2.96% | [-0.0023, 0.0300] |
+| Santa Fe laser | 0.7644 | 0.6797 | **11.09%** | **[0.0174, 0.1522]** |
+| Rossler | 0.4137 | 0.3788 | **8.44%** | **[0.0139, 0.0559]** |
+| Sunspots | 0.5531 | 0.5171 | **6.50%** | **[0.0103, 0.0616]** |
 
-## Canonical result files
+The mean NRMSE across the four tasks falls from 0.5497 to 0.5073, a 7.71%
+reduction at unchanged quantum execution cost. Mackey-Glass has a positive mean
+difference but its interval contains zero. The other three intervals remain
+above zero.
 
-- `results/representative_summary.csv`
-- `results/representative_seed_level.csv`
-- `results/representative_traces.npz`
-- `results/empirical_gap_summary.csv`
-- `results/empirical_gap_seed_level.csv`
-- `results/more_qubits_summary.csv`
-- `results/more_qubits_seed_level.csv`
-- `results/baseline_controls_summary.csv`
-- `results/baseline_controls_seed_level.csv`
-- `results/duplication_control_summary.csv`
-- `results/duplication_control_seed_level.csv`
-- `results/experiment_1_paired_stats.csv`
-- `results/experiment_2_cell_paired_stats.csv`
-- `results/experiment_2_peak_paired_stats.csv`
-- `results/experiment_3_paired_stats.csv`
-- `results/experiment_4_paired_stats.csv`
-- `results/experiment_5_paired_stats.csv`
-- `results/architecture_ablation_summary.csv`
-- `results/architecture_ablation_seed_level.csv`
-- `results/architecture_ablation_q12_summary.csv`
-- `results/architecture_ablation_q12_seed_level.csv`
-- `results/architecture_ablation_paired_stats.csv`
-- `results/hardware_validation_summary.csv`
+The original confirmatory campaign contained Mackey-Glass, Rössler, and
+sunspots. Santa Fe was added later with the same frozen evaluation protocol,
+after the first campaign had been analyzed, so its interval is exploratory.
+The merged evidence manifest preserves this distinction explicitly.
 
-## Supplementary reproducibility files
+The covariance-regularized EV control closely matches Grouped. This agrees with
+the exact squared-loss identity in the paper: grouped views add a covariance
+penalty estimated from the record's own shot fluctuations. The result concerns
+finite-shot data organization. It is not a claim of quantum advantage or a
+universal group size.
 
-- `results/lambda_seed_level.csv`
-- `results/lambda_summary.csv`
-- `results/reservoir_size_seed_level.csv`
-- `results/reservoir_size_summary.csv`
-- `results/hardware_validation_experiment2_best_seed_level.csv`
-- `results/hardware_validation_experiment2_best_summary.csv`
-- `results/hardware_validation_experiment2_best_trace_long.csv`
-- `results/hardware_validation_experiment2_best_trace_wide.csv`
-- `results/hardware_validation_experiment2_best_job_rows.csv`
-- `results/hardware_validation_experiment2_best_manifest.json`
-- `results/hardware_validation_experiment2_best_traces.npz`
-- `results/hardware_validation_experiment2_best_audit_bundle.npz`
+## Repository structure
 
-## Active scripts
+```text
+configs/       Frozen simulation protocols and the full rerun configuration
+data/          Pinned Santa Fe laser and sunspot source series
+docs/          Reproducibility, hardware, data, and result documentation
+output/pdf/    Named and anonymous papers, supplements, and checksums
+paper/         LaTeX sources and final vector figures
+results/       Frozen numerical evidence and provenance manifests
+scripts/       Simulation, analysis, plotting, packaging, and verification
+tests/         Unit and contract tests for the retained implementation
+```
 
-- `scripts/replot_manuscript_exp2.py`: regenerates `figures/experiment_1.pdf` through `figures/experiment_5.pdf` plus `figures/experiment_7.pdf` and `figures/experiment_8.pdf` from tracked result files
-- `scripts/run_20seed_experiments.py`: synthetic-suite runner retained for the current codebase
-- `scripts/compute_paired_stats.py`: writes the paired-delta, CI, win-rate, and Wilcoxon tables used in the revised results text
-- `scripts/update_common_operating_point_results.py`: refreshes the representative operating-point artifacts
-- `scripts/run_ibm_hardware_validation_best.py`: IBM Runtime validation runner for the three best `experiment_2` settings (`mackey_glass`, `lorenz`, `narma10`) with 20 seeds by default; writes seed-level and summary CSVs, exploded trace tables, an exploded job table, compressed trace/audit bundles, a manifest JSON, and an optional summary figure using the saved local Qiskit account
+The result directories keep their original identifiers because their manifests
+bind file paths, hashes, and row counts. The paper reads the consolidated
+four-task evidence in
+`results/qai_robust_protocol_santa_fe_manuscript/`.
 
-## Minimal rebuild workflow
+## Quick start
 
-1. Regenerate the figure PDFs:
-   - `python scripts/replot_manuscript_exp2.py`
-2. Rebuild the paper:
-   - `cd tex`
-   - `pdflatex -interaction=nonstopmode -halt-on-error main.tex`
-   - `pdflatex -interaction=nonstopmode -halt-on-error main.tex`
-3. Refresh the canonical paper artifact:
-   - copy `tex/main.pdf` to `docs/full_paper.pdf`
+Python 3.11 or newer is recommended.
 
-`docs/full_paper.pdf`, `figures/*.pdf`, and `figures/*.png` are treated as disposable local build outputs and are ignored by Git.
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements-lock.txt
+make help
+```
+
+`requirements-lock.txt` is the tested Python 3.11 environment. Use
+`requirements.txt` instead when intentionally resolving newer compatible
+versions.
+
+Run the complete verification from frozen evidence:
+
+```bash
+make all
+```
+
+This command runs the tests, regenerates all figures, builds the named and
+anonymous papers and supplements, verifies the numerical and manuscript
+contracts, rebuilds the anonymous review package, and creates a checked arXiv
+source archive.
+
+The main commands can also be run separately:
+
+```bash
+make test       # implementation tests
+make figures    # Figures 1 through 5 from source and frozen evidence
+make paper      # named and anonymous papers and supplements
+make verify     # hashes, values, figures, page limits, metadata, and privacy
+make release    # isolated anonymous review package
+make arxiv      # named arXiv source ZIP with an isolated test build
+```
+
+## Full simulation rerun
+
+The checked result tables are sufficient to rebuild and verify the paper. A
+full rerun is optional and substantially more expensive. Frozen manifests bind
+the original campaigns to their configuration and implementation hashes. The
+current runner preserves the published protocol but is maintained separately
+from those immutable campaign snapshots, so it creates a new provenance chain
+instead of overwriting the archived one.
+
+Inspect the execution plan without running it:
+
+```bash
+python scripts/run_robust_evaluation.py \
+  --config configs/benchmark.json \
+  --results-dir results/benchmark_dry_run \
+  --dry-run
+```
+
+Run or resume the benchmark:
+
+```bash
+python scripts/run_robust_evaluation.py \
+  --config configs/benchmark.json \
+  --results-dir results/benchmark \
+  --workers 4 \
+  --resume
+```
+
+Each shard records its configuration and implementation hashes. A resumed run
+is accepted only when those hashes match.
+
+## Hardware evidence
+
+The hardware study uses archived, unmitigated records from `ibm_fez` and
+`ibm_marrakesh`. Simulation uses a six-qubit data-reuploading reservoir with
+local Z and neighboring ZZ features. Hardware uses a separate ten-qubit Ising
+ring with local Z readout. The hardware experiment therefore tests transfer of
+the aggregation procedure, not equivalence between the two circuits.
+
+Each task and processor has one acquisition with 500 time steps and 400 shots
+per step. The analysis divides each acquisition into twenty disjoint records of
+20 shots per time step. Its intervals describe within-acquisition variation,
+not independent devices or calibration periods.
+
+Reanalyze the archived records without IBM access:
+
+```bash
+make hardware
+make verify
+```
+
+Job identifiers, layouts, checksums, and scope are documented in
+[`docs/HARDWARE.md`](docs/HARDWARE.md).
+
+## Paper and source packages
+
+- [Named paper](output/pdf/quantum_shots_to_training_data.pdf)
+- [Anonymous paper](output/pdf/quantum_shots_to_training_data_anonymous.pdf)
+- [Supplement](output/pdf/quantum_shots_to_training_data_supplement.pdf)
+- [Anonymous supplement](output/pdf/quantum_shots_to_training_data_supplement_anonymous.pdf)
+- [Reproducibility guide](docs/REPRODUCIBILITY.md)
+- [Method guide](docs/METHOD.md)
+- [Result guide](docs/RESULTS.md)
+- [Data provenance](docs/DATA.md)
+
+Generated source packages are written under `release/` and intentionally remain
+outside version control. Their contents are rebuilt and verified from tracked
+files.
+
+## Citation
+
+Please use the metadata in [`CITATION.cff`](CITATION.cff). GitHub exposes the
+same record through **Cite this repository**.
+
+## License
+
+The software and original documentation are released under the
+[MIT License](LICENSE). Included benchmark data retain the terms of their
+original providers. See [`docs/DATA.md`](docs/DATA.md) for provenance.

@@ -1,0 +1,55 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Adaptive shot aggregation}
+
+Write $x_t^{(n)}$ for the features produced by shot $n$ at time $t$. We split
+the $N$ shots of each step into $G=N/k$ groups of equal size $k$ and average
+within each group,
+\begin{equation}
+  x_t^{(g)}=\frac{1}{k}\sum_{n\in g}x_t^{(n)}, \qquad g=1,\dots,G.
+  \label{eq:grouping}
+\end{equation}
+Every group is a partly averaged view of the same time step, and all views
+share the same target $y_t$. At test time we average the $G$ predictions of a
+step, which is identical to predicting once from the averaged features. The two
+methods are therefore scored in exactly the same way, so any difference between
+EV and Grouped is created during training, not at test time.
+
+The shot index carries no physical meaning, because shot $n$ at one step and
+shot $n$ at the next come from unrelated circuit runs. We therefore shuffle the
+shots freshly at every time step before forming groups, and we repeat the whole
+analysis over several random groupings.
+
+\subsection{Fixed execution budget and training}
+
+Evaluating $T$ time steps with $N$ shots per step costs $TN$ circuit
+executions. We hold this budget fixed at ten thousand executions and study
+three ways of spending it, $(T,N) = (250,40)$, $(500,20)$, and $(1000,10)$,
+ranging from fewer time steps with more shots to more time steps with fewer
+shots. For each setting we try every group size $k$ that divides $N$, which
+includes Raw at $k=1$ and EV at $k=N$.
+
+Selection and testing respect time order. After a short washout, the earlier
+part of each series is the selection data used to choose settings, and the
+final fifth is held out as the test block and left untouched until the end. On
+the selection data we pick the group size and ridge strength $(k,\lambda)$ by
+forward-chaining validation. In three successive rounds we fit on an earlier
+stretch and score on the stretch that immediately follows, so training always
+precedes validation in time, and each candidate pair is ranked by its
+validation error averaged over the three rounds. The best pair is then frozen,
+the readout is refitted on the whole selection data, and the test block is
+scored once. Normalization and feature scaling are computed from training data
+only, so the test block never influences any choice.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig2_composite.pdf}
+  \caption{Adaptive aggregation under the shared protocol. (a)~Grouped (teal) beats
+  EV (open circle) and Raw (yellow) on five Mackey--Glass runs. (b)~The error is
+  U-shaped in the aggregation scale $k$, lowest at an intermediate value (star is
+  the validated choice). (c)~The same dip below EV holds on all four tasks.
+  (d)~After tuning, Grouped beats EV per task by $\Delta$. Panels (b,c) use
+  development data, (a,d) test blocks.}
+  \label{fig:operating}
+\end{figure}

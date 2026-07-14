@@ -1,0 +1,38 @@
+{
+  "artifact_sha256": {
+    "main_table_body.tex": "470eb8a9ae2a6214b723b83ad414f156c56df3aac78e396b66c1a9e2d8e4a0e7",
+    "qai_balanced_split_spectrum.pdf": "0471d4e427fd6a1eb1ccae174f0a3c6140d2d5e4893a7291255ee844125da1dd",
+    "qai_balanced_split_spectrum.png": "1faab029330bcb68aead285b3d98a9e5d0676431ca4fbe33545c59ae6999a556",
+    "qai_budget_partition_robustness.pdf": "fc066fcf995d087bf53d78518d173b43f6a855ea57fe0ba8252c94dde9b5b1d3",
+    "qai_budget_partition_robustness.png": "a1054d4f50a86bb0990683310c1f8dad3f51bcf0233d4bb22cccbb4a969fcc14",
+    "qai_feature_validity_ideal_classical.pdf": "4f12ee1eab1cec46d611a5e88d661c3b0f9251c0cf1bb3a32d178c18395b5aec",
+    "qai_feature_validity_ideal_classical.png": "9e1e3b0a66910e9a112f3293ba83b182a3d3d1205d7c47cf8105e6883d64ebb9",
+    "result_macros_candidate.tex": "270adc025af003ad912e09f4bdb002016d326a5b076ec853c0210e9960b44903",
+    "summary_go_no_go.json": "f37726d029554b7bfe1c88ed3d4d2f55c62e10975f3acac132aab48b04e2eb3c"
+  },
+  "headline_filter": {
+    "feature_set": "z_plus_zz",
+    "reservoir_variant": "expressive_reuploading",
+    "scope_role": "headline"
+  },
+  "paper_figure_directory": "paper/figures",
+  "reporter": {
+    "path": "scripts/report_qai_robust_results.py",
+    "sha256": "65176a48ec029334a32e6e7c86e6708b215a99d271a55bb77ed0cb00192be980"
+  },
+  "schema_version": "qai-result-report-manifest-v1",
+  "source_sha256": {
+    "configs/qai_robust_protocol.json": "85c1a507ad1e71a83a89285ae71c100944bdd840079e612086e2b777391c38e0",
+    "results/expressive_reservoir/ideal_diagnostics.json": "2acc6ade3792d967072da039f7385aa9a2571344f5ab1be6792cbaf1d827b69b",
+    "results/expressive_reservoir/ideal_feature_grid.csv": "6ceda624c2b233bde617edb5450b136d2e2e86a328980e9b87580911610fd31c",
+    "results/qai_robust_protocol_full/manifest.json": "bd9e395f5149343aadd29e0ca783bf8585271830e783ceed5a7a789005032e88",
+    "results/qai_robust_protocol_full/replicate_results.csv": "2a3b2f05eeea7ba420fb2280ab1c90bcccfee588571d0b4f8918212e1f3845df",
+    "results/qai_robust_protocol_full/split_validation_spectrum.csv": "e10bfb465d4e012f3e6ea1d7fa04d4f5a83ba712dabb28ece9d729193c73490f",
+    "scripts/report_qai_robust_results.py": "65176a48ec029334a32e6e7c86e6708b215a99d271a55bb77ed0cb00192be980"
+  },
+  "verified_campaign_hashes": {
+    "config_sha256": "85c1a507ad1e71a83a89285ae71c100944bdd840079e612086e2b777391c38e0",
+    "implementation_sha256": "608649ed7ddf50c1d4ccd403f10cafbbab7f06aed108c283bf7b69627e8abe43",
+    "sunspot_data_sha256": "afb272b758d8db30446e43930091a98dbcf09210086da7fac8d5337f5532f68c"
+  }
+}

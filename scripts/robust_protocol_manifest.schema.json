@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/qai-robust-protocol-manifest-v1.schema.json",
+  "title": "Robust shot-aggregation evaluation manifest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "status",
+    "script",
+    "config_path",
+    "git_commit",
+    "protocol",
+    "nested_design",
+    "budget_settings",
+    "hyperparameter_search",
+    "test_access",
+    "inference",
+    "feature_validity_gate",
+    "decision_gate",
+    "data_provenance",
+    "outputs"
+  ],
+  "properties": {
+    "schema_version": {"const": "qai-robust-protocol-v1"},
+    "status": {"enum": ["planned", "running", "complete", "smoke-test"]},
+    "script": {"const": "scripts/run_robust_evaluation.py"},
+    "config_path": {"type": "string"},
+    "git_commit": {"type": "string"},
+    "protocol": {
+      "type": "object",
+      "required": ["datasets", "reservoir_variants", "reservoir_roles", "evaluation_scopes", "feature_sets", "methods", "normalization"],
+      "properties": {
+        "datasets": {"type": "array", "minItems": 2, "items": {"type": "string"}},
+        "reservoir_variants": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "reservoir_roles": {"type": "object"},
+        "evaluation_scopes": {"type": "object"},
+        "feature_sets": {"type": "array", "minItems": 3, "items": {"type": "string"}},
+        "methods": {"type": "array", "minItems": 6, "items": {"type": "string"}},
+        "normalization": {
+          "type": "object",
+          "required": ["fit_on", "train_fitted_affine_scale", "circuit_input_range", "clip_circuit_inputs_only", "targets"],
+          "properties": {
+            "fit_on": {"const": "first_expanding_fold_training_prefix_only"},
+            "train_fitted_affine_scale": {"type": "string"},
+            "circuit_input_range": {"const": [0.0, 1.0]},
+            "clip_circuit_inputs_only": {"const": true},
+            "targets": {"type": "string", "pattern": "never clipped"}
+          }
+        }
+      }
+    },
+    "nested_design": {
+      "type": "object",
+      "required": ["trajectory_indices", "reservoir_seeds", "shot_seeds", "partition_seeds", "sunspot_origin_spacing_months", "sunspot_test_index_ranges_by_setting", "sunspot_test_blocks_pairwise_disjoint"],
+      "properties": {
+        "trajectory_indices": {"type": "array", "minItems": 5, "items": {"type": "integer"}},
+        "reservoir_seeds": {"type": "array", "minItems": 2, "items": {"type": "integer"}},
+        "shot_seeds": {"type": "array", "minItems": 2, "items": {"type": "integer"}},
+        "partition_seeds": {"type": "array", "minItems": 2, "items": {"type": "integer"}},
+        "sunspot_origin_spacing_months": {"type": "integer", "minimum": 1},
+        "sunspot_test_index_ranges_by_setting": {"type": "object"},
+        "sunspot_test_blocks_pairwise_disjoint": {"const": true}
+      }
+    },
+    "budget_settings": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["name", "time_steps", "shots_per_step", "executions"],
+        "properties": {
+          "name": {"type": "string"},
+          "time_steps": {"type": "integer", "minimum": 1},
+          "shots_per_step": {"type": "integer", "minimum": 2},
+          "executions": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "hyperparameter_search": {
+      "type": "object",
+      "required": ["validation_folds", "fold_kind", "lambda_grid", "covariance_alpha_grid", "k_grid_by_setting"],
+      "properties": {
+        "validation_folds": {"const": 3},
+        "fold_kind": {"const": "expanding_train_blocked_validation"},
+        "lambda_grid": {"type": "array", "minItems": 2, "items": {"type": "number"}},
+        "covariance_alpha_grid": {"type": "array", "minItems": 2, "items": {"type": "number"}},
+        "k_grid_by_setting": {"type": "object"}
+      }
+    },
+    "test_access": {"const": "once_after_all_applicable_hyperparameters_are_frozen_on_validation"},
+    "decision_gate": {
+      "type": "object",
+      "required": ["status", "primary_confirmatory_setting", "practical_noninferiority_margin_absolute_nrmse", "split_vs_ev", "split_vs_covariance_ev", "other_budget_settings"],
+      "properties": {
+        "status": {"const": "frozen_before_confirmatory_rerun"},
+        "primary_confirmatory_setting": {"const": "balanced"},
+        "practical_noninferiority_margin_absolute_nrmse": {"const": 0.05},
+        "other_budget_settings": {"const": "descriptive robustness only"}
+      }
+    },
+    "data_provenance": {
+      "type": "object",
+      "required": ["sunspots"],
+      "properties": {
+        "sunspots": {
+          "type": "object",
+          "required": ["path", "sha256", "rows", "start_month", "end_month", "series", "source", "verified", "observed_sha256"]
+        }
+      }
+    },
+    "inference": {
+      "type": "object",
+      "required": ["cluster", "nested_factors", "ci"],
+      "properties": {
+        "cluster": {"const": "trajectory_or_sunspot_window"},
+        "nested_factors": {"type": "array", "items": {"type": "string"}},
+        "ci": {"const": "95_percent_t_interval_over_cluster_means"}
+      }
+    },
+    "feature_validity_gate": {
+      "type": "object",
+      "required": ["required", "report", "passed"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "report": {"type": "string"},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "required": ["replicate_results", "cluster_summary", "cluster_paired_stats"],
+      "properties": {
+        "replicate_results": {"type": "string"},
+        "cluster_summary": {"type": "string"},
+        "cluster_paired_stats": {"type": "string"}
+        ,"partition_robustness_summary": {"type": "string"}
+        ,"fixed_lane_sensitivity": {"type": "string"}
+        ,"ideal_vs_classical": {"type": "string"}
+        ,"selected_k_frequency": {"type": "string"}
+        ,"split_validation_spectrum": {"type": "string"}
+      }
+    }
+  },
+  "additionalProperties": true
+}

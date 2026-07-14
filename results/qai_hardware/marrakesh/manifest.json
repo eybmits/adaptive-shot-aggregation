@@ -1,0 +1,315 @@
+{
+ "account": "seedwise-open-plan",
+ "backend": "ibm_marrakesh",
+ "jobs": {
+  "probe": {
+   "job_id": "d97uejif47jc73a78ajg",
+   "submitted_at": "2026-07-09T18:24:15.047155+00:00",
+   "bindings": 20,
+   "shots": 400,
+   "usage_seconds": 4.0,
+   "fetched_at": "2026-07-09T23:25:47.078420+00:00",
+   "bits_shape": [
+    20,
+    400,
+    10
+   ],
+   "mean_z_abs_resid": 0.04850217067669829,
+   "mean_z_abs_resid_reversed_bits": 0.11864396271115872,
+   "mean_z_corr": 0.9218770607912343,
+   "projected_seconds_per_task": 100.0
+  },
+  "mackey_glass": {
+   "job_id": "d97ueld2su3c739ijt40",
+   "submitted_at": "2026-07-09T18:24:21.806858+00:00",
+   "bindings": 500,
+   "shots": 400,
+   "usage_seconds": 56.0,
+   "fetched_at": "2026-07-09T23:25:53.570817+00:00",
+   "bits_shape": [
+    500,
+    400,
+    10
+   ]
+  },
+  "lorenz": {
+   "job_id": "d97uelotcv6s73dlet30",
+   "submitted_at": "2026-07-09T18:24:23.418308+00:00",
+   "bindings": 500,
+   "shots": 400,
+   "usage_seconds": 56.0,
+   "fetched_at": "2026-07-09T23:25:55.245235+00:00",
+   "bits_shape": [
+    500,
+    400,
+    10
+   ]
+  },
+  "rossler": {
+   "job_id": "d97uem4qp3as739s93a0",
+   "submitted_at": "2026-07-09T18:24:24.588352+00:00",
+   "bindings": 500,
+   "shots": 400,
+   "usage_seconds": 56.0,
+   "fetched_at": "2026-07-09T23:25:57.041367+00:00",
+   "bits_shape": [
+    500,
+    400,
+    10
+   ]
+  },
+  "sunspots": {
+   "job_id": "d97uem8tcv6s73dlet3g",
+   "submitted_at": "2026-07-09T18:24:25.971533+00:00",
+   "bindings": 500,
+   "shots": 400,
+   "usage_seconds": 56.0,
+   "fetched_at": "2026-07-09T23:25:59.148939+00:00",
+   "bits_shape": [
+    500,
+    400,
+    10
+   ]
+  },
+  "santa_fe_laser": {
+   "job_id": "d99mf52f47jc73a99fj0",
+   "submitted_at": "2026-07-12T10:08:21.017264+00:00",
+   "bindings": 500,
+   "shots": 400,
+   "usage_seconds": 56.0,
+   "fetched_at": "2026-07-12T10:14:30.582832+00:00",
+   "bits_shape": [
+    500,
+    400,
+    10
+   ],
+   "bits_sha256": "7ce30273bbbcbeeb4019b7a0027cc139c8247aa318fc31454a5bf3b4dd918582",
+   "max_execution_time_seconds": 65,
+   "retry_limit": 0,
+   "source_extension_manifest_sha256": "887f2529e9ebd16abbbb1659f61e96a6702b51ad39dabe67f1d9777f4d99df32",
+   "task_provenance": {
+    "cluster_id": "santa_fe_laser_window_05",
+    "encoding": "legacy base.input_amplitude_angle (clips circuit input to [0,1])",
+    "hash_kind": "sha256 of contiguous array bytes",
+    "hashes": {
+     "angles": "6faa235f5dd233e61899105c54c2f68cf136660196fd8364e011f7d2b23c08b5",
+     "inputs": "268f49d76e6ef0e30f08315d670ed4cec93001653c114213d660c02cb438c194",
+     "raw": "d425b9833f291557c3467e48a6b6c0d6bf2c1c7d3888bf45f3c32868ef8404bb",
+     "targets": "d044d4e1c676ac8ae0d34676eabac064be83d69bd7ff3bf4f97058007d94eb32"
+    },
+    "normalization": "legacy base.normalize_and_shift with config.json",
+    "shapes": {
+     "angles": [
+      500
+     ],
+     "inputs": [
+      500
+     ],
+     "raw": [
+      501
+     ],
+     "targets": [
+      500
+     ]
+    },
+    "source_cluster_index": 5,
+    "source_metadata": {
+     "cluster_kind": "disjoint_continuation_window",
+     "window_end_index": 5088,
+     "window_start_index": 4587
+    },
+    "task": "santa_fe_laser"
+   }
+  }
+ },
+ "layout": {
+  "backend": "ibm_marrakesh",
+  "chosen_at": "2026-07-09T18:23:52.496738+00:00",
+  "score": 0.10008809479624195,
+  "data_qubits": [
+   32,
+   33,
+   34,
+   35,
+   19,
+   15,
+   14,
+   13,
+   12,
+   11
+  ],
+  "bridge_ancillas": [
+   18,
+   31
+  ],
+  "readout_error_data": [
+   0.00732421875,
+   0.007080078125,
+   0.0108642578125,
+   0.0067138671875,
+   0.0037841796875,
+   0.004638671875,
+   0.0042724609375,
+   0.007080078125,
+   0.0035400390625,
+   0.0068359375
+  ],
+  "twoq_error_ring": [
+   0.0029764945460201975,
+   0.0020198000115120573,
+   0.002530311560726306,
+   0.0018078218377248212,
+   0.002175745155423209,
+   0.0021614554697305666,
+   0.0021734952991886436,
+   0.008464585179596307,
+   0.0014869947579670417,
+   0.0017325638544234412,
+   0.0028031711153958805,
+   0.003086131976214157
+  ],
+  "n_plaquettes_considered": 21
+ },
+ "calibration": {
+  "taken_at": "2026-07-09T18:24:13.575765+00:00",
+  "qubits": {
+   "32": {
+    "t1": 0.00012754699104650856,
+    "t2": 4.133528207569415e-05,
+    "frequency": null,
+    "readout_error": 0.00732421875,
+    "readout_duration": 2.18e-06
+   },
+   "33": {
+    "t1": 0.000156252426603395,
+    "t2": 0.00013079374406217437,
+    "frequency": null,
+    "readout_error": 0.007080078125,
+    "readout_duration": 2.18e-06
+   },
+   "34": {
+    "t1": 0.00010023941290337555,
+    "t2": 0.00010865790444475938,
+    "frequency": null,
+    "readout_error": 0.0108642578125,
+    "readout_duration": 2.18e-06
+   },
+   "35": {
+    "t1": 0.00037247038568093317,
+    "t2": 0.00046113587804683353,
+    "frequency": null,
+    "readout_error": 0.0067138671875,
+    "readout_duration": 2.18e-06
+   },
+   "19": {
+    "t1": 0.0001350927721877998,
+    "t2": 6.91048058641096e-05,
+    "frequency": null,
+    "readout_error": 0.0037841796875,
+    "readout_duration": 2.18e-06
+   },
+   "15": {
+    "t1": 8.479628006529685e-05,
+    "t2": 3.0009077158465425e-05,
+    "frequency": null,
+    "readout_error": 0.004638671875,
+    "readout_duration": 2.18e-06
+   },
+   "14": {
+    "t1": 0.00027687212862614836,
+    "t2": 9.96173382158668e-05,
+    "frequency": null,
+    "readout_error": 0.0042724609375,
+    "readout_duration": 2.18e-06
+   },
+   "13": {
+    "t1": 0.00014599246107524077,
+    "t2": 0.00014931068407051146,
+    "frequency": null,
+    "readout_error": 0.007080078125,
+    "readout_duration": 2.18e-06
+   },
+   "12": {
+    "t1": 0.0002956199008667028,
+    "t2": 0.00013590533725735455,
+    "frequency": null,
+    "readout_error": 0.0035400390625,
+    "readout_duration": 2.18e-06
+   },
+   "11": {
+    "t1": 0.000185392783704987,
+    "t2": 0.00012632943103490856,
+    "frequency": null,
+    "readout_error": 0.0068359375,
+    "readout_duration": 2.18e-06
+   },
+   "18": {
+    "t1": 8.350755253255306e-05,
+    "t2": 6.0056620482752596e-05,
+    "frequency": null,
+    "readout_error": 0.0111083984375,
+    "readout_duration": 2.18e-06
+   },
+   "31": {
+    "t1": 0.000110217425412217,
+    "t2": 5.198496791137325e-06,
+    "frequency": null,
+    "readout_error": 0.0118408203125,
+    "readout_duration": 2.18e-06
+   }
+  },
+  "default_rep_delay": 0.00025
+ },
+ "operating_point": {
+  "q": 10,
+  "time_steps": 500,
+  "record_shots": 20,
+  "shots_per_step": 400,
+  "records_per_task": 20,
+  "budget_per_record": 10000
+ },
+ "total_usage_fetched": 0.0,
+ "task_provenance": {
+  "santa_fe_laser": {
+   "cluster_id": "santa_fe_laser_window_05",
+   "encoding": "legacy base.input_amplitude_angle (clips circuit input to [0,1])",
+   "hash_kind": "sha256 of contiguous array bytes",
+   "hashes": {
+    "angles": "6faa235f5dd233e61899105c54c2f68cf136660196fd8364e011f7d2b23c08b5",
+    "inputs": "268f49d76e6ef0e30f08315d670ed4cec93001653c114213d660c02cb438c194",
+    "raw": "d425b9833f291557c3467e48a6b6c0d6bf2c1c7d3888bf45f3c32868ef8404bb",
+    "targets": "d044d4e1c676ac8ae0d34676eabac064be83d69bd7ff3bf4f97058007d94eb32"
+   },
+   "normalization": "legacy base.normalize_and_shift with config.json",
+   "shapes": {
+    "angles": [
+     500
+    ],
+    "inputs": [
+     500
+    ],
+    "raw": [
+     501
+    ],
+    "targets": [
+     500
+    ]
+   },
+   "source_cluster_index": 5,
+   "source_metadata": {
+    "cluster_kind": "disjoint_continuation_window",
+    "window_end_index": 5088,
+    "window_start_index": 4587
+   },
+   "task": "santa_fe_laser"
+  }
+ },
+ "hardware_extensions": {
+  "santa_fe_laser": {
+   "source": "results/qai_hardware_santa_fe_extension/manifest.json",
+   "source_manifest_sha256": "887f2529e9ebd16abbbb1659f61e96a6702b51ad39dabe67f1d9777f4d99df32",
+   "backend": "ibm_marrakesh",
+   "charged_qpu_seconds": 56.0
+  }
+ }
+}

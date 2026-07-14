@@ -1,0 +1,57 @@
+\section{Discussion}
+\label{sec:discussion}
+
+A quantum experiment produces a measurement record, not a ready made training
+set. Combining repeated shots into feature vectors is therefore part of the
+learning algorithm. EV averages all $N$ shots at each step. Adaptive shot
+aggregation instead averages groups of size $k$, from Raw at $k=1$ to EV at
+$k=N$, without changing the circuit or record. The settings are fixed before
+testing, and gains arise during training at no additional quantum cost.
+
+The choice matters most when many shots are collected at relatively few time
+steps. Full averaging then spends a large measurement budget on a small number
+of highly precise examples. Grouping creates moderately denoised views from
+the same shots. Their differences reveal which feature directions are stable
+under finite shot fluctuations. With fewer shots per step, the freedom to
+reorganize the record and the benefit both shrink. The aggregation scale
+should therefore be validated rather than fixed by convention.
+
+For a linear readout, this effect has an exact interpretation.
+Equation~\eqref{eq:loss-decomposition} separates the grouped loss into the EV
+loss and a quadratic covariance penalty. Since every view shares the same
+target, the penalty discourages large weights on feature combinations that
+vary between groups. On a common feature scale, Eq.~\eqref{eq:penalty-scale}
+shows that smaller groups produce stronger regularization and $k=N$ recovers
+EV.
+
+The Cov EV control supports this explanation. It keeps the fully averaged
+features but adds a tuned covariance penalty estimated from shot fluctuations.
+It stays close to Grouped on every task and reaches slightly lower mean error
+overall, pointing to a shared mechanism. Cov EV tunes the penalty directly,
+while Grouped uses strengths produced by the available group sizes. Grouping
+is therefore a simple route to this regularization, but not the only one.
+
+Individual shot outcomes should be retained. Once a record has been reduced to expectation
+values, alternative aggregation scales cannot be reconstructed. Keeping the
+full record preserves this option without repeating the quantum experiment.
+
+The effect transfers to a separate ten qubit circuit run without mitigation on
+two superconducting processors, where Grouped improves on EV across all tasks.
+The hardware intervals measure blocks within one acquisition per task and
+processor, not reproducibility across runs, calibration states, or days.
+Independent hardware campaigns, other reservoirs, and richer readouts are the
+next tests. More broadly, finite shot processing is part of the learning
+algorithm.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Turning a shot record into training data has always involved a choice, and the
+field has answered it by reflex, averaging everything. We show the reflex is
+beatable. Choosing the aggregation scale by validation lowers mean test error
+on chaotic and real-world forecasting at the balanced budget, holds on two
+superconducting processors, and requires no additional quantum cost. Because
+every measurement-based reservoir produces such a record, the choice we make
+explicit here is available to all of them. And the underlying question, how to
+turn finitely sampled noisy measurements into training data, reaches well beyond
+reservoirs to finite-shot learning as a whole.

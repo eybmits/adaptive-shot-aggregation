@@ -1,0 +1,81 @@
+% Main paper source.
+% Named build:     latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+% Anonymous build: latexmk -pdf -interaction=nonstopmode -halt-on-error main_anon.tex
+\documentclass[10pt,conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\graphicspath{{gfx/}{figures/}}
+\usepackage{booktabs}
+\usepackage{balance}
+\usepackage{cite}
+\usepackage{xcolor}
+\definecolor{paperblue}{HTML}{0057FF}
+\definecolor{citegreen}{HTML}{39FF14}
+\usepackage[hypertexnames=false]{hyperref}
+\usepackage{orcidlink}
+\hypersetup{%
+  colorlinks=true,
+  linkcolor=paperblue,
+  citecolor=citegreen,
+  urlcolor=paperblue,
+  pdfborder={0 0 0},
+  pdftitle={From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning},
+  pdfsubject={Measurement record aggregation for finite shot quantum machine learning},
+  pdfkeywords={quantum reservoir computing, finite shot learning, measurement aggregation, time series forecasting}
+}
+\urlstyle{same}
+
+\newcommand{\nrmse}{\mathrm{NRMSE}}
+\newcommand{\Grouped}{Grouped}
+\input{results_macros.tex}
+\input{main_table_body.tex}
+\setlength{\textfloatsep}{7pt plus 1pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\dbltextfloatsep}{7pt plus 1pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 1pt}
+
+\begin{document}
+
+\title{From Quantum Shots to Training Data:\\
+Reorganizing Measurement Records in Quantum Machine Learning}
+
+\ifdefined\ANON
+  \hypersetup{pdfauthor={}}
+  \author{\IEEEauthorblockN{Anonymous Authors}}
+\else
+  \hypersetup{pdfauthor={Markus Baumann; Maximilian Zorn; Thomas Gabor; Claudia Linnhoff-Popien; Jonas Stein}}
+  \author{%
+  \IEEEauthorblockN{%
+  Markus Baumann\IEEEauthorrefmark{1}\orcidlink{0009-0007-3575-1006}\thanks{Corresponding author: \href{mailto:markus.baumann@campus.lmu.de}{markus.baumann@campus.lmu.de}.},
+  Maximilian Zorn\IEEEauthorrefmark{1}\orcidlink{0009-0006-2750-7495},
+  Thomas Gabor\IEEEauthorrefmark{2}\orcidlink{0000-0003-2048-8667},
+  Claudia Linnhoff-Popien\IEEEauthorrefmark{1}\orcidlink{0000-0001-6284-9286},
+  and Jonas Stein\IEEEauthorrefmark{1}\orcidlink{0000-0001-5727-9151}}
+  \IEEEauthorblockA{\IEEEauthorrefmark{1}\textit{QAR-Lab, Department of Computer Science, LMU Munich, Munich, Germany}\\
+  \IEEEauthorrefmark{2}\textit{Department of Computer Science, University of Exeter, Exeter, United Kingdom}}
+  }
+\fi
+
+\maketitle
+\bstctlcite{BSTcontrol}
+
+\input{sections/abstract.tex}
+\input{sections/introduction.tex}
+\input{sections/related-work.tex}
+\input{sections/background.tex}
+\input{sections/methodology.tex}
+\input{sections/experimental-section.tex}
+\input{sections/evaluation.tex}
+\input{sections/conclusion.tex}
+
+\vspace*{-10pt}
+\balance
+\bibliographystyle{IEEEtranDoi}
+\bibliography{bstcontrol,references}
+
+\end{document}

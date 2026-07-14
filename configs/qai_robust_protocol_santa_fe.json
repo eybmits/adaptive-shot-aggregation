@@ -1,0 +1,213 @@
+{
+  "schema_version": "qai-robust-protocol-v1",
+  "status": "exploratory-posthoc-task-substitution-screen",
+  "datasets": [
+    "santa_fe_laser"
+  ],
+  "budget_settings": [
+    {
+      "name": "shot_rich",
+      "time_steps": 250,
+      "shots_per_step": 40
+    },
+    {
+      "name": "balanced",
+      "time_steps": 500,
+      "shots_per_step": 20
+    },
+    {
+      "name": "data_rich",
+      "time_steps": 1000,
+      "shots_per_step": 10
+    }
+  ],
+  "execution_budget_per_record": 10000,
+  "trajectory_indices": [0, 1, 2, 3, 4],
+  "sunspot_origin_spacing_months": 240,
+  "sunspot_dataset_pin": {
+    "path": "data/sunspots_monthly_sidc.csv",
+    "sha256": "afb272b758d8db30446e43930091a98dbcf09210086da7fac8d5337f5532f68c",
+    "rows": 3330,
+    "start_month": "1749-01",
+    "end_month": "2026-06",
+    "series": "SILSO monthly mean total sunspot number, version 2.0",
+    "source": "https://www.sidc.be/SILSO/DATA/SN_m_tot_V2.0.csv"
+  },
+  "santa_fe_origin_spacing_samples": 1001,
+  "santa_fe_dataset_pin": {
+    "train_path": "data/santa_fe_laser_A.dat",
+    "train_sha256": "14faec41629ead4f45d9c055a4494269dd9122dd559594502c0c522dc98a9eb2",
+    "train_rows": 1000,
+    "train_source": "https://web.cecs.pdx.edu/mcnames/DataSets/SantaFeA.dat",
+    "continuation_path": "data/santa_fe_laser_A_continuation.dat",
+    "continuation_sha256": "feebf2460cb8c945b87dde368cccde95a05ee06955827c4bec93f2043db6ec5e",
+    "continuation_rows": 9093,
+    "continuation_source": "https://web.cecs.pdx.edu/mcnames/DataSets/SantaFeA2.dat",
+    "total_rows": 10093,
+    "series": "Santa Fe Time Series Competition Series A far-infrared laser intensity",
+    "source_page": "https://web.cecs.pdx.edu/mcnames/DataSets/index.html"
+  },
+  "primary_reservoir_seed": 1729,
+  "primary_parameter_sha256": "fdff90afa7f488026e7c822f33e424682c2c084653d3ccd245f91e2e90038505",
+  "primary_architecture_sha256": "d44fac7ba013f8337e293d9e08ca3b3bd85be634520d7b9f1953be296770b964",
+  "reservoir_seeds": [1729, 2718, 31415],
+  "shot_seeds": [1009, 2003, 3001],
+  "partition_seeds": [17, 43, 97],
+  "partition_robustness_subset": {
+    "budget_setting": "balanced",
+    "reservoir_variant": "expressive_reuploading",
+    "feature_set": "z_plus_zz",
+    "reservoir_seed": 1729,
+    "partition_seeds": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120]
+  },
+  "fixed_lane_ablation": {
+    "budget_setting": "balanced",
+    "reservoir_variant": "expressive_reuploading",
+    "feature_set": "z_plus_zz",
+    "reservoir_seed": 1729,
+    "partition_seeds": [17, 43, 97]
+  },
+  "reservoir_variants": [
+    "expressive_reuploading",
+    "degenerate_gate"
+  ],
+  "primary_reservoir_variant": "expressive_reuploading",
+  "reservoir_roles": {
+    "expressive_reuploading": "headline_primary",
+    "degenerate_gate": "balanced_setting_ablation_only"
+  },
+  "feature_sets": [
+    "all_z",
+    "z0",
+    "z_plus_zz"
+  ],
+  "primary_feature_set": "z_plus_zz",
+  "q": 6,
+  "eta": 0.2,
+  "window": 10,
+  "t0": 30,
+  "test_fraction": 0.2,
+  "validation_folds": 3,
+  "initial_train_fraction": 0.5,
+  "lambda_grid": [
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "covariance_alpha_grid": [
+    0.0,
+    0.01,
+    0.03,
+    0.1,
+    0.3,
+    1.0,
+    3.0,
+    10.0
+  ],
+  "organization_k_grid_by_setting": {
+    "shot_rich": [1, 2, 4, 5, 8, 10, 20, 40],
+    "balanced": [1, 2, 4, 5, 10, 20],
+    "data_rich": [1, 2, 5, 10]
+  },
+  "tuning_budget": {
+    "split": "all valid divisor k values (8, 6, or 4 by setting) crossed with the shared 7-value lambda grid",
+    "covariance_ev": "8 preregistered alpha values crossed with the shared 7-value lambda grid; never fewer outer candidates than Split",
+    "comparison_contract": "identical chronological folds, identical lambda grid, and identical one-time held-out test access",
+    "k_grid_rule": "all divisors of N, including endpoints k=1 and k=N",
+    "fixed_baselines": "the shared 7-value lambda grid; no artificial second hyperparameter"
+  },
+  "registered_objectives": {
+    "ridge": "mean squared loss over training rows + lambda * ||w||_2^2",
+    "covariance_ev": "mean squared loss over time + alpha * w^T Sigma_shot w + lambda * ||w||_2^2",
+    "intercept": "unpenalized",
+    "implementation_note": "sklearn Ridge receives alpha=lambda*n_training_rows so lambda has the same meaning for every group count"
+  },
+  "methods": [
+    "classical_input",
+    "ideal_quantum",
+    "ev",
+    "raw",
+    "split",
+    "covariance_ev"
+  ],
+  "evaluation_scopes": {
+    "headline": {
+      "role": "headline",
+      "reservoir_variant": "expressive_reuploading",
+      "budget_settings": ["shot_rich", "balanced", "data_rich"],
+      "reservoir_seeds": [1729, 2718, 31415],
+      "feature_sets": ["z_plus_zz"],
+      "methods": ["classical_input", "ideal_quantum", "ev", "raw", "split", "covariance_ev"]
+    },
+    "feature_ablation": {
+      "role": "feature_ablation",
+      "reservoir_variant": "expressive_reuploading",
+      "budget_settings": ["balanced"],
+      "reservoir_seeds": [1729],
+      "feature_sets": ["z0", "all_z"],
+      "methods": ["ideal_quantum", "ev", "raw", "split", "covariance_ev"]
+    },
+    "degenerate_circuit_ablation": {
+      "role": "degenerate_circuit_ablation",
+      "reservoir_variant": "degenerate_gate",
+      "budget_settings": ["balanced"],
+      "reservoir_seeds": [1729],
+      "feature_sets": ["z0", "all_z", "z_plus_zz"],
+      "methods": ["ideal_quantum", "ev", "raw", "split", "covariance_ev"]
+    },
+    "partition_robustness": {
+      "role": "partition_robustness",
+      "reservoir_variant": "expressive_reuploading",
+      "budget_settings": ["balanced"],
+      "reservoir_seeds": [1729],
+      "feature_sets": ["z_plus_zz"],
+      "methods": ["ev", "split"],
+      "note": "Twenty per-time partitions plus the fixed-lane comparison; analyzed separately from headline rows."
+    }
+  },
+  "normalization": {
+    "fit_on": "first_expanding_fold_training_prefix_only",
+    "train_fitted_affine_scale": "min-max from the earliest training prefix",
+    "circuit_input_range": [0.0, 1.0],
+    "clip_circuit_inputs_only": true,
+    "targets": "same train-fitted affine scale, never clipped; values outside [0,1] are retained"
+  },
+  "partitioning": {
+    "operation": "for each k, independently permute raw shot indices at every time step, form contiguous group means, then apply the linear leak and ten-lag map to each grouped sequence",
+    "primary_mode": "per_time_permuted",
+    "ablation_mode": "fixed_lane",
+    "split_groups": "contiguous blocks after the k-specific permutation",
+    "candidate_k": "all divisors of N, including k=1 and k=N as safe fallbacks; interior selections are reported separately"
+  },
+  "inference_unit": "disjoint_santa_fe_continuation_window",
+  "decision_gate": {
+    "status": "exploratory_posthoc_dataset_screen_not_confirmatory",
+    "primary_confirmatory_setting": "balanced",
+    "practical_noninferiority_margin_absolute_nrmse": 0.05,
+    "margin_interpretation": "5% of the mean-predictor NRMSE scale",
+    "split_vs_ev": {
+      "require_every_task_ci_lower_bound_above": -0.05,
+      "require_at_least_one_task_ci_lower_bound_above": 0.0
+    },
+    "split_vs_covariance_ev": {
+      "require_every_task_ci_upper_bound_below": 0.05,
+      "interpretation": "direct covariance regularization is not substantially better than Split"
+    },
+    "other_budget_settings": "descriptive robustness only"
+  },
+  "feature_validity_report": "results/expressive_reservoir/ideal_diagnostics.json",
+  "require_feature_validity_gate": true,
+  "notes": [
+    "The primary reservoir seed 1729 is frozen and published; two additional fixed seeds test robustness.",
+    "Only expressive z_plus_zz is headline evidence. Other feature sets and the degenerate circuit are balanced-setting ablations.",
+    "This run screens a user-proposed replacement task after the original four-task outcome was known and is not confirmatory evidence.",
+    "Santa Fe uses five fully disjoint 1001-sample windows from the 9093-point continuation; the original 1000 competition points are excluded.",
+    "Continuation windows 5 through 8 remain untouched for a later independent confirmation if this screen is promising.",
+    "Shot, reservoir, and partition seeds are nested factors, never treated as independent inferential clusters.",
+    "The final test block is evaluated once after validation selects all applicable hyperparameters."
+  ]
+}
