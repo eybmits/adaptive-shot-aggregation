@@ -15,11 +15,12 @@
 *.txt text eol=lf
 LICENSE text eol=lf
 
-# Keep archived text evidence readable on GitHub with stable LF bytes.
-# Vendor-provided DAT files and all binary artifacts remain byte-preserved.
-data/**/*.csv text eol=lf
-results/**/*.csv text eol=lf
-results/**/*.json text eol=lf
+# Keep archived text evidence readable on GitHub while preserving its original
+# bytes. Some frozen manifests bind these files by SHA-256, so Git must not
+# normalize their line endings.
+data/**/*.csv -text
+results/**/*.csv -text
+results/**/*.json -text
 data/**/*.dat binary
 
 # Preserve the exact upstream IEEE class and bibliography style files.
