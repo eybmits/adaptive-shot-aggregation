@@ -1,0 +1,13 @@
+dataset,budget_setting,reservoir_variant,feature_set,scope_role,baseline,method,clusters,delta_baseline_minus_method,cluster_ci95_low,cluster_ci95_high,cluster_win_rate,inference_unit
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,ev,raw,20,-0.10174989393230119,-0.11975383895299138,-0.083745948911611,0.0,trajectory_or_sunspot_window
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,ev,split,20,0.04454345493644963,0.037175879047682034,0.051911030825217225,1.0,trajectory_or_sunspot_window
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,ev,covariance_ev,20,0.05360347899332017,0.04559666825628435,0.061610289730356,1.0,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,headline,ev,raw,20,-0.10607185242814224,-0.11693981343969179,-0.09520389141659269,0.0,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,headline,ev,split,20,0.01645920389863663,0.01335794709722611,0.019560460700047147,1.0,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,headline,ev,covariance_ev,20,0.020529572705801323,0.017516689994931927,0.02354245541667072,1.0,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,headline,ev,raw,20,-0.02000699775370753,-0.06905427440695973,0.029040278899544674,0.35,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,headline,ev,split,20,0.11187668133400455,0.07950422232356777,0.14424914034444133,1.0,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,headline,ev,covariance_ev,20,0.11977976539697495,0.08898193493997836,0.15057759585397154,1.0,trajectory_or_sunspot_window
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,split,covariance_ev,20,0.009060024056870553,0.005779820052784799,0.012340228060956308,0.9,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,headline,split,covariance_ev,20,0.004070368807164692,0.0029472143430823716,0.005193523271247013,0.95,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,headline,split,covariance_ev,20,0.007903084062970373,-0.0005723224430248895,0.016378490568965634,0.75,trajectory_or_sunspot_window

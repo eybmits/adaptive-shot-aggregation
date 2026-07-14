@@ -311,7 +311,7 @@ class ExactQRCReservoir:
         return measurements
 
 class LegacyRandomCircuitReservoir:
-    """Previous fixed random circuit reservoir, retained for old result reproduction."""
+    """Fixed random-circuit baseline for architecture comparisons."""
 
     def __init__(self, q: int, depth: int, entangler: str, eta: float, window: int, seed: int) -> None:
         self.q = q

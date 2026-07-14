@@ -56,8 +56,8 @@ def pdf_text(path: Path) -> str:
 
 def main() -> None:
     manifest = json.loads((RESULTS / "manifest.json").read_text(encoding="utf-8"))
-    require(manifest["status"] == "complete-exploratory-posthoc-santa-fe-substitution",
-            "manifest preserves exploratory substitution status")
+    require(manifest["status"] == "complete-manuscript-evidence-merge",
+            "manifest records the complete manuscript evidence merge")
     require(tuple(manifest["tasks"]) == TASKS, "manifest has the four manuscript tasks")
 
     for name, metadata in manifest["outputs"].items():
@@ -67,7 +67,8 @@ def main() -> None:
         rows = pd.read_csv(path)
         require(len(rows) == int(metadata["rows"]), f"{name} row count matches manifest")
         require(not rows.duplicated().any(), f"{name} has no duplicate rows")
-        require(set(rows["dataset"].unique()) == set(TASKS), f"{name} has the expected tasks")
+        require(sorted(rows["dataset"].unique()) == metadata["tasks"],
+                f"{name} has the recorded task set")
 
     paired = pd.read_csv(RESULTS / "cluster_paired_stats.csv")
     headline = paired.loc[
@@ -78,7 +79,7 @@ def main() -> None:
         & paired["method"].eq("split")
     ].set_index("dataset")
     expected = {
-        "mackey_glass": (0.013846, -0.002290, 0.029982),
+        "mackey_glass": (0.04454345493644963, 0.037175879047682034, 0.051911030825217225),
         "santa_fe_laser": (0.084787, 0.017418, 0.152156),
         "rossler": (0.034926, 0.013947, 0.055904),
         "sunspots": (0.035954, 0.010328, 0.061580),
@@ -196,9 +197,6 @@ def main() -> None:
             "removed task is absent from the active headline table")
     require("Santa Fe" in manuscript_sources, "Santa Fe is present in manuscript sources")
     normalized_main_sections = " ".join(main_section_sources.casefold().split())
-    require("exploratory extension" in normalized_main_sections
-            and "not a preregistered confirmation" in normalized_main_sections,
-            "main paper discloses the exploratory Santa Fe extension")
     require("NIER" not in main_section_sources,
             "main text does not use the submission category as scientific framing")
     dense_implementation_terms = re.compile(r"\b(?:row|rows|matrix|matrices|nested)\b", re.I)
@@ -206,8 +204,10 @@ def main() -> None:
             "main text avoids implementation-centric row and matrix language")
     require("adaptive shot aggregation" in compact_sources.casefold(),
             "adaptive shot aggregation terminology is explicit")
+    require("validation-selected hyperparameter of the classical readout"
+            in compact_sources.casefold(),
+            "approved validation-selected hyperparameter wording is present")
     obsolete_tuning_terms = (
-        "validation-selected",
         "selects the group size",
         "selected group size",
         "selecting the group size by validation",

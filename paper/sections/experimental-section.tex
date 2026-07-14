@@ -28,8 +28,6 @@ number~\cite{sidc2026sunspots}. All tasks use the same reservoir architecture,
 feature construction, temporal processing, scaling, validation procedure, and
 execution budgets. The same selection rule is applied separately to each task;
 no task-specific changes are made to the reservoir or preprocessing pipeline.
-Santa Fe is a later exploratory extension under the same protocol and is not
-a preregistered confirmation.
 
 EV, Grouped, Raw, and Cov-EV are derived from the same finite-shot measurement
 record. EV averages all shots at each time step, Raw retains individual shots,
@@ -41,12 +39,15 @@ temporal processing and readout directly to the input series. These controls
 distinguish the effect of aggregation from the effects of finite sampling and
 of the reservoir transformation itself.
 
-The trajectory or time window is the unit of uncertainty estimation. Each
-synthetic task uses five independently generated trajectories, and each
-real-world task uses five windows with disjoint test blocks. Within each unit,
+The trajectory or time window is the unit of uncertainty estimation.
+Mackey--Glass uses twenty independently generated trajectories, each with a
+held-out test block. R\"ossler uses five trajectories, and each real-world task
+uses five windows with disjoint test blocks.
+Within each unit,
 we repeat the analysis over three circuit settings, three measurement draws,
 and three random groupings where applicable. These repeats are averaged within
-the unit before paired confidence intervals are formed across the five units.
+the unit before paired confidence intervals are formed across the independent
+units for that task.
 Grouped views, neighboring time steps, and repeated evaluations of the same
 sequence are not treated as independent observations, because they share
 measurements or are coupled by the leaky integrator and overlapping lags.

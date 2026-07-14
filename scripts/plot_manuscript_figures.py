@@ -46,6 +46,12 @@ NEUTRAL = "#777777"
 BLACK = "#171717"
 
 TASKS = ("mackey_glass", "santa_fe_laser", "rossler", "sunspots")
+EXPECTED_CLUSTERS = {
+    "mackey_glass": 20,
+    "santa_fe_laser": 5,
+    "rossler": 5,
+    "sunspots": 5,
+}
 TASK_TITLES = {
     "mackey_glass": "Mackey–Glass",
     "santa_fe_laser": "Santa Fe laser",
@@ -206,10 +212,14 @@ def _t_interval(values: Iterable[float]) -> tuple[float, float, float]:
 
 def _validate_cluster_count(frame: pd.DataFrame, grouping: list[str]) -> None:
     counts = frame.groupby(grouping, dropna=False)["cluster_id"].nunique()
-    if counts.empty or not counts.eq(5).all():
+    if counts.empty or "dataset" not in grouping:
+        raise ValueError("cluster-count validation requires dataset in the grouping")
+    observed = counts.reset_index(name="clusters")
+    observed["expected"] = observed["dataset"].map(EXPECTED_CLUSTERS)
+    if observed["expected"].isna().any() or not observed["clusters"].eq(observed["expected"]).all():
         raise ValueError(
-            "registered figures require exactly five independent trajectory/window clusters "
-            f"per comparison; observed {counts.to_dict()}"
+            "manuscript figures require the registered independent trajectory/window counts; "
+            f"observed {observed.to_dict(orient='records')}"
         )
 
 
@@ -309,31 +319,72 @@ def _save(fig: plt.Figure, stem: str) -> None:
 
 
 def _fig2_panel_a(ax: plt.Axes, balanced: pd.DataFrame) -> None:
-    """Matched outcomes across the five independent Mackey--Glass series."""
+    """Distributions across the independent Mackey--Glass trajectories."""
 
     sub = balanced.loc[balanced["dataset"].eq("mackey_glass")]
     wide = sub.pivot(index="cluster_id", columns="method", values="test_nrmse").sort_index()
     if not {"raw", "ev", "split"}.issubset(wide.columns):
         raise ValueError("Mackey--Glass paired-outcome panel is missing a headline method")
-    y = np.arange(len(wide))[::-1]
-    for yi, (_, row) in zip(y, wide.iterrows()):
-        ax.plot(
-            [row["ev"], row["split"]],
-            [yi, yi],
-            color=SPLIT,
-            lw=_lw(1.25),
-            alpha=0.82,
-            solid_capstyle="round",
-            zorder=2,
+    methods = ("ev", "split", "raw")
+    positions = np.arange(1, len(methods) + 1, dtype=float)
+    colors = (FULL_AVERAGE, SPLIT, RAW)
+    markers = ("o", "D", "o")
+    values = [wide[method].to_numpy(dtype=float) for method in methods]
+
+    violins = ax.violinplot(
+        values,
+        positions=positions,
+        widths=0.72,
+        showmeans=False,
+        showmedians=False,
+        showextrema=False,
+    )
+    for body, color in zip(violins["bodies"], colors):
+        body.set_facecolor(color)
+        body.set_edgecolor(color)
+        body.set_alpha(0.14)
+        body.set_linewidth(_lw(0.55))
+
+    rng = np.random.default_rng(26)
+    for position, method_values, color, marker in zip(positions, values, colors, markers):
+        jitter = rng.uniform(-0.13, 0.13, len(method_values))
+        facecolor = "white" if color == FULL_AVERAGE else color
+        ax.scatter(
+            np.full(len(method_values), position) + jitter,
+            method_values,
+            s=_ma(8.0),
+            marker=marker,
+            facecolor=facecolor,
+            edgecolor=color,
+            linewidth=_mew(0.42),
+            alpha=0.72,
+            zorder=3,
         )
-        ax.plot(row["raw"], yi, "o", color=RAW, ms=_ms(3.7), mec="white", mew=_mew(0.5), zorder=3)
-        ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=_mew(0.9), ms=_ms(4.1), zorder=4)
-        ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=_mew(0.55), ms=_ms(4.0), zorder=5)
-    ax.set_yticks(y, [str(i + 1) for i in range(len(y))])
-    ax.set_ylim(-0.55, len(y) - 0.45)
-    ax.set_xlabel("Test error (NRMSE)", labelpad=2)
-    ax.xaxis.set_major_locator(MaxNLocator(3))
-    ax.tick_params(axis="y", length=0)
+        mean, low, high = _t_interval(method_values)
+        ax.errorbar(
+            position,
+            mean,
+            yerr=[[mean - low], [high - mean]],
+            color=color,
+            lw=_lw(0.85),
+            capsize=2.7,
+            capthick=_lw(0.75),
+            zorder=4,
+        )
+        ax.scatter(
+            position,
+            mean,
+            s=_ma(24.0),
+            marker=marker,
+            facecolor=color,
+            edgecolor="white",
+            linewidth=_mew(0.5),
+            zorder=5,
+        )
+
+    ax.set_xticks(positions, ("EV", "Grouped", "Raw"))
+    ax.set_ylabel("Test NRMSE", labelpad=2)
+    ax.set_ylim(0.28, 0.78)
     _panel_letter(ax, "a", x=-0.16)
     _open_axes(ax)
 
@@ -431,38 +482,55 @@ def _fig2_panel_c(ax: plt.Axes, validation: pd.DataFrame) -> None:
 
 
 def _fig2_panel_d(ax: plt.Axes, balanced: pd.DataFrame) -> None:
-    summary = balanced.groupby(["dataset", "method"], as_index=False)["test_nrmse"].mean()
-    wide = summary.pivot(index="dataset", columns="method", values="test_nrmse").reindex(TASKS)
+    paired = balanced.loc[balanced["method"].isin(("ev", "split"))].pivot(
+        index=["dataset", "cluster_id"],
+        columns="method",
+        values="test_nrmse",
+    )
+    if paired[["ev", "split"]].isna().any().any():
+        raise ValueError("balanced outcome panel requires paired EV and Grouped unit means")
     y = np.arange(len(TASKS))[::-1]
-    all_values: list[float] = []
+    ax.axvline(0.0, color=NEUTRAL, lw=_lw(0.65), ls=(0, (3, 2)), zorder=0)
     for yi, task in zip(y, TASKS):
-        row = wide.loc[task]
-        all_values.extend((float(row["raw"]), float(row["ev"]), float(row["split"])))
-        ax.plot(
-            [row["ev"], row["split"]],
-            [yi, yi],
-            color=SPLIT,
-            lw=_lw(1.5),
-            solid_capstyle="round",
+        task_pairs = paired.xs(task, level="dataset")
+        gains = (task_pairs["ev"] - task_pairs["split"]).to_numpy(dtype=float)
+        mean, low, high = _t_interval(gains)
+        color = TASK_COLORS[task]
+        ax.errorbar(
+            mean,
+            yi,
+            xerr=[[mean - low], [high - mean]],
+            color=color,
+            lw=_lw(1.1),
+            capsize=2.7,
+            capthick=_lw(0.85),
             zorder=2,
         )
-        ax.plot(row["raw"], yi, "o", color=RAW, ms=_ms(3.8), mec="white", mew=_mew(0.5), zorder=3)
-        ax.plot(row["ev"], yi, "o", mfc="white", mec=FULL_AVERAGE, mew=_mew(0.95), ms=_ms(4.4), zorder=4)
-        ax.plot(row["split"], yi, "D", color=SPLIT, mec="white", mew=_mew(0.55), ms=_ms(4.2), zorder=5)
-
-    xmin, xmax = min(all_values), max(all_values)
-    span = xmax - xmin
-    # Reserve room for the enlarged result labels without changing any data.
-    ax.set_xlim(xmin - 0.10 * span, xmax + 0.68 * span)
-    label_x = xmax + 0.12 * span
-    for yi, task in zip(y, TASKS):
-        row = wide.loc[task]
-        delta = float(row["ev"] - row["split"])
-        ax.text(label_x, yi, f"{delta:.3f} lower", ha="left", va="center", fontsize=_fs(5.2), color="#14705f")
+        ax.plot(
+            mean,
+            yi,
+            marker=TASK_MARKERS[task],
+            color=color,
+            ms=_ms(4.0),
+            mec="white",
+            mew=_mew(0.5),
+            zorder=3,
+        )
+        ax.text(
+            0.98,
+            yi,
+            f"{mean:.3f}",
+            transform=ax.get_yaxis_transform(),
+            ha="right",
+            va="center",
+            fontsize=_fs(5.2),
+            color=BLACK,
+        )
     ax.set_yticks(y, [TASK_SHORT[task] for task in TASKS])
     ax.set_ylim(-0.55, len(TASKS) - 0.45)
-    ax.set_xlabel("Test error (NRMSE)", labelpad=2)
-    ax.xaxis.set_major_locator(MaxNLocator(3))
+    ax.set_xlim(-0.015, 0.21)
+    ax.set_xlabel("EV minus Grouped\n(NRMSE)", labelpad=2)
+    ax.xaxis.set_major_locator(MaxNLocator(4))
     ax.tick_params(axis="y", length=0, pad=1.0)
     _panel_letter(ax, "d", x=-0.22)
     _open_axes(ax)

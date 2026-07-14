@@ -29,7 +29,7 @@ PDF_CONTRACT = {
         "title": PAPER_TITLE,
     },
     "supplement.pdf": {
-        "pages": 5,
+        "pages": 4,
         "title": f"Supplementary Material: {PAPER_TITLE}",
     },
 }
@@ -425,10 +425,10 @@ def inspect_tree(root: Path) -> list[str]:
         if missing_inputs:
             findings.append(f"main.tex: restored section inputs missing: {missing_inputs}")
     placeholder = root / "anonymous_artifact_url.tex"
-    if placeholder.is_file() and "anonymous artifact URL to be supplied" not in placeholder.read_text(
+    if placeholder.is_file() and "anonymous.4open.science/r/split-ensemble-qrc-E688" not in placeholder.read_text(
         encoding="utf-8"
     ):
-        findings.append("anonymous artifact URL placeholder missing")
+        findings.append("anonymous artifact URL missing or incorrect")
     extension_manifest = root / "results/qai_hardware_santa_fe_extension/manifest.json"
     if extension_manifest.is_file():
         try:

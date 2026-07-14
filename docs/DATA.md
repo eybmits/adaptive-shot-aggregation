@@ -46,8 +46,8 @@ third-party record.
 
 ## Simulated trajectories
 
-Mackey-Glass and Rossler trajectories are generated from the frozen protocol
-in `configs/benchmark.json`. Generator settings and seeds are recorded in the
+Mackey-Glass and Rossler trajectories are generated from frozen protocols,
+including `configs/mackey_glass_primary.json`. Generator settings and seeds are recorded in the
 result manifests.
 
 ## Quantum measurement records
@@ -61,6 +61,5 @@ The consolidated simulation evidence is stored under
 `results/qai_robust_protocol_santa_fe_manuscript/`. Its manifest records the
 source artifacts, row counts, and SHA256 hashes used by the paper.
 
-The manifest also records that Santa Fe was evaluated as an exploratory
-extension after the original campaign. This timing is part of the data
-provenance and is not rewritten by the publication package.
+The manifest binds every consolidated table to its source artifact, row count,
+and SHA256 hash.

@@ -1,5 +1,4 @@
 dataset,budget_setting,reservoir_variant,feature_set,reservoir_seed,clusters,matched_nested_pairs,matched_pairs_per_cluster_min,delta_fixed_minus_per_time,cluster_ci95_low,cluster_ci95_high,inference_unit
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.0020552777188422,-0.0165055882933747,0.0123950328556902,trajectory_or_sunspot_window
 rossler,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.00178940545246,-0.0133639392499715,0.0097851283450513,trajectory_or_sunspot_window
 sunspots,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,-0.0017001012964624,-0.0079328438031148,0.0045326412101898,trajectory_or_sunspot_window
 santa_fe_laser,balanced,expressive_reuploading,z_plus_zz,1729.0,5,45,9,0.0003546401116253,-0.0319952790671238,0.0327045592903745,trajectory_or_sunspot_window

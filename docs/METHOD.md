@@ -30,7 +30,7 @@ def grouped_views(shots: np.ndarray, k: int, rng: np.random.Generator) -> np.nda
 ```
 
 Every view at a time step receives the same forecasting target. Candidate
-values of `k` and the ridge penalty are compared on chronological development
+values of `k` and the ridge penalty are compared on chronological validation
 folds. The chosen settings are frozen before the held-out test block is scored.
 Raw and EV remain available as safe endpoints of the same search.
 

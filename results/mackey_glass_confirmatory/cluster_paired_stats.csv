@@ -1,5 +1,0 @@
-dataset,budget_setting,reservoir_variant,feature_set,scope_role,baseline,method,clusters,delta_baseline_minus_method,cluster_ci95_low,cluster_ci95_high,cluster_win_rate,inference_unit
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,ev,raw,20,-0.10174989393230119,-0.11975383895299138,-0.083745948911611,0.0,trajectory_or_sunspot_window
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,ev,split,20,0.04454345493644963,0.037175879047682034,0.051911030825217225,1.0,trajectory_or_sunspot_window
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,ev,covariance_ev,20,0.05360347899332017,0.04559666825628435,0.061610289730356,1.0,trajectory_or_sunspot_window
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,split,covariance_ev,20,0.009060024056870553,0.005779820052784799,0.012340228060956308,0.9,trajectory_or_sunspot_window

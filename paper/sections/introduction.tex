@@ -6,11 +6,12 @@ times, and each run returns one measured bitstring. Before anything can be
 learned, this pile of shots must become training data. The step looks like
 bookkeeping, and it is usually treated that way. Almost every pipeline averages
 all shots of a time step into a single expectation-value estimate and moves on.
-This paper asks what that habit costs.
+This study examines the statistical consequences of the usual practice of
+averaging all shots at each time step.
 
-The habit has a respectable origin. Expectation values are the native currency
-of quantum mechanics: they are what theory predicts and what experiments are
-built to estimate. A learning pipeline, however, does not consume observables.
+This convention is well motivated because expectation values are the quantities
+predicted by theory and estimated in experiments. A learning pipeline, however,
+does not consume observables.
 It consumes training examples, and it cares about two things only: how many
 there are and how noisy each one is. The moment a measurement record becomes
 training data, a physics convention quietly turns into a statistical decision:
@@ -53,20 +54,20 @@ the number of shots per averaged training view, slides smoothly from $k=1$
   \label{fig:organization}
 \end{figure}
 
-The dial turns out to matter. Under one matched protocol and fixed execution
-budgets, an intermediate aggregation lowers mean test error relative to full
-averaging on all four tasks at the balanced allocation. The improvement is
-supported on Santa Fe laser, R\"ossler, and sunspots, while Mackey--Glass is
-inconclusive. The best aggregation scale depends on the record, so no single
-convention is appropriate. The gain requires nothing quantum. Matched controls
-support a covariance-regularization explanation for the classical readout,
-supplied automatically by the record's own fluctuations. Because aggregation
-is classical post-processing, it costs no additional quantum executions and
-applies retroactively to any archived record.
+Under the matched protocol and fixed execution budgets, the aggregation scale
+materially affects test error. At the balanced allocation, an intermediate
+aggregation lowers mean test error relative to full averaging on all four tasks,
+with paired confidence intervals above zero in every case. The best aggregation
+scale depends on the record, so no single convention is appropriate. Because
+the improvement arises entirely from classical post-processing, it requires no
+additional quantum executions. Matched controls support a
+covariance-regularization explanation for the classical readout, supplied
+automatically by the record's own fluctuations. When individual shot outcomes
+have been retained, the same post-processing can be applied retroactively to an
+archived record.
 
-Our contribution is \emph{adaptive shot aggregation}. The number of shots per
-training view becomes a setting of the classical readout, selected by
-validation like any other hyperparameter, at no additional quantum cost. We map
+Adaptive shot aggregation treats the number of shots per training view as a
+validation-selected hyperparameter of the classical readout. We map
 when the choice matters through three budget allocations of time steps and
 shots. We explain why it works through matched controls that isolate the
 regularization mechanism. We test where it transfers through unmitigated

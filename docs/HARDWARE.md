@@ -26,11 +26,6 @@ The raw Santa Fe records are stored once in each processor directory under
 hashes, and archived layouts is
 `results/qai_hardware_santa_fe_extension/manifest.json`.
 
-The original processor manifests also retain probe jobs and a legacy Lorenz
-acquisition. Those immutable entries document the acquisition history but are
-not used by the current four-task paper. The table above lists every paper-task
-job.
-
 The twenty records are parts of one acquisition. They quantify variation
 across shot blocks, not across devices, jobs, calibration periods, or hardware
 campaigns. Task comparisons are not used as evidence for calibration

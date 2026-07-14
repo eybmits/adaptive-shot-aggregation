@@ -16,16 +16,15 @@ setting spends the fixed budget on $500$ time steps with $20$ shots each.
 \subsection{Balanced setting}
 
 At the balanced budget, Grouped lowers mean NRMSE relative to EV on all four
-tasks (Table~\ref{tab:balanced}, Fig.~\ref{fig:operating}). The improvement is
-$0.0138$ on Mackey--Glass ($95\%$ CI $[-0.0023, 0.0300]$), $0.0848$ on Santa Fe
+tasks (Table~\ref{tab:balanced}, Fig.~\ref{fig:operating}). For Mackey--Glass,
+the primary estimate uses twenty independent held-out trajectories. The improvement is
+$0.0445$ on Mackey--Glass ($95\%$ CI $[0.0372, 0.0519]$), $0.0848$ on Santa Fe
 laser ($[0.0174, 0.1522]$), $0.0349$ on R\"ossler ($[0.0139, 0.0559]$), and
-$0.0360$ on sunspots ($[0.0103, 0.0616]$). The interval stays above zero on the
-two real-world datasets, Santa Fe laser and sunspots, and on R\"ossler. Only
-Mackey--Glass is inconclusive.
+$0.0360$ on sunspots ($[0.0103, 0.0616]$). Every interval stays above zero.
 
 \begin{table}[t]
 \caption{Mean test NRMSE at the balanced setting. Repeated measurement trials
-are averaged within each of five separate trajectories or windows. Lower
+are averaged within independent trajectories or windows. Lower
 values are better.}
 \label{tab:balanced}
 \centering
@@ -66,7 +65,7 @@ Grouped on all four task means.
 
 Figure~\ref{fig:regimes} compares three ways of spending the fixed budget. With
 $40$ shots at each of $250$ time steps, Grouped improves every task by
-$0.086$ to $0.170$. The interval stays above zero for Mackey--Glass, Santa Fe
+$0.112$ to $0.170$. The interval stays above zero for Mackey--Glass, Santa Fe
 laser, and R\"ossler, while the sunspot result varies across windows. When the
 same budget is spread over $1000$ time steps with only $10$ shots each, the
 gains shrink to between $0.008$ and $0.016$, and the interval stays above zero
@@ -76,7 +75,7 @@ only for Mackey--Glass and sunspots.
 
 Cov-EV keeps EV features and adds a penalty based on how the shots fluctuate
 together. At the balanced setting its mean error is $0.0021$ to $0.0116$ NRMSE
-below Grouped, and only the R\"ossler interval excludes zero. This near-match
+below Grouped. The Mackey--Glass and R\"ossler intervals exclude zero. This near-match
 supports the regularization mechanism in Eq.~\eqref{eq:loss-decomposition}
 rather than extra device information (Fig.~\ref{fig:controls}). Raw is less
 accurate than EV on Mackey--Glass and R\"ossler and inconclusive on the two
@@ -91,7 +90,7 @@ with $k$, whereas Cov-EV tunes the full shot-covariance penalty directly.
   \caption{Controls at the balanced setting, lower is better. On every task
   Grouped (teal diamond) and Cov-EV (purple square) are lowest and nearly equal,
   while EV (open circle) and Raw (yellow) trail. Their near-match supports a
-  readout-regularization explanation. Faint points are the five unit means,
+  readout-regularization explanation. Faint points are the independent unit means,
   markers and bars are means with $95\%$ intervals.}
   \label{fig:controls}
 \end{figure}

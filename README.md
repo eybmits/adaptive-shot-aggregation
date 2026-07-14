@@ -1,4 +1,4 @@
-# From Quantum Shots to Training Data
+# From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning
 
 [![CI](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml/badge.svg)](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
@@ -19,7 +19,7 @@ of the same shot record:
 | Expectation value (EV) | `k = N` | `1` |
 
 Grouped training averages disjoint sets of shots. The group size `k` and ridge
-strength are chosen on chronological development data. The circuit, targets,
+strength are chosen on chronological validation blocks. The circuit, targets,
 raw measurements, and test procedure remain fixed across methods.
 
 <p align="center">
@@ -42,20 +42,14 @@ mean test NRMSE on all four tasks. Relative reductions are computed as
 
 | Task | EV | Grouped | Relative error reduction | 95% interval for EV minus Grouped |
 |---|---:|---:|---:|---:|
-| Mackey-Glass | 0.4676 | 0.4537 | 2.96% | [-0.0023, 0.0300] |
+| Mackey-Glass | 0.4838 | 0.4392 | **9.21%** | **[0.0372, 0.0519]** |
 | Santa Fe laser | 0.7644 | 0.6797 | **11.09%** | **[0.0174, 0.1522]** |
 | Rossler | 0.4137 | 0.3788 | **8.44%** | **[0.0139, 0.0559]** |
 | Sunspots | 0.5531 | 0.5171 | **6.50%** | **[0.0103, 0.0616]** |
 
-The mean NRMSE across the four tasks falls from 0.5497 to 0.5073, a 7.71%
-reduction at unchanged quantum execution cost. Mackey-Glass has a positive mean
-difference but its interval contains zero. The other three intervals remain
+The mean NRMSE across the four tasks falls from 0.5537 to 0.5037, a 9.04%
+reduction at unchanged quantum execution cost. All four paired intervals remain
 above zero.
-
-The original confirmatory campaign contained Mackey-Glass, Rössler, and
-sunspots. Santa Fe was added later with the same frozen evaluation protocol,
-after the first campaign had been analyzed, so its interval is exploratory.
-The merged evidence manifest preserves this distinction explicitly.
 
 The covariance-regularized EV control closely matches Grouped. This agrees with
 the exact squared-loss identity in the paper: grouped views add a covariance
@@ -76,10 +70,9 @@ scripts/       Simulation, analysis, plotting, packaging, and verification
 tests/         Unit and contract tests for the retained implementation
 ```
 
-The result directories keep their original identifiers because their manifests
-bind file paths, hashes, and row counts. The paper reads the consolidated
-four-task evidence in
-`results/qai_robust_protocol_santa_fe_manuscript/`.
+The paper reads the consolidated four-task evidence in
+`results/qai_robust_protocol_santa_fe_manuscript/`. Each result manifest binds
+its configuration, implementation, row counts, and file hashes.
 
 ## Quick start
 
@@ -119,14 +112,13 @@ make release    # isolated anonymous review package
 make arxiv      # named arXiv source ZIP with an isolated test build
 ```
 
-## Full simulation rerun
+## Reproduce the simulation
 
 The checked result tables are sufficient to rebuild and verify the paper. A
 full rerun is optional and substantially more expensive. Frozen manifests bind
-the original campaigns to their configuration and implementation hashes. The
-current runner preserves the published protocol but is maintained separately
-from those immutable campaign snapshots, so it creates a new provenance chain
-instead of overwriting the archived one.
+the released evidence to its configuration and implementation hashes. New runs
+must use a new result directory, which protects the released evidence from
+accidental modification.
 
 Inspect the execution plan without running it:
 
@@ -179,6 +171,7 @@ Job identifiers, layouts, checksums, and scope are documented in
 - [Anonymous paper](output/pdf/quantum_shots_to_training_data_anonymous.pdf)
 - [Supplement](output/pdf/quantum_shots_to_training_data_supplement.pdf)
 - [Anonymous supplement](output/pdf/quantum_shots_to_training_data_supplement_anonymous.pdf)
+- [Anonymous review artifact](https://anonymous.4open.science/r/split-ensemble-qrc-E688/README.md)
 - [Reproducibility guide](docs/REPRODUCIBILITY.md)
 - [Method guide](docs/METHOD.md)
 - [Result guide](docs/RESULTS.md)

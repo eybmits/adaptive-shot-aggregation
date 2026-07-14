@@ -19,8 +19,8 @@ LICENSE text eol=lf
 # bytes. Some frozen manifests bind these files by SHA-256, so Git must not
 # normalize their line endings.
 data/**/*.csv -text
-results/**/*.csv -text
-results/**/*.json -text
+results/**/*.csv text eol=lf
+results/**/*.json text eol=lf
 data/**/*.dat binary
 
 # Preserve the exact upstream IEEE class and bibliography style files.

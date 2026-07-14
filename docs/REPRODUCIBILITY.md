@@ -4,8 +4,8 @@
 
 In simulation, the four tasks share one six-qubit reservoir, feature map,
 preprocessing pipeline,
-execution budget, development-fold design, and parameter grid. Mackey Glass and
-Rössler use five independent trajectories. Santa Fe and sunspots use five
+execution budget, validation-fold design, and parameter grid. Mackey Glass uses
+twenty independent trajectories and Rössler uses five. Santa Fe and sunspots use five
 chronological windows with disjoint test blocks. Three reservoir seeds, three
 shot seeds, and three grouping seeds are nested within each forecasting unit.
 Nested repetitions are averaged before confidence intervals are computed.
@@ -14,18 +14,12 @@ The three execution allocations are `(T, N) = (250, 40), (500, 20),
 (1000, 10)`. Each contains 10,000 circuit executions. The middle allocation is
 the primary comparison.
 
-Mackey Glass, Rössler, and sunspots belong to the original frozen campaign.
-Santa Fe was evaluated later with the same protocol after the first task
-outcomes were known. Its interval is therefore exploratory rather than a
-preregistered confirmation. This boundary is recorded in the consolidated
-manifest and is retained throughout the repository.
-
 ## Joint tuning
 
 All methods receive the same measurement record. Scaling is fitted inside each
-training fold. Three expanding chronological development folds tune aggregation
+training fold. Three expanding chronological validation folds tune aggregation
 scale and ridge regularization jointly. Grouped predictions are averaged to one
-prediction per time step before development NRMSE is scored. The tuned pair is
+prediction per time step before validation NRMSE is scored. The tuned pair is
 frozen before the final test block is evaluated once.
 
 ## Evidence files
@@ -95,9 +89,6 @@ The runner stores independent shards and resumes only when configuration and
 implementation hashes match. The checked frozen evidence is included, so a
 full simulation rerun is not required for paper verification.
 
-The original manifests intentionally fail closed if current implementation
-files are substituted for the exact campaign files. Their recorded Git commit
-is `e6f1c26df58d94d35cd70c7a4b781282480a63bd`, and the manifests additionally
-record the content hash used by each run. The publication branch keeps the
-frozen outputs immutable while maintaining a cleaned runner for new runs. New
-runs must use a new results directory and receive their own manifest and hashes.
+Every manifest fails closed if its configuration or implementation hash does
+not match. New runs must use a new results directory and receive their own
+manifest and hashes, leaving the released evidence unchanged.

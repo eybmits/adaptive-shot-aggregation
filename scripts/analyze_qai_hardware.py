@@ -347,10 +347,25 @@ def main() -> None:
     spectrum_df = pd.DataFrame(all_spec)
     abl_df = pd.DataFrame(all_abl)
     validate_analysis_tables(seed_df, spectrum_df, abl_df)
-    seed_df.to_csv(HW_DIR / "hardware_seed_level.csv", index=False)
-    spectrum_df.to_csv(HW_DIR / "hardware_spectrum.csv", index=False)
-    abl_df.to_csv(HW_DIR / "hardware_ablation.csv", index=False)
-    (HW_DIR / "hardware_noise_diagnostics.json").write_text(json.dumps(diags, indent=1))
+    # A fixed significant-digit format prevents harmless last-bit differences
+    # between NumPy and SciPy builds from changing the released evidence files.
+    float_format = "%.14g"
+    seed_df.to_csv(HW_DIR / "hardware_seed_level.csv", index=False, float_format=float_format)
+    spectrum_df.to_csv(HW_DIR / "hardware_spectrum.csv", index=False, float_format=float_format)
+    abl_df.to_csv(HW_DIR / "hardware_ablation.csv", index=False, float_format=float_format)
+
+    def stable_json(value):
+        if isinstance(value, float):
+            return float(format(value, ".14g"))
+        if isinstance(value, list):
+            return [stable_json(item) for item in value]
+        if isinstance(value, dict):
+            return {key: stable_json(item) for key, item in value.items()}
+        return value
+
+    (HW_DIR / "hardware_noise_diagnostics.json").write_text(
+        json.dumps(stable_json(diags), indent=1) + "\n"
+    )
 
     # paired statistics: split vs ev, warm start vs ev, interleaved vs contiguous
     stats_rows = []
@@ -366,10 +381,10 @@ def main() -> None:
                                "method": "interleaved",
                                **paired((at["contiguous"] - at["interleaved"]).to_numpy())})
     stats_df = pd.DataFrame(stats_rows)
-    stats_df.to_csv(HW_DIR / "hardware_paired_stats.csv", index=False)
+    stats_df.to_csv(HW_DIR / "hardware_paired_stats.csv", index=False, float_format=float_format)
 
     summary = seed_df.groupby(["dataset", "protocol"])["test_nrmse"].agg(["mean", "std"])
-    summary.to_csv(HW_DIR / "hardware_summary.csv")
+    summary.to_csv(HW_DIR / "hardware_summary.csv", float_format=float_format)
     print(summary.round(3).to_string())
     print()
     print(stats_df.round(4).to_string(index=False))

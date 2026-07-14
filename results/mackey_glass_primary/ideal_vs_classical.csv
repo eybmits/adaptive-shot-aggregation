@@ -1,0 +1,4 @@
+dataset,budget_setting,reservoir_variant,feature_set,baseline,method,clusters,delta_classical_minus_ideal,cluster_ci95_low,cluster_ci95_high,cluster_win_rate,inference_unit
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,20,-0.0920602014385917,-0.12395287347872375,-0.06016752939845965,0.05,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,20,-0.055561810726453206,-0.06954231896998928,-0.04158130248291713,0.0,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,20,-0.31036809565927453,-0.4101136162252312,-0.2106225750933179,0.0,trajectory_or_sunspot_window

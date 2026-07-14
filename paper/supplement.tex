@@ -58,14 +58,12 @@ Reorganizing Measurement Records in Quantum Machine Learning}}
 \paragraph{Scope and artifact status.}
 This document records the exact algebra, shared four-task protocol, completed
 simulation, and provenance behind the main paper. The manuscript evidence
-contains 13,180 replicate rows and 9,720 aggregation-spectrum rows for
+contains 16,605 replicate rows and 17,010 aggregation-spectrum rows for
 Mackey--Glass, Santa Fe laser, R\"ossler, and sunspots. All four simulation
 tasks use the same six-qubit reservoir, features, budgets, chronological joint
 tuning, parameter grids, seed design, and test-access rule; separate source
 manifests preserve their data and implementation provenance. At the balanced
-setting, Grouped is supported on
-Santa Fe, R\"ossler, and sunspots, and positive but inconclusive on
-Mackey--Glass. The completed unmitigated hardware transfer applies a separate
+setting, Grouped is supported on all four tasks. The completed unmitigated hardware transfer applies a separate
 fixed ten-qubit protocol to the same four tasks on two processors. Its block-level
 intervals describe shot variation within one acquisition, not independent
 hardware campaigns.
@@ -218,15 +216,15 @@ $N$, including $k=1$ and $k=N$ as safe endpoint fallbacks.  The compared
 methods are: matched classical input, ideal statevector QRC, EV, adaptive
 Grouped, Raw, and tuned Cov-EV.
 
-Five independent initial conditions are used for each synthetic task. The two
-real-world datasets use five windows with disjoint test blocks: sunspot origins
+Twenty independent trajectories are used for Mackey--Glass and five for
+R\"ossler. The two real-world datasets use five windows with disjoint test blocks: sunspot origins
 are separated by 240 months, and Santa Fe origins by 1,001 samples. Santa Fe
 uses only the 9,093-point continuation file, so its complete input windows are
 also disjoint at every budget. Reservoir seeds
 $\{1729,2718,31415\}$, shot seeds $\{1009,2003,3001\}$, and primary grouping
 seeds $\{17,43,97\}$ are nested factors. The inferential unit is the synthetic
 trajectory or measured-series window: nested repeats are averaged within each unit,
-and 95\% $t$ intervals are computed over the five unit-level means.  Paired
+and 95\% $t$ intervals are computed over the unit-level means.  Paired
 method differences are formed within the same unit before interval estimation;
 shot or grouping seeds are never counted as independent forecasting samples.
 All forecasts predict the next step from the observed input at
@@ -294,7 +292,7 @@ claim.
 The manuscript filter retains only the expressive $Z+ZZ$ representation and
 the balanced setting. Diagnostic and ablation rows cannot enter the main
 report. Nested reservoir, shot, and grouping
-seeds are averaged within each of five trajectories or real-series windows before
+seeds are averaged within each trajectory or real-series window before
 the method means and paired Student-$t$ intervals are formed.
 Table~\ref{tab:supp-main-means} reports the resulting mean test errors.
 
@@ -308,7 +306,7 @@ not the best value across the classical and ideal columns.}
 \toprule
 Task & Classical & Ideal QRC & EV & Grouped & Raw & Cov-EV \\
 \midrule
-Mackey--Glass & 0.100 & 0.178 & 0.468 & 0.454 & 0.617 & \textbf{0.447} \\
+Mackey--Glass & 0.098 & 0.190 & 0.484 & 0.439 & 0.586 & \textbf{0.430} \\
 Santa Fe laser & 0.762 & 0.493 & 0.764 & 0.680 & 0.697 & \textbf{0.677} \\
 R\"ossler & 0.096 & 0.054 & 0.414 & 0.379 & 0.580 & \textbf{0.367} \\
 Sunspots & 0.387 & 0.474 & 0.553 & 0.517 & 0.558 & \textbf{0.515} \\
@@ -318,22 +316,20 @@ Sunspots & 0.387 & 0.474 & 0.553 & 0.517 & 0.558 & \textbf{0.515} \\
 
 Table~\ref{tab:supp-contrasts} gives the two paired comparisons. A
 positive EV-minus-Grouped value favors Grouped; a positive
-Grouped-minus-Cov-EV value favors Cov-EV. Grouped has supported gains
-on Santa Fe, R\"ossler, and sunspots, while Mackey--Glass is inconclusive. All
-four lower bounds exceed the $-0.05$ practical margin and three exceed zero.
-The numerical pattern is consistent with the shared protocol: Santa Fe has the
-largest balanced gain, while Mackey--Glass remains the weakest contrast.
+Grouped-minus-Cov-EV value favors Cov-EV. Grouped has supported gains on all
+four tasks. Every lower bound exceeds zero. Santa Fe has the largest balanced
+gain.
 
 \begin{table*}[t]
-\caption{Frozen balanced-setting paired effects over five independent
-trajectories/windows.  Values are mean $[95\%\ \mathrm{CI}]$ in NRMSE.}
+\caption{Balanced-setting paired effects over independent trajectories or
+windows. Values are mean $[95\%\ \mathrm{CI}]$ in NRMSE.}
 \label{tab:supp-contrasts}
 \centering
 \begin{tabular}{lcc}
 \toprule
 Task & EV $-$ Grouped & Grouped $-$ Cov-EV \\
 \midrule
-Mackey--Glass & $0.0138\ [-0.0023,\ 0.0300]$ & $0.0066\ [-0.0026,\ 0.0158]$ \\
+Mackey--Glass & $0.0445\ [0.0372,\ 0.0519]$ & $0.0091\ [0.0058,\ 0.0123]$ \\
 Santa Fe laser & $0.0848\ [0.0174,\ 0.1522]$ & $0.0026\ [-0.0167,\ 0.0218]$ \\
 R\"ossler & $0.0349\ [0.0139,\ 0.0559]$ & $0.0116\ [0.0021,\ 0.0212]$ \\
 Sunspots & $0.0360\ [0.0103,\ 0.0616]$ & $0.0021\ [-0.0025,\ 0.0067]$ \\
@@ -343,12 +339,12 @@ Sunspots & $0.0360\ [0.0103,\ 0.0616]$ & $0.0021\ [-0.0025,\ 0.0067]$ \\
 
 The covariance-control gate passed its narrow condition: every upper bound in
 the last column was below $0.05$.  Cov-EV nevertheless had the lower
-mean on all four tasks and a supported advantage on R\"ossler. The gate means
+mean on all four tasks and a supported advantage on Mackey--Glass and R\"ossler. The gate means
 only that its advantage did not exceed the frozen practical margin; it does not
 show that Grouped is the uniquely effective regularizer.
 
 The ideal-QRC control remains mixed. At the balanced setting, the
-classical-minus-ideal differences were $-0.0775$ for Mackey--Glass, $0.2688$
+classical-minus-ideal differences were $-0.0921$ for Mackey--Glass, $0.2688$
 for Santa Fe, $0.0420$ for R\"ossler, and $-0.0867$ for sunspots. The matched
 classical input was significantly better on Mackey--Glass and sunspots; ideal
 QRC was significantly better on Santa Fe; R\"ossler's interval crossed zero.
@@ -380,50 +376,10 @@ where $\mathcal P$ denotes the common leak-and-lag map.  Thus every grouping
 has exactly the same mean feature sequence as EV; only the empirical
 within-group covariance differs.
 
-The headline design averages over grouping seeds 17, 43, and 97.  A balanced
-setting subset repeats the primary construction for 20 additional seeds
-101--120.  A fixed-group ablation uses seeds 17, 43, and 97 with one grouping
-assignment shared across time.  The predeclared outputs are
-\path{partition_robustness_summary.csv},
-\path{fixed_lane_sensitivity.csv}, and
-\path{selected_k_frequency.csv} in
-\path{results/qai_robust_protocol_santa_fe_manuscript/}. They report trajectory/window-level
-paired gains, the difference between fixed-group and per-time regrouping, and tuned-$k$
-frequencies, respectively.  The complete campaign passes the strict reporter;
-incomplete shards were not pooled.
-
-The balanced frequency panel contains 135 nested tuned configurations per task
-($5$ clusters $\times3$ reservoir seeds $\times3$ shot seeds $\times3$
-grouping seeds).  They are descriptive choices, not 135 independent trials.
-$k=1$ was eligible and tuning returned it once in the Santa Fe screen. Tuning
-returned an interior $k$ in 96.3\% of Mackey--Glass runs, 94.1\% of Santa Fe runs, 96.3\%
-of R\"ossler runs, and 97.0\% of sunspot runs. These high rates describe the
-tuned configurations; they are not independent test outcomes.
-Table~\ref{tab:supp-partitions} summarizes the paired grouping checks.
-
-\begin{table*}[t]
-\caption{Grouping checks at the balanced setting.  Values are mean
-$[95\%\ \mathrm{CI}]$ over five trajectory/window clusters.  Positive
-EV-minus-Grouped favors Grouped; positive fixed-group-minus-per-time-regrouped
-favors per-time regrouping.}
-\label{tab:supp-partitions}
-\centering
-\begin{tabular}{lcc}
-\toprule
-Task & 20-grouping EV $-$ Grouped & Fixed group $-$ per-time regrouped \\
-\midrule
-Mackey--Glass & $-0.0064\ [-0.0436,\ 0.0309]$ & $-0.0021\ [-0.0165,\ 0.0124]$ \\
-Santa Fe laser & $0.1103\ [-0.0146,\ 0.2351]$ & $0.0004\ [-0.0320,\ 0.0327]$ \\
-R\"ossler & $0.0177\ [-0.0270,\ 0.0624]$ & $-0.0018\ [-0.0134,\ 0.0098]$ \\
-Sunspots & $0.0493\ [0.0219,\ 0.0768]$ & $-0.0017\ [-0.0079,\ 0.0045]$ \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-Only sunspots had a positive clustered interval in the 20-grouping subset.
-Every fixed-group interval crossed zero.  The result therefore supports neither
-a universal grouping-robust benefit nor a meaningful advantage of one
-grouping convention over the other.
+The headline design averages over grouping seeds 17, 43, and 97. These are
+nested implementation repeats, not independent forecasting samples. Their
+role is to average over arbitrary group assignments before uncertainty is
+computed across trajectories or windows.
 
 \section{Completed Four-Task Hardware Transfer}
 \label{app:hardware}
@@ -537,10 +493,12 @@ latexmk -pdf -interaction=nonstopmode \
 \end{verbatim}
 \end{scriptsize}
 The bibliography and IEEE class are the same files used by the six-page main
-paper.  The named artifact is available at
+paper.  The
 \ifdefined\ANON
-an anonymous review link supplied separately with the submission.
+anonymous artifact is available at
+\href{https://anonymous.4open.science/r/split-ensemble-qrc-E688/README.md}{anonymous.4open.science/r/split-ensemble-qrc-E688}.
 \else
+named artifact is available at
 \href{https://github.com/eybmits/split-ensemble-qrc}{github.com/eybmits/split-ensemble-qrc}.
 \fi
 

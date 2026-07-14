@@ -129,14 +129,13 @@ README = """# Anonymous review source package
 This directory is a standalone, identity-redacted source release for double-blind review.
 The six-page main paper uses the eight-section source layout; each released section
 is copied from the current paper and the identity-bearing conclusion branches are replaced by
-an anonymous artifact placeholder. No named source or stale rewrite is included. The five-page
+the anonymous artifact link. No named source or stale rewrite is included. The four-page
 supplement, frozen configurations, source and merged result tables, completed Santa hardware
 extension evidence, raw hardware records, and scripts needed to validate and redraw the reported
 figures retain repository-relative paths.
 
-The anonymous artifact address is intentionally a placeholder in
-`anonymous_artifact_url.tex`. Replace only that macro when the anonymous review address is
-available.
+The anonymous artifact address is defined in `anonymous_artifact_url.tex` and points to the
+identity-redacted review repository.
 
 ## Verify and rebuild
 
@@ -169,8 +168,8 @@ and leaves no auxiliary files in this directory.
 contain no auxiliary build traces or version-control metadata.
 """
 
-ARTIFACT_PLACEHOLDER = r"""% Replace only this macro after receiving the anonymous review address.
-\providecommand{\AnonymousArtifactURL}{\textit{[anonymous artifact URL to be supplied]}}
+ARTIFACT_LINK = r"""% Anonymous double-blind review artifact.
+\providecommand{\AnonymousArtifactURL}{\href{https://anonymous.4open.science/r/split-ensemble-qrc-E688/README.md}{anonymous.4open.science/r/split-ensemble-qrc-E688}}
 """
 
 
@@ -239,7 +238,7 @@ def sanitized_main() -> str:
             re.DOTALL,
         )
         text, count = artifact_pattern.subn(
-            r"The anonymous artifact will be available at \\AnonymousArtifactURL.",
+            r"The anonymous artifact is available at \\AnonymousArtifactURL.",
             text,
             count=1,
         )
@@ -293,18 +292,14 @@ def sanitized_conclusion() -> str:
 
 
 def sanitized_reproducibility_appendix() -> str:
-    """Replace the public artifact branch with the anonymous review macro."""
+    """Replace the named branch with the anonymous review macro."""
 
     text = (PAPER / "sections" / "reproducibility-appendix.tex").read_text(
         encoding="utf-8"
     )
-    artifact_pattern = re.compile(
-        r"The\s+named artifact is available at\s*"
-        r"\\ifdefined\\ANON.*?\\else.*?\\fi",
-        re.DOTALL,
-    )
+    artifact_pattern = re.compile(r"The\s+\\ifdefined\\ANON.*?\\else.*?\\fi", re.DOTALL)
     text, count = artifact_pattern.subn(
-        r"The anonymous artifact will be available at \\AnonymousArtifactURL.",
+        r"The anonymous artifact is available at \\AnonymousArtifactURL.",
         text,
         count=1,
     )
@@ -324,12 +319,9 @@ def sanitized_supplement() -> str:
     if PAPER_TITLE not in text:
         raise RuntimeError("supplement title differs from the restored paper title")
     text = _replace_author_block(text, label="supplement")
-    artifact_pattern = re.compile(
-        r"The named artifact is available at\s*\\ifdefined\\ANON.*?\\fi",
-        re.DOTALL,
-    )
+    artifact_pattern = re.compile(r"The\s+\\ifdefined\\ANON.*?\\else.*?\\fi", re.DOTALL)
     text, count = artifact_pattern.subn(
-        r"The anonymous artifact will be available at \\AnonymousArtifactURL.", text, count=1
+        r"The anonymous artifact is available at \\AnonymousArtifactURL.", text, count=1
     )
     if count != 1:
         raise RuntimeError(f"expected one supplement artifact branch, replaced {count}")
@@ -399,7 +391,7 @@ def populate_release() -> None:
             )
         else:
             copy_file(PAPER / "sections" / name, DESTINATION / "sections" / name)
-    write_text(DESTINATION / "anonymous_artifact_url.tex", ARTIFACT_PLACEHOLDER)
+    write_text(DESTINATION / "anonymous_artifact_url.tex", ARTIFACT_LINK)
     write_text(DESTINATION / "README.md", README)
     for name in (
         "IEEEtran.cls",

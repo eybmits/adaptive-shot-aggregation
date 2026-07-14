@@ -1,7 +1,7 @@
 dataset,budget_setting,reservoir_variant,feature_set,baseline,method,clusters,delta_classical_minus_ideal,cluster_ci95_low,cluster_ci95_high,cluster_win_rate,inference_unit
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.077517354095058,-0.1521572421648832,-0.0028774660252328,0.2,trajectory_or_sunspot_window
-mackey_glass,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.0548375445667949,-0.0945984311703889,-0.0150766579632008,0.0,trajectory_or_sunspot_window
-mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.3403793232575101,-0.5508578339553473,-0.1299008125596729,0.0,trajectory_or_sunspot_window
+mackey_glass,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,20,-0.0920602014385917,-0.1239528734787237,-0.0601675293984596,0.05,trajectory_or_sunspot_window
+mackey_glass,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,20,-0.0555618107264532,-0.0695423189699892,-0.0415813024829171,0.0,trajectory_or_sunspot_window
+mackey_glass,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,20,-0.3103680956592745,-0.4101136162252312,-0.2106225750933179,0.0,trajectory_or_sunspot_window
 rossler,balanced,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,0.0419807126707984,-0.00048531474063,0.0844467400822268,0.8,trajectory_or_sunspot_window
 rossler,data_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,0.0491097149168329,0.0293788992622059,0.06884053057146,1.0,trajectory_or_sunspot_window
 rossler,shot_rich,expressive_reuploading,z_plus_zz,classical_input,ideal_quantum,5,-0.2423501552073765,-0.2831556744278273,-0.2015446359869256,0.0,trajectory_or_sunspot_window

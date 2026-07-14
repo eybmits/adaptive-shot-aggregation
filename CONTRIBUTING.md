@@ -30,7 +30,7 @@ make all
 1. Do not replace frozen evidence without updating its manifest and checksums.
 2. Do not treat repeated shots or grouped views as independent forecasting
    units.
-3. Keep the chronological development and test boundary intact.
+3. Keep the chronological validation and test boundary intact.
 4. Document changes that alter a reported number or figure.
 5. Never commit credentials, local paths, caches, or raw service tokens.
 

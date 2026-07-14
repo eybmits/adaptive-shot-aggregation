@@ -2,9 +2,9 @@
 """Frozen expressive gate-model reservoir and ideal feature diagnostics.
 
 This module lives beside ``ExactQRCReservoir`` in :mod:`base_impl`, which is
-used only as the degenerate circuit control. The primary architecture here is
-small enough for present IBM hardware but avoids the original circuit's
-single-input-qubit and homogeneous-angle degeneracies:
+used as the degenerate circuit control. The primary architecture here is small
+enough for present IBM hardware and avoids single-input-qubit and
+homogeneous-angle degeneracies:
 
 * the normalized scalar input is encoded on every qubit and re-uploaded in
   each of exactly two layers;
@@ -12,9 +12,8 @@ single-input-qubit and homogeneous-angle degeneracies:
 * heterogeneous nearest-neighbour RZZ gates form a hardware-friendly line;
 * one Z-basis shot yields all local Z and adjacent ZZ features.
 
-The architecture seed is part of the scientific protocol.  Seed 1729 was
-fixed before the redesigned forecasting experiments and must not be selected
-using forecasting results.
+The architecture seed is part of the scientific protocol and must not be
+selected using forecasting results.
 """
 
 from __future__ import annotations
@@ -131,7 +130,7 @@ class ExpressiveArchitecture:
             "name": "expressive_reuploading_qrc",
             "circuit_version": "expressive_reuploading_v2",
             "parameter_seed": self.parameter_seed,
-            "seed_status": "fixed before redesigned forecasting experiments",
+            "seed_status": "fixed as part of the forecasting protocol",
             "q": self.q,
             "layers": EXPRESSIVE_RESERVOIR_LAYERS,
             "input_encoding": "RY and RZ on every qubit, re-uploaded in both layers",

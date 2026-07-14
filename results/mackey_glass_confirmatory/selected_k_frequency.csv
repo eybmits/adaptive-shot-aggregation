@@ -1,6 +1,0 @@
-dataset,budget_setting,reservoir_variant,feature_set,scope_role,k,selections,clusters,selection_margin_mean,selection_margin_median,selection_frequency
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,2,8,4,0.002208578765287579,0.002462475304278372,0.014814814814814815
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,4,123,20,0.0027072928471975097,0.002796590647125119,0.22777777777777777
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,5,222,20,0.0028469099481199306,0.0028626083732971597,0.4111111111111111
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,10,174,19,0.0025260798792290356,0.0018991538002332276,0.32222222222222224
-mackey_glass,balanced,expressive_reuploading,z_plus_zz,headline,20,13,7,0.006785932406270414,0.0071249270149211785,0.024074074074074074
