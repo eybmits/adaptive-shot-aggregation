@@ -54,14 +54,15 @@ the number of shots per averaged training view, slides smoothly from $k=1$
 \end{figure}
 
 The dial turns out to matter. Under one matched protocol and fixed execution
-budgets, an intermediate aggregation lowers test error relative to full
-averaging on every task we evaluate, including two synthetic systems and two
-real-world datasets. The best aggregation scale depends on the record, so no
-single convention is appropriate. The gain requires nothing quantum. Matched
-controls support a covariance-regularization explanation for the classical
-readout, supplied automatically by the record's own
-fluctuations. Because aggregation is classical post-processing, it costs no
-additional quantum executions and applies retroactively to any archived record.
+budgets, an intermediate aggregation lowers mean test error relative to full
+averaging on all four tasks at the balanced allocation. The improvement is
+supported on Santa Fe laser, R\"ossler, and sunspots, while Mackey--Glass is
+inconclusive. The best aggregation scale depends on the record, so no single
+convention is appropriate. The gain requires nothing quantum. Matched controls
+support a covariance-regularization explanation for the classical readout,
+supplied automatically by the record's own fluctuations. Because aggregation
+is classical post-processing, it costs no additional quantum executions and
+applies retroactively to any archived record.
 
 Our contribution is \emph{adaptive shot aggregation}. The number of shots per
 training view becomes a setting of the classical readout, selected by

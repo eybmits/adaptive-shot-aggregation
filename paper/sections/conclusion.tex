@@ -47,11 +47,12 @@ algorithm.
 \label{sec:conclusion}
 
 Turning a shot record into training data has always involved a choice, and the
-field has answered it by reflex, averaging everything. We show the reflex is
-beatable. Choosing the aggregation scale by validation lowers mean test error
-on chaotic and real-world forecasting at the balanced budget, holds on two
-superconducting processors, and requires no additional quantum cost. Because
-every measurement-based reservoir produces such a record, the choice we make
-explicit here is available to all of them. And the underlying question, how to
-turn finitely sampled noisy measurements into training data, reaches well beyond
+field has usually answered it by averaging everything. Choosing the aggregation
+scale by validation lowers mean test error on all four forecasting tasks at the
+balanced budget. The improvement is supported on Santa Fe laser, R\"ossler, and
+sunspots, while Mackey--Glass is inconclusive. The hardware study shows positive
+mean differences on both superconducting processors, and the method requires no
+additional quantum cost. Because every measurement-based reservoir produces such
+a record, the choice is available to all of them. The underlying question, how
+to turn finitely sampled noisy measurements into training data, reaches beyond
 reservoirs to finite-shot learning as a whole.

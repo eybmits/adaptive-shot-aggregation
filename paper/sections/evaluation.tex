@@ -85,15 +85,6 @@ Grouped ridge fit to numerical precision. On a fixed feature scale,
 Eq.~\eqref{eq:penalty-scale} shows how the induced penalty changes
 with $k$, whereas Cov-EV tunes the full shot-covariance penalty directly.
 
-Grouping is also robust to how the groups are drawn. Across twenty repeated
-settings the average improvements are $-0.0064$ on Mackey--Glass, $0.1103$ on
-Santa Fe laser, $0.0177$ on R\"ossler, and $0.0493$ on sunspots. Only the
-sunspot interval stays above zero, reflecting the wide variation across
-settings. Fixing one grouping across time instead of reshuffling at every step
-changes the error by at most $0.0021$ NRMSE, with every interval containing
-zero. The grouping convention therefore matters far less than ordinary
-run-to-run variation. Figure~\ref{fig:controls} collects these controls.
-
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
