@@ -38,7 +38,7 @@
     smooth
   },
   stagelabel/.style={
-    font=\bfseries\fontsize{12.42}{13.8}\selectfont,
+    font=\bfseries\fontsize{10.40}{11.50}\selectfont,
     text=truec
   },
   respanel/.style={
@@ -108,15 +108,15 @@
 }
 
 \tikzset{
-  stage/.style={font=\bfseries\fontsize{12.42}{13.8}\selectfont,text=truec},
+  stage/.style={font=\bfseries\fontsize{10.40}{11.50}\selectfont,text=truec},
   qblue/.style={circle,shade,shading=radial,
                 inner color=white,outer color=reservoirblue,
                 draw=none,inner sep=0pt,minimum size=13.0pt},
   qred/.style={circle,shade,shading=radial,
                inner color=white,outer color=reservoirred,
                draw=none,inner sep=0pt,minimum size=13.0pt},
-  graphlink/.style={draw=edgegray,line width=1.054pt,line cap=round},
-  graphlinknext/.style={draw=edgegray!76,line width=0.782pt,line cap=round},
+  graphlink/.style={draw=edgegray,line width=0.78pt,line cap=round},
+  graphlinknext/.style={draw=edgegray!76,line width=0.56pt,line cap=round},
   blueflow/.style={-{Stealth[length=4.1pt,width=3.5pt]},draw=reservoirblue,
                    line width=1.632pt,line cap=round},
   redflow/.style={-{Stealth[length=4.1pt,width=3.5pt]},draw=reservoirred,
@@ -157,10 +157,10 @@
   % A smooth carrier with a very slow modulation remains readable at column
   % scale. Both segments evaluate the same analytic function, so the style
   % change at t is continuous.
-  \draw[truec,line width=2.78pt,line cap=round]
+  \draw[truec,line width=2.12pt,line cap=round]
     plot[domain=\xstart:\xt,samples=100,smooth]
       (\x,{inputsignal(\x)});
-  \draw[truec,line width=2.63pt,dash pattern=on 0.1pt off 4.0pt,
+  \draw[truec,line width=1.98pt,dash pattern=on 0.1pt off 4.0pt,
         line cap=round]
     plot[domain=\xt:\xtp,samples=40,smooth]
       (\x,{inputsignal(\x)});
@@ -208,14 +208,11 @@
 
     % Local and longer-range interactions, drawn behind the nodes.
     \foreach \a/\b in {cq0/cq1,cq0/cq2,cq0/cq4,
-                         cq1/cq2,cq1/cq3,cq1/cq4,cq1/cq5,cq1/cq7,
-                         cq2/cq3,cq2/cq4,cq3/cq5,cq3/cq7,cq3/cq9,
+                         cq1/cq2,cq1/cq3,cq1/cq4,cq1/cq5,
+                         cq2/cq3,cq3/cq5,cq3/cq9,
                          cq4/cq5,cq5/cq6,cq5/cq7,cq6/cq7,cq6/cq8,
                          cq7/cq8,cq7/cq9,cq8/cq9}{
       \draw[graphlink] (\a) -- (\b);
-    }
-    \foreach \a/\b in {cq0/cq5,cq2/cq5,cq3/cq6,cq4/cq7,cq5/cq8,cq6/cq9}{
-      \draw[graphlinknext] (\a) -- (\b);
     }
 
     % Directional arrows cross the full atom diameter and are drawn first so
@@ -255,19 +252,19 @@
 }
 
 \coordinate (mPos) at ($(reservoirpanel.south)+(0.00,-0.62)$);
-\node[draw=black, fill=white, minimum width=0.7cm, minimum height=0.6cm, line width=2.04pt, rounded corners=1pt] (meas) at (mPos) {};
+\node[draw=black, fill=white, minimum width=0.7cm, minimum height=0.6cm, line width=1.50pt, rounded corners=1pt] (meas) at (mPos) {};
 \coordinate (mBase) at ($(meas.center)+(0,-0.12)$);
-\draw[black, line width=1.7pt] ($(mBase)+(-0.22,0)$) arc[start angle=180, end angle=0, radius=0.22];
-\draw[-{Stealth[length=1.5mm, width=1.2mm]}, black, line width=2.04pt] (mBase) -- ++(60:0.32);
+\draw[black, line width=1.26pt] ($(mBase)+(-0.22,0)$) arc[start angle=180, end angle=0, radius=0.22];
+\draw[-{Stealth[length=1.5mm, width=1.2mm]}, black, line width=1.50pt] (mBase) -- ++(60:0.32);
 
-\draw[measuregray, line width=1.785pt]
+\draw[measuregray, line width=1.34pt]
   (reservoirpanel.south) -- (meas.north);
 \coordinate (mstemBot) at ($(meas.south)+(0.00,-0.18)$);
-\draw[measuregray, line width=1.785pt] (meas.south) -- (mstemBot);
+\draw[measuregray, line width=1.34pt] (meas.south) -- (mstemBot);
 
 \foreach \i/\target in {1/s1,2/s2,3/s3,4/s4,5/s5,6/s6}{
   \draw[-{Stealth[length=2mm, width=1.5mm]}, measuregray,
-        line width=1.7pt]
+        line width=1.24pt]
         ($(\target)+(0,0.42)$) -- (\target);
 }
 
@@ -311,7 +308,7 @@
 % ===================================================================
 \node[methodbox, draw=evc, line width=2.04pt] (EVlab) at (EVc) {%
   {\bfseries\fontsize{12.1}{12.65}\selectfont\color{evc}EV}\\[-0.2ex]
-  {\bfseries\fontsize{8.97}{9.66}\selectfont\color{truec}all shots averaged}
+  {\bfseries\fontsize{7.71}{8.51}\selectfont\color{truec}all shots averaged}
 };
 
 \node[
@@ -326,7 +323,7 @@
 
 \node[methodbox, draw=rawc, line width=2.04pt] (Rawlab) at (Rawc) {%
   {\bfseries\fontsize{12.1}{12.65}\selectfont\color{rawc}Raw}\\[-0.2ex]
-  {\bfseries\fontsize{8.74}{9.55}\selectfont\color{truec}individual shots}
+  {\bfseries\fontsize{7.71}{8.51}\selectfont\color{truec}individual shots}
 };
 
 % ===================================================================
@@ -343,7 +340,7 @@
   inner ysep=1.5pt,
   blur shadow={shadow blur steps=8, shadow yshift=-3pt, shadow opacity=18}
 ] (readout) at (5.35,-6.40) {%
-  {\bfseries\fontsize{14.38}{14.95}\selectfont\color{truec}Linear readout}
+  {\bfseries\fontsize{10.40}{11.50}\selectfont\color{truec}Linear readout}
 };
 
 \draw[-{Stealth[length=2.5mm, width=2mm]}, evc, line width=2.55pt]
