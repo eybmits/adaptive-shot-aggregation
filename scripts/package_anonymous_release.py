@@ -9,12 +9,14 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
 PAPER = ROOT / "paper"
-DESTINATION = ROOT / "release" / "anonymous_review_package"
+DESTINATION = ROOT / "release" / "adaptive_shot_aggregation_anonymous_review"
+ARCHIVE = ROOT / "release" / "adaptive_shot_aggregation_anonymous_review.zip"
 SOURCE_DATE_EPOCH = "1783641600"
 PAPER_TITLE = "From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning"
 
@@ -169,7 +171,7 @@ contain no auxiliary build traces or version-control metadata.
 """
 
 ARTIFACT_LINK = r"""% Anonymous double-blind review artifact.
-\providecommand{\AnonymousArtifactURL}{\href{https://anonymous.4open.science/r/split-ensemble-qrc-E688/README.md}{anonymous.4open.science/r/split-ensemble-qrc-E688}}
+\providecommand{\AnonymousArtifactURL}{\href{https://anonymous.4open.science/r/split-ensemble-qrc-E688/README.md}{anonymous artifact repository}}
 """
 
 
@@ -486,6 +488,39 @@ def write_checksums() -> None:
     write_text(DESTINATION / "SHA256SUMS", "\n".join(lines) + "\n")
 
 
+def write_archive() -> None:
+    """Create a deterministic ZIP of the complete anonymous review package."""
+
+    ARCHIVE.parent.mkdir(parents=True, exist_ok=True)
+    if ARCHIVE.exists():
+        ARCHIVE.unlink()
+    fixed_time = (2026, 7, 15, 0, 0, 0)
+    with zipfile.ZipFile(
+        ARCHIVE,
+        "w",
+        compression=zipfile.ZIP_DEFLATED,
+        compresslevel=9,
+    ) as archive:
+        for path in sorted(DESTINATION.rglob("*")):
+            if not path.is_file():
+                continue
+            relative = path.relative_to(DESTINATION).as_posix()
+            info = zipfile.ZipInfo(relative, fixed_time)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            archive.writestr(
+                info,
+                path.read_bytes(),
+                compress_type=zipfile.ZIP_DEFLATED,
+                compresslevel=9,
+            )
+
+    with zipfile.ZipFile(ARCHIVE) as archive:
+        broken = archive.testzip()
+        if broken is not None:
+            raise RuntimeError(f"corrupt member in anonymous review archive: {broken}")
+
+
 def verify_release() -> None:
     subprocess.run(
         [sys.executable, str(DESTINATION / "verify_release.py"), "--root", str(DESTINATION)],
@@ -510,7 +545,9 @@ def main() -> None:
     compile_pdfs()
     write_checksums()
     verify_release()
+    write_archive()
     print(f"anonymous source release ready: {DESTINATION}")
+    print(f"anonymous source archive ready: {ARCHIVE}")
     for name in ("main.pdf", "supplement.pdf", "SHA256SUMS"):
         print(f"{sha256(DESTINATION / name)}  {name}")
 

@@ -44,16 +44,16 @@ paper:
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error supplement_anon.tex
 	mkdir -p output/pdf
 	rm -f output/pdf/*.pdf output/pdf/SHA256SUMS
-	cp paper/main.pdf output/pdf/quantum_shots_to_training_data.pdf
-	cp paper/main_anon.pdf output/pdf/quantum_shots_to_training_data_anonymous.pdf
-	cp paper/supplement.pdf output/pdf/quantum_shots_to_training_data_supplement.pdf
-	cp paper/supplement_anon.pdf output/pdf/quantum_shots_to_training_data_supplement_anonymous.pdf
-	cd output/pdf && shasum -a 256 quantum_shots_to_training_data.pdf quantum_shots_to_training_data_anonymous.pdf quantum_shots_to_training_data_supplement.pdf quantum_shots_to_training_data_supplement_anonymous.pdf > SHA256SUMS
+	cp paper/main.pdf output/pdf/adaptive_shot_aggregation.pdf
+	cp paper/main_anon.pdf output/pdf/adaptive_shot_aggregation_anonymous.pdf
+	cp paper/supplement.pdf output/pdf/adaptive_shot_aggregation_supplement.pdf
+	cp paper/supplement_anon.pdf output/pdf/adaptive_shot_aggregation_supplement_anonymous.pdf
+	cd output/pdf && shasum -a 256 adaptive_shot_aggregation.pdf adaptive_shot_aggregation_anonymous.pdf adaptive_shot_aggregation_supplement.pdf adaptive_shot_aggregation_supplement_anonymous.pdf > SHA256SUMS
 
 release:
 	$(PYTHON) scripts/package_anonymous_release.py
-	$(PYTHON) release/anonymous_review_package/verify_release.py
-	$(PYTHON) release/anonymous_review_package/verify_release.py --build
+	$(PYTHON) release/adaptive_shot_aggregation_anonymous_review/verify_release.py
+	$(PYTHON) release/adaptive_shot_aggregation_anonymous_review/verify_release.py --build
 
 arxiv:
 	$(PYTHON) scripts/package_arxiv_source.py

@@ -1,6 +1,6 @@
 # From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning
 
-[![CI](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml/badge.svg)](https://github.com/eybmits/split-ensemble-qrc/actions/workflows/verify.yml)
+[![CI](https://github.com/eybmits/adaptive-shot-aggregation/actions/workflows/verify.yml/badge.svg)](https://github.com/eybmits/adaptive-shot-aggregation/actions/workflows/verify.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -167,10 +167,10 @@ Job identifiers, layouts, checksums, and scope are documented in
 
 ## Paper and source packages
 
-- [Named paper](output/pdf/quantum_shots_to_training_data.pdf)
-- [Anonymous paper](output/pdf/quantum_shots_to_training_data_anonymous.pdf)
-- [Supplement](output/pdf/quantum_shots_to_training_data_supplement.pdf)
-- [Anonymous supplement](output/pdf/quantum_shots_to_training_data_supplement_anonymous.pdf)
+- [Named paper](output/pdf/adaptive_shot_aggregation.pdf)
+- [Anonymous paper](output/pdf/adaptive_shot_aggregation_anonymous.pdf)
+- [Supplement](output/pdf/adaptive_shot_aggregation_supplement.pdf)
+- [Anonymous supplement](output/pdf/adaptive_shot_aggregation_supplement_anonymous.pdf)
 - [Anonymous review artifact](https://anonymous.4open.science/r/split-ensemble-qrc-E688/README.md)
 - [Reproducibility guide](docs/REPRODUCIBILITY.md)
 - [Method guide](docs/METHOD.md)
@@ -178,8 +178,10 @@ Job identifiers, layouts, checksums, and scope are documented in
 - [Data provenance](docs/DATA.md)
 
 Generated source packages are written under `release/` and intentionally remain
-outside version control. Their contents are rebuilt and verified from tracked
-files.
+outside version control. The complete bundles are
+`adaptive_shot_aggregation_anonymous_review.zip` and
+`adaptive_shot_aggregation_arxiv.zip`. Their contents are rebuilt and verified
+from tracked files.
 
 ## Citation
 

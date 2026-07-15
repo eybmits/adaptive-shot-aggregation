@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the preregistered robustness campaign for split-ensemble QRC.
+"""Run the preregistered robustness campaign for adaptive shot aggregation.
 
 This is intentionally separate from the historical QAI scripts.  A full run
 uses five independent trajectories/windows per task, three reservoir seeds,

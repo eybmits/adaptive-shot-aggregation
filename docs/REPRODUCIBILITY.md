@@ -70,8 +70,10 @@ The full frozen-evidence check is:
 make all
 ```
 
-Generated packages are written to `release/` and are not tracked. Final PDFs
-and their SHA256 checksums are stored under `output/pdf/`.
+Generated packages are written to `release/` and are not tracked. The release
+archives are `adaptive_shot_aggregation_anonymous_review.zip` and
+`adaptive_shot_aggregation_arxiv.zip`. Final named and anonymous PDFs and their
+SHA256 checksums are stored under `output/pdf/`.
 
 ## Expensive rerun
 

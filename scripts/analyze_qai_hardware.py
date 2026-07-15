@@ -8,8 +8,8 @@ lanes.  These are shot-level replicates from one campaign per task, not
 independent devices or calibration periods; every analysis is classical
 post-processing:
 
-  * protocols: full average / single shots / split ensemble (lambda and k
-    selected chronologically per record, exactly as in simulation)
+  * protocols: full average / single shots / adaptive shot aggregation
+    (lambda and k selected chronologically per record, exactly as in simulation)
   * the full group-size spectrum at every admissible k
   * an optional noise-to-signal initial candidate k0 = 2a (never a substitute
     for validation)

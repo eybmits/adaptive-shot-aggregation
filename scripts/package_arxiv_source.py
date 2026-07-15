@@ -14,7 +14,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 PAPER = ROOT / "paper"
-DESTINATION = ROOT / "release" / "arxiv_source.zip"
+DESTINATION = ROOT / "release" / "adaptive_shot_aggregation_arxiv.zip"
 PAPER_TITLE = (
     "From Quantum Shots to Training Data: "
     "Reorganizing Measurement Records in Quantum Machine Learning"
