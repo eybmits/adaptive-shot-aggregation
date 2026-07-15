@@ -51,7 +51,7 @@ The mean NRMSE across the four tasks falls from 0.5537 to 0.5037, a 9.04%
 reduction at unchanged quantum execution cost. All four paired intervals remain
 above zero.
 
-The covariance-regularized EV control closely matches Grouped. This agrees with
+The Regularized EV control closely matches Grouped. This agrees with
 the exact squared-loss identity in the paper: grouped views add a covariance
 penalty estimated from the record's own shot fluctuations. The result concerns
 finite-shot data organization. It is not a claim of quantum advantage or a

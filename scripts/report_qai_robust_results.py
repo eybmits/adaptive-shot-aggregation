@@ -72,7 +72,7 @@ METHOD_LABEL = {
     "ev": "EV",
     "raw": "Raw",
     "split": "Split",
-    "covariance_ev": "Cov.-EV",
+    "covariance_ev": "Regularized EV",
 }
 
 COLORS = {

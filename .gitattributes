@@ -21,6 +21,9 @@ LICENSE text eol=lf
 data/**/*.csv -text
 results/**/*.csv text eol=lf
 results/**/*.json text eol=lf
+# This frozen diagnostic grid is committed with upstream CRLF bytes; preserve
+# it exactly so fresh checkouts remain clean and evidence hashes stay stable.
+results/expressive_reservoir/ideal_feature_grid.csv -text
 data/**/*.dat binary
 
 # Preserve the exact upstream IEEE class and bibliography style files.

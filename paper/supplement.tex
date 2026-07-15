@@ -73,33 +73,49 @@ hardware campaigns.
 \section{Exact Identity and Implementation Scaling}
 \label{app:identity}
 
-For aggregation scale $k$, let $G=N/k$ and let $x_t^{(g)}\in\mathbb{R}^d$ denote the
-leaked and lagged feature vector of group $g$ at training time $t$.  With an
-unpenalized intercept $b$, every time step receives total weight one:
+For aggregation scale $k$, let $G=N/k$. At each training time $t$, let
+$\{\mathcal{I}_g\}_{g=1}^{G}$ be a uniformly drawn partition of the $N$ shot
+indices into disjoint blocks of size $k$, let $x_{t,n}\in\mathbb{R}^d$ denote
+the shot-level feature vector, and define the grouped view by
+\begin{equation*}
+  \bar{x}_t^{(g)}=\frac{1}{k}\sum_{n\in\mathcal{I}_g}x_{t,n},
+  \qquad g=1,\dots,G.
+\end{equation*}
+The partitions are drawn independently across time steps. With an unpenalized
+intercept $b$, every time step receives total weight one:
 \begin{equation}
   \mathcal L_k(b,w)=\frac{1}{|\mathcal T|G}
   \sum_{t\in\mathcal T}\sum_{g=1}^{G}
-  \bigl(y_t-b-w^\top x_t^{(g)}\bigr)^2
+  \bigl(y_t-b-w^\top\bar{x}_t^{(g)}\bigr)^2
   +\lambda\lVert w\rVert_2^2.
   \label{eq:supp-grouped}
 \end{equation}
-Define $\bar x_t=G^{-1}\sum_gx_t^{(g)}$ and
+Define the fully averaged features by
+$\bar{x}_t=G^{-1}\sum_{g=1}^{G}\bar{x}_t^{(g)}
+=N^{-1}\sum_{n=1}^{N}x_{t,n}$. Define the grouped-view covariance by
+\begin{equation*}
+  C_{k,t}=\frac{1}{G}\sum_{g=1}^{G}
+  \bigl(\bar{x}_t^{(g)}-\bar{x}_t\bigr)
+  \bigl(\bar{x}_t^{(g)}-\bar{x}_t\bigr)^{\!\top}.
+\end{equation*}
+Its average over the training times is
 \begin{equation}
-  C_k=\frac{1}{|\mathcal T|G}\sum_{t,g}
-  (x_t^{(g)}-\bar x_t)(x_t^{(g)}-\bar x_t)^\top .
+  C_k=\frac{1}{|\mathcal T|}\sum_{t\in\mathcal T}C_{k,t}
+  =\frac{1}{|\mathcal T|G}\sum_{t,g}
+  (\bar{x}_t^{(g)}-\bar{x}_t)(\bar{x}_t^{(g)}-\bar{x}_t)^{\!\top}.
   \label{eq:supp-cov}
 \end{equation}
 
 \paragraph{Proof of the exact decomposition.}
-Write $x_t^{(g)}=\bar x_t+d_t^{(g)}$, where
+Write $\bar{x}_t^{(g)}=\bar{x}_t+d_t^{(g)}$, where
 $\sum_g d_t^{(g)}=0$.  Expanding the square in
 \eqref{eq:supp-grouped}, the cross term is proportional to
-$(y_t-b-w^\top\bar x_t)w^\top\sum_g d_t^{(g)}$ and therefore vanishes at every
+$(y_t-b-w^\top\bar{x}_t)w^\top\sum_g d_t^{(g)}$ and therefore vanishes at every
 $t$; the remaining deviation term is
 $G^{-1}\sum_g(w^\top d_t^{(g)})^2=w^\top C_{k,t}w$.  Averaging over $t$ gives
 \begin{equation}
   \mathcal L_k(b,w)=\frac{1}{|\mathcal T|}\sum_t
-  (y_t-b-w^\top\bar x_t)^2+w^\top C_kw
+  (y_t-b-w^\top\bar{x}_t)^2+w^\top C_kw
   +\lambda\lVert w\rVert_2^2,
   \label{eq:supp-identity}
 \end{equation}
@@ -107,8 +123,8 @@ which is deterministic and assumes neither Gaussian noise, isotropy, nor
 independence across time.
 
 For a fixed set of $N$ shot-level feature vectors on one common scale, define
-$S_{\mathrm{shot},t}=N^{-1}\sum_n(x_t^{(n)}-\bar x_t)
-(x_t^{(n)}-\bar x_t)^\top$. A group mean is a sample without replacement, so
+$S_{\mathrm{shot},t}=N^{-1}\sum_n(x_{t,n}-\bar{x}_t)
+(x_{t,n}-\bar{x}_t)^\top$. A group mean is a sample without replacement, so
 the finite-population covariance formula gives
 \begin{equation}
   \mathbb E_{\mathcal P}[C_{k,t}]
@@ -129,11 +145,11 @@ sum rather than the mean loss in \eqref{eq:supp-grouped}.  It therefore passes
   \label{eq:supp-sklearn-scaling}
 \end{equation}
 This preserves the meaning of $\lambda$ as $G$ changes.  The generalized-ridge
-solver independently reconstructs the solution from $\bar x_t$, $C_k$, and
+solver independently reconstructs the solution from $\bar{x}_t$, $C_k$, and
 $\lambda I$; unit tests require its predictions to match direct grouped Ridge
 to numerical precision.
 
-The directly tuned Cov-EV baseline is intentionally different.  It fits
+The directly tuned Regularized EV baseline is intentionally different. It fits
 EV rows with
 $\alpha w^\top\widehat\Sigma_{\rm shot}w+\lambda\lVert w\rVert_2^2$ and
 tunes $(\alpha,\lambda)$ on the same chronological folds. It does not inherit
@@ -204,17 +220,17 @@ Data rich & 418 & [30,418) / [418,547) & [30,547) / [547,677) & [30,677) / [677,
 For each candidate pair, development NRMSE is computed from one forecast per
 time step after averaging the group predictions. Mean development NRMSE across
 the three folds determines the tuned pair; exact ties prefer smaller $\lambda$,
-then smaller $k$ (or smaller $\alpha$ for Cov-EV). The tuned configuration
+then smaller $k$ (or smaller $\alpha$ for Regularized EV). The tuned configuration
 is refit on $[30,t_{\rm test})$, and the final test block is evaluated once.
 
 \subsection{Grids and nested uncertainty}
 
 The shared ridge grid is
-$\lambda\in\{10^{-3},10^{-2},10^{-1},1,10,10^2,10^3\}$.  Cov-EV uses
+$\lambda\in\{10^{-3},10^{-2},10^{-1},1,10,10^2,10^3\}$. Regularized EV uses
 $\alpha\in\{0,0.01,0.03,0.1,0.3,1,3,10\}$.  Grouped searches all divisors of
 $N$, including $k=1$ and $k=N$ as safe endpoint fallbacks.  The compared
 methods are: matched classical input, ideal statevector QRC, EV, adaptive
-Grouped, Raw, and tuned Cov-EV.
+Grouped, Raw, and tuned Regularized EV.
 
 Twenty independent trajectories are used for Mackey--Glass and five for
 R\"ossler. The two real-world datasets use five windows with disjoint test blocks: sunspot origins
@@ -298,13 +314,13 @@ Table~\ref{tab:supp-main-means} reports the resulting mean test errors.
 
 \begin{table*}[t]
 \caption{Balanced-setting mean test NRMSE for the classical and ideal controls
-and EV, Grouped, Raw, and Cov-EV.  Bold marks the best sampled quantum mean,
+and EV, Grouped, Raw, and Regularized EV. Bold marks the best sampled quantum mean,
 not the best value across the classical and ideal columns.}
 \label{tab:supp-main-means}
 \centering
 \begin{tabular}{lcccccc}
 \toprule
-Task & Classical & Ideal QRC & EV & Grouped & Raw & Cov-EV \\
+Task & Classical & Ideal QRC & EV & Grouped & Raw & Regularized EV \\
 \midrule
 Mackey--Glass & 0.098 & 0.190 & 0.484 & 0.439 & 0.586 & \textbf{0.430} \\
 Santa Fe laser & 0.762 & 0.493 & 0.764 & 0.680 & 0.697 & \textbf{0.677} \\
@@ -316,7 +332,7 @@ Sunspots & 0.387 & 0.474 & 0.553 & 0.517 & 0.558 & \textbf{0.515} \\
 
 Table~\ref{tab:supp-contrasts} gives the two paired comparisons. A
 positive EV-minus-Grouped value favors Grouped; a positive
-Grouped-minus-Cov-EV value favors Cov-EV. Grouped has supported gains on all
+Grouped-minus-Regularized-EV value favors Regularized EV. Grouped has supported gains on all
 four tasks. Every lower bound exceeds zero. Santa Fe has the largest balanced
 gain.
 
@@ -327,7 +343,7 @@ windows. Values are mean $[95\%\ \mathrm{CI}]$ in NRMSE.}
 \centering
 \begin{tabular}{lcc}
 \toprule
-Task & EV $-$ Grouped & Grouped $-$ Cov-EV \\
+Task & EV $-$ Grouped & Grouped $-$ Regularized EV \\
 \midrule
 Mackey--Glass & $0.0445\ [0.0372,\ 0.0519]$ & $0.0091\ [0.0058,\ 0.0123]$ \\
 Santa Fe laser & $0.0848\ [0.0174,\ 0.1522]$ & $0.0026\ [-0.0167,\ 0.0218]$ \\
@@ -338,7 +354,7 @@ Sunspots & $0.0360\ [0.0103,\ 0.0616]$ & $0.0021\ [-0.0025,\ 0.0067]$ \\
 \end{table*}
 
 The covariance-control gate passed its narrow condition: every upper bound in
-the last column was below $0.05$.  Cov-EV nevertheless had the lower
+the last column was below $0.05$. Regularized EV nevertheless had the lower
 mean on all four tasks and a supported advantage on Mackey--Glass and R\"ossler. The gate means
 only that its advantage did not exceed the frozen practical margin; it does not
 show that Grouped is the uniquely effective regularizer.
@@ -368,7 +384,7 @@ values of $k$ receive distinct deterministic permutations.  Because both
 averaging and the leak/lag operator are linear,
 \begin{equation}
   \frac{1}{G}\sum_g \mathcal P\!\left(\frac{1}{k}
-  \sum_{n\in g}z_t^{(n)}\right)
+  \sum_{n\in\mathcal{I}_g}z_t^{(n)}\right)
   =\mathcal P\!\left(\frac{1}{N}\sum_{n=1}^{N}z_t^{(n)}\right),
   \label{eq:supp-mean-preserving}
 \end{equation}

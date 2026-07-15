@@ -3,23 +3,24 @@
 
 \subsection{Adaptive shot aggregation}
 
-Write $x_t^{(n)}$ for the features produced by shot $n$ at time $t$. We split
-the $N$ shots of each step into $G=N/k$ groups of equal size $k$ and average
-within each group,
+Let $x_{t,n}$ denote the features produced by shot $n$ at time $t$. For each
+time step, draw uniformly at random a partition
+$\{\mathcal{I}_g\}_{g=1}^{G}$ of the $N$ shot indices into $G=N/k$ disjoint
+blocks of equal size $k$, independently across time steps, and define
 \begin{equation}
-  x_t^{(g)}=\frac{1}{k}\sum_{n\in g}x_t^{(n)}, \qquad g=1,\dots,G.
+  \bar{x}_t^{(g)}=\frac{1}{k}\sum_{n\in\mathcal{I}_g}x_{t,n},
+  \qquad g=1,\dots,G.
   \label{eq:grouping}
 \end{equation}
-Every group is a partly averaged view of the same time step, and all views
+Every $\bar{x}_t^{(g)}$ is a partly averaged view of the same time step, and all views
 share the same target $y_t$. At test time we average the $G$ predictions of a
 step, which is identical to predicting once from the averaged features. The two
 methods are therefore scored in exactly the same way, so any difference between
 EV and Grouped is created during training, not at test time.
 
 The shot index carries no physical meaning, because shot $n$ at one step and
-shot $n$ at the next come from unrelated circuit runs. We therefore shuffle the
-shots freshly at every time step before forming groups, and we repeat the whole
-analysis over several random groupings.
+shot $n$ at the next come from unrelated circuit runs. We repeat the whole
+analysis over several independent partition draws.
 
 \subsection{Fixed execution budget and training}
 
@@ -45,15 +46,12 @@ only, so the test block never influences any choice.
 \begin{figure}[!t]
   \centering
   \includegraphics[width=\columnwidth]{fig2_composite.pdf}
-  \caption{Adaptive aggregation under the shared protocol. (a)~Distributions of
-  EV (blue), Grouped (teal), and Raw (yellow) errors across twenty
-  Mackey--Glass trajectories, with large markers and bars showing means and
-  95\% intervals. (b)~The error is
-  U-shaped in the aggregation scale $k$, lowest at an intermediate value (star is
-  the validated choice). (c)~The same dip below EV appears in the task means.
-  (d)~Paired EV-minus-Grouped improvements on the test blocks, with markers and
-  bars showing means and 95\% intervals across independent trajectories or
-  windows. Positive values favor Grouped. Panels (b,c) use development data,
-  (a,d) test blocks.}
+  \caption{Adaptive aggregation under the shared protocol. (a)~Test-error
+  distributions for EV, Grouped, and Raw across twenty Mackey--Glass
+  trajectories. (b)~Error is U-shaped in $k$; the star marks the validated
+  choice. (c)~The task means show the same dip below EV. (d)~Paired
+  EV-minus-Grouped test improvements; positive values favor Grouped. Large
+  markers and bars are means and 95\% intervals. Panels (b,c) use development
+  data and (a,d) test data.}
   \label{fig:operating}
 \end{figure}

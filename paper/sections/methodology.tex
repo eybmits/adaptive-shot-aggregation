@@ -9,13 +9,19 @@ Stable feature combinations should predict similarly across these views,
 whereas shot-sensitive combinations do not. Fitting every view to the same
 target therefore discourages reliance on finite-shot fluctuations.
 
-For a linear readout with squared loss, this effect is exact. Let $\bar{x}_t$ be
-the average of the grouped views, and let
-$C_{k,t}=\tfrac{1}{G}\sum_g
-(x_t^{(g)}-\bar{x}_t)(x_t^{(g)}-\bar{x}_t)^\top$
-be their covariance around that average. For any intercept $b$ and weights $w$,
+For a linear readout with squared loss, this effect is exact. Let
+$\bar{x}_t=G^{-1}\sum_{g=1}^{G}\bar{x}_t^{(g)}
+=N^{-1}\sum_{n=1}^{N}x_{t,n}$ denote the fully averaged (EV) features, and let
+\begin{equation*}
+  C_{k,t}=\frac{1}{G}\sum_{g=1}^{G}
+  \bigl(\bar{x}_t^{(g)}-\bar{x}_t\bigr)
+  \bigl(\bar{x}_t^{(g)}-\bar{x}_t\bigr)^{\!\top}
+\end{equation*}
+be the covariance of the grouped views around that average. For any intercept
+$b$ and weights $w$,
 \begin{equation}
-  \frac{1}{G}\sum_{g=1}^{G}\bigl(y_t-b-w^\top x_t^{(g)}\bigr)^2
+  \frac{1}{G}\sum_{g=1}^{G}
+  \bigl(y_t-b-w^\top\bar{x}_t^{(g)}\bigr)^2
   =\bigl(y_t-b-w^\top\bar{x}_t\bigr)^2+w^\top C_{k,t}w.
   \label{eq:loss-decomposition}
 \end{equation}
@@ -37,11 +43,13 @@ regularization strength: smaller groups retain more shot variation, while
 larger groups average it away. A finite partition can also change the realized
 penalty, especially when only a few groups are available.
 
-This motivates covariance-regularized expectation-value training (Cov-EV),
-which retains EV features and adds a penalty estimated from shot fluctuations.
-Its covariance and ridge strengths are selected on the same validation data,
-independently of Grouped's $k$. Similar performance from Grouped and Cov-EV
-would support covariance regularization as the mechanism behind the gain.
+This motivates \emph{covariance-regularized expectation-value training
+(Regularized EV)}, which retains the fully averaged EV features but adds a
+penalty estimated from shot-level fluctuations, on top of the ridge term that
+all methods share. Its covariance and ridge strengths are selected on the same
+validation data, independently of Grouped's $k$. Similar performance from
+Grouped and Regularized EV would support covariance regularization as the
+mechanism behind the gain.
 
 As a check on our implementation, at a fixed group size and ridge strength we
 compute the Grouped fit in two mathematically equal ways. The first fits ridge

@@ -22,5 +22,5 @@ The corresponding manifest records row counts and SHA256 hashes for every
 table in the paper evidence package.
 
 The effect is largest when the execution budget contains many shots at fewer
-time steps. Cov EV is close to Grouped at the primary setting, supporting the
+time steps. Regularized EV is close to Grouped at the primary setting, supporting the
 covariance regularization interpretation of adaptive shot aggregation.

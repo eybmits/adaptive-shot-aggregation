@@ -29,11 +29,8 @@ feature construction, temporal processing, scaling, validation procedure, and
 execution budgets. The same selection rule is applied separately to each task;
 no task-specific changes are made to the reservoir or preprocessing pipeline.
 
-EV, Grouped, Raw, and Cov-EV are derived from the same finite-shot measurement
-record. EV averages all shots at each time step, Raw retains individual shots,
-Grouped averages shots within disjoint groups, and Cov-EV uses the fully
-averaged EV features with a penalty estimated from shot-level covariance. Two
-additional controls use different feature sources: an ideal reservoir without
+All four finite-shot methods use the same measurement record. Two additional
+controls use different feature sources: an ideal reservoir without
 finite-shot sampling noise and a classical baseline that applies the same
 temporal processing and readout directly to the input series. These controls
 distinguish the effect of aggregation from the effects of finite sampling and
@@ -70,28 +67,21 @@ window origins, and selection rules are fixed and stored before any test block
 is evaluated.
 
 \subsection{Hardware setup}
-The hardware study deliberately uses a different reservoir. It is a fixed
-ten-qubit circuit with one input qubit, nine memory qubits, a single ring of
-entangling gates, and ten local outputs, mapped to selected qubits on the
-\emph{ibm\_fez} and \emph{ibm\_marrakesh} processors and held fixed across all
-four tasks. Its purpose is to check whether the same aggregation procedure still
-helps on a second circuit and a different set of measured features. It is not a
-hardware implementation of the six-qubit simulator and not a comparison of
-qubit counts. As in
-simulation, every method receives the same circuit outputs and only the
-classical grouping of shots changes. For each task and processor we take one
-acquisition of $400$ shots at each of $500$ time steps and split it into twenty
-ordered, disjoint records of $20$ shots. The resulting intervals describe how
-much the result varies among the measurement blocks of that single acquisition.
-They do not stand in for independent devices or separate calibration periods.
+The hardware study uses a different reservoir: a fixed ten-qubit circuit with
+one input qubit, nine memory qubits, a ring of entangling gates, and ten local
+outputs mapped on \emph{ibm\_fez} and \emph{ibm\_marrakesh}. It tests transfer of
+the aggregation procedure; it is not a hardware implementation of the six-qubit
+simulator or a comparison of qubit counts. Every method receives the same
+circuit outputs. For each task and processor, one acquisition of $400$ shots at $500$ time steps is
+split into twenty ordered, disjoint records of $20$ shots. The intervals measure
+variation within that acquisition, not across devices or calibration periods.
 
 \begin{figure}[!t]
   \centering
   \includegraphics[width=\columnwidth]{fig3_regime_map.pdf}
-  \caption{When aggregation helps most, at a fixed budget. Each panel shows the
-  improvement of Grouped over EV, measured as $\mathrm{NRMSE}_{\mathrm{EV}} -
-  \mathrm{NRMSE}_{\mathrm{Grouped}}$, so values above zero favor Grouped. Moving
-  right spends the budget on more steps and fewer shots. The gain is largest with
-  many shots and few steps. Markers and bars are means with $95\%$ intervals.}
+  \caption{Fixed-budget allocation. Panels show EV-minus-Grouped NRMSE, so
+  positive values favor Grouped. Moving right spends the budget on more steps
+  and fewer shots; gains are largest with many shots and few steps. Markers and
+  bars are means and 95\% intervals.}
   \label{fig:regimes}
 \end{figure}

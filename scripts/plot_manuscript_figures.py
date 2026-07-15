@@ -86,7 +86,7 @@ METHOD_LABELS = {
     "ev": "EV",
     "split": "Grouped",
     "raw": "Raw",
-    "covariance_ev": "Cov-EV",
+    "covariance_ev": "Regularized EV",
 }
 METHOD_COLORS = {
     "raw": RAW,
@@ -619,7 +619,7 @@ def figure_3(rows: pd.DataFrame) -> None:
 def figure_4(rows: pd.DataFrame) -> None:
     balanced = _cluster_method_means(rows, budget="balanced")
     rng = np.random.default_rng(481516)
-    # Top-to-bottom comparison order: EV, Grouped, Raw, Cov-EV.
+    # Top-to-bottom comparison order: EV, Grouped, Raw, Regularized EV.
     methods = ("ev", "split", "raw", "covariance_ev")
     y = np.arange(len(methods))[::-1]
     fig, axes = plt.subplots(

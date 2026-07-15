@@ -2,16 +2,12 @@
 \label{sec:evaluation}
 
 We report accuracy as test NRMSE, a normalized error for which lower is better
-and where one means predicting the mean. Three ways of turning the shot record
-into features are compared throughout. EV averages all shots of a step into one
-clean feature vector. Raw keeps every shot as its own noisy example. Grouped is
-our method and sits between them. A fourth entry, Cov-EV, is a control that adds
-an independently tuned covariance penalty to plain averaging. We summarize the
-benefit of Grouped as the paired difference EV minus Grouped, so a positive
-value means Grouped is more accurate. Each difference comes with a $95\%$
-confidence interval. An interval above zero provides evidence of a positive
-mean improvement; an interval containing zero is inconclusive. The balanced
-setting spends the fixed budget on $500$ time steps with $20$ shots each.
+and where one means predicting the mean. We summarize the benefit of Grouped as
+the paired difference EV minus Grouped, so a positive value means Grouped is
+more accurate. Each difference comes with a $95\%$ confidence interval: an
+interval above zero provides evidence of a positive mean improvement, while an
+interval containing zero is inconclusive. The balanced setting spends the fixed
+budget on $500$ time steps with $20$ shots each.
 
 \subsection{Balanced setting}
 
@@ -32,7 +28,7 @@ values are better.}
 \setlength{\tabcolsep}{1.7pt}
 \begin{tabular}{lrrrrrr}
 \toprule
-Task & Class. & Ideal & EV & Grouped & Raw & Cov-EV \\
+Task & Class. & Ideal & EV & Grouped & Raw & \shortstack{Regularized\\EV} \\
 \midrule
 \QAIBalancedTableRows
 \bottomrule
@@ -43,7 +39,7 @@ Santa Fe laser shows the largest effect. Grouped reduces the error from $0.764$
 to $0.680$, and all five disjoint test windows favor Grouped. When $k$ and the
 ridge strength are tuned together, the search lands on $k=10$ most often and
 on an intermediate scale, neither Raw nor EV, in $94\%$ of repeated trials.
-Cov-EV reaches $0.677$, almost the same as Grouped, which already suggests that
+Regularized EV reaches $0.677$, almost the same as Grouped, which already suggests that
 the gain is a regularization effect rather than new physical information. The
 gain also depends on how the budget is spent. On Santa Fe it shrinks from
 $0.143$ with $40$ shots per step to $0.010$ with $10$ shots per step because
@@ -73,7 +69,7 @@ only for Mackey--Glass and sunspots.
 
 \subsection{Why the gain is regularization}
 
-Cov-EV keeps EV features and adds a penalty based on how the shots fluctuate
+Regularized EV keeps EV features and adds a penalty based on how the shots fluctuate
 together. At the balanced setting its mean error is $0.0021$ to $0.0116$ NRMSE
 below Grouped. The Mackey--Glass and R\"ossler intervals exclude zero. This near-match
 supports the regularization mechanism in Eq.~\eqref{eq:loss-decomposition}
@@ -82,16 +78,15 @@ accurate than EV on Mackey--Glass and R\"ossler and inconclusive on the two
 real-world datasets. At fixed $k$, the exact two-term loss reproduces the
 Grouped ridge fit to numerical precision. On a fixed feature scale,
 Eq.~\eqref{eq:penalty-scale} shows how the induced penalty changes
-with $k$, whereas Cov-EV tunes the full shot-covariance penalty directly.
+with $k$, whereas Regularized EV tunes the full shot-covariance penalty directly.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{fig4_controls_compact.pdf}
-  \caption{Controls at the balanced setting, lower is better. On every task
-  Grouped (teal diamond) and Cov-EV (purple square) are lowest and nearly equal,
-  while EV (open circle) and Raw (yellow) trail. Their near-match supports a
-  readout-regularization explanation. Faint points are the independent unit means,
-  markers and bars are means with $95\%$ intervals.}
+  \caption{Balanced-setting controls, lower is better. Grouped and Regularized
+  EV are nearly equal and lowest on every task, supporting a readout-regularization
+  explanation; EV and Raw trail. Faint points are independent-unit means, and
+  markers and bars are means and 95\% intervals.}
   \label{fig:controls}
 \end{figure}
 
