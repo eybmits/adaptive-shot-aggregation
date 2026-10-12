@@ -38,7 +38,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-lock.txt
 
-      - name: Rebuild and verify the complete publication artifact
+      - name: Verify saved evidence and replay one complete simulation job
         run: |
           make verify
-          make all
+          make replay
+
+      - name: Rebuild and verify the complete publication artifact
+        run: make all

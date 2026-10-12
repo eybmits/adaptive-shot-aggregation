@@ -63,8 +63,8 @@ make all
 ```
 
 Use plain `make all`, without `-j`: the publication steps share generated files.
-The CI workflow first verifies the checked-in evidence, then runs `make all` on
-Ubuntu with Python 3.11.
+The CI workflow first verifies the checked-in evidence and replays one complete
+simulation job, then runs `make all` on Ubuntu with Python 3.11.
 
 | Output | Location |
 |---|---|
@@ -107,6 +107,19 @@ intervals are exploratory. The merge script copies and combines saved tables;
 it does not rerun the simulations or recalculate their statistics.
 
 ## Run new simulations
+
+A bounded comparison with the paper's saved results is available:
+
+```bash
+make replay
+```
+
+This executes the full balanced Mackey–Glass trajectory 5 / reservoir seed 1729
+job, including all its shot/grouping seeds and all six methods. It compares all
+38 result rows, chosen parameters, validation fold scores, and test errors with
+the saved evidence using an absolute tolerance of `1e-9`. It prints a JSON
+summary and does not overwrite evidence. This is one full job, not the entire
+experiment. See [VALIDATION.md](VALIDATION.md) for the observed release checks.
 
 A small wiring check runs one reduced Mackey–Glass job:
 
@@ -172,6 +185,56 @@ The frozen merge uses fixed source paths. Do not replace it with new results
 just to make checks pass. Compare a rerun against the appropriate original
 source directory first. Small numerical differences can arise from numerical
 libraries and hardware; changed scientific conclusions require review.
+
+## Version history and replay limits
+
+Frozen manifests record the source hash used when a run was produced. The current
+runner has later documentation and metadata changes, so its combined source hash
+differs. A new result must keep its own provenance. The older report generator
+deliberately rejects a source-hash mismatch; do not bypass that check.
+
+The four hashed files are `run_robust_evaluation.py`, `robust_protocol.py`,
+`robust_reservoir_adapter.py`, and `expressive_reservoir.py`, all in `scripts/`.
+The hash covers each filename and its bytes, in that order. It does not cover
+every dependency or capture the original operating system.
+
+| Frozen run | Historical source recovery |
+|---|---|
+| `mackey_glass_primary` | The four-file hash `08e59534adc96ca3a4ddd70b9587187af8b93a3a3dd2ace664c32b37ac3ec01b` matches commit `7f8481ed787205875ca7e581da41ec8487c5522a`. The current primary config matches the manifest, but was committed later. Recovering both requires combining these verified components; no single committed tree contains both. |
+| `qai_robust_protocol_full` | Hash `608649ed7ddf50c1d4ccd403f10cafbbab7f06aed108c283bf7b69627e8abe43` was not found in the retained Git history. Exact original source bytes cannot be recovered from this repository. |
+| `qai_santa_fe_laser_screen` | Hash `3b0c41de5d1962051cdcde489df7ed4a46df089149af23a51c2d517e3897e94a` was not found in the retained Git history. Exact original source bytes cannot be recovered from this repository. |
+
+To recover the verified Mackey–Glass components, start from the current checkout
+with its Python environment active. Use a new disposable directory (and a full
+clone, not a shallow clone):
+
+```bash
+git clone https://github.com/eybmits/adaptive-shot-aggregation.git tmp/historical-mg
+git -C tmp/historical-mg restore \
+  --source=7f8481ed787205875ca7e581da41ec8487c5522a -- \
+  scripts/run_robust_evaluation.py scripts/robust_protocol.py \
+  scripts/robust_reservoir_adapter.py scripts/expressive_reservoir.py
+cd tmp/historical-mg
+make replay
+```
+
+The replay summary must show the Mackey–Glass source hash above. The retained
+`configs/mackey_glass_primary.json` has SHA-256
+`dd7349575b2ce6950fc7ac369b2fd04828d52fa74ffb5a7165bc21f072944496`, matching
+the frozen manifest. The full Mackey–Glass command in the preceding section can
+then be run from this disposable checkout. This recovers the hashed code/config
+pair, not a historical Python environment or a single original Git snapshot.
+
+Commit `7f8481e` also retains the earlier balanced-only experiment under
+`configs/mackey_glass_confirmatory.json` and `results/mackey_glass_confirmatory/`.
+That is a historical 60-job campaign. It is different from the present
+three-budget primary configuration, which has 180 jobs.
+
+For the two older runs, the repository supports verification of saved tables,
+paper regeneration, and new runs of the retained implementation. It does not
+support a claim that every byte of the original simulation source has survived.
+The full new-simulation commands above have not been rerun as part of the public
+release validation; the tested full-job replay is explicitly bounded.
 
 ## Understand the protocol
 

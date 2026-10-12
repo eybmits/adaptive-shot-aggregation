@@ -73,6 +73,7 @@ experiments with other versions; that environment is not the pinned one.
 | Goal | Command | Extra requirements |
 |---|---|---|
 | Check tests and saved simulation tables | `make check` | None beyond the Python setup |
+| Rerun one complete paper simulation job | `make replay` | Same Python setup; compares 38 saved rows |
 | Also check published PDFs and manuscript values | `make verify` | Poppler (`pdfinfo`, `pdftotext`) |
 | Reanalyze the archived hardware shots | `make hardware` | Python setup; rewrites hardware tables and Figure 5 |
 | Rebuild all figures and paper PDFs | `make figures paper verify` | LaTeX, `latexmk`, and Poppler |
@@ -84,6 +85,12 @@ commands, expected outputs, the exact paper-to-file map, and separate commands
 for the original simulation configurations. Run rebuilds in a disposable clone:
 `make hardware`, `make figures`, `make paper`, and `make all` rewrite generated
 files. PDF bytes and small floating-point differences can depend on the platform.
+
+Saved evidence and the retained code can be checked and rebuilt. The four source
+files hashed for the Mackey–Glass run can be recovered exactly; two older
+simulation source hashes are absent from Git history. See
+[version history and replay limits](docs/REPRODUCIBILITY.md#version-history-and-replay-limits)
+before treating a new run as an exact historical replay.
 
 ## What did the paper find?
 
