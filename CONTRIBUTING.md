@@ -6,7 +6,7 @@ reproducibility, documentation, portability, or test coverage are welcome.
 ## Development setup
 
 ```bash
-python -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements-lock.txt
@@ -15,9 +15,12 @@ python -m pip install -r requirements-lock.txt
 Run the tests before opening a pull request:
 
 ```bash
-make test
+make check
 make verify
 ```
+
+`make verify` needs Poppler. See [the reproduction guide](docs/REPRODUCIBILITY.md)
+for system dependencies.
 
 Changes to figures, manuscript values, or frozen result files must also pass:
 

@@ -36,6 +36,8 @@ authors:
 preferred-citation:
   type: article
   title: "From Quantum Shots to Training Data: Reorganizing Measurement Records in Quantum Machine Learning"
+  url: "https://arxiv.org/abs/2604.28160"
+  doi: "10.48550/arXiv.2604.28160"
   year: 2026
   authors:
     - family-names: Baumann

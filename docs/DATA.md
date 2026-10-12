@@ -40,9 +40,18 @@ Center of the Royal Observatory of Belgium. The paper cites the SILSO data
 record and version used by the artifact.
 
 Source: <https://www.sidc.be/SILSO/DATA/SN_m_tot_V2.0.csv>. The file is SILSO
-monthly mean total sunspot number, version 2.0. SILSO attribution and provider
-terms continue to apply; the repository's MIT License does not relicense this
-third-party record.
+monthly mean total sunspot number, version 2.0. The
+[SILSO monthly-data page](https://www.sidc.be/SILSO/infosnmtot) identifies the
+[Creative Commons Attribution-NonCommercial 4.0 license](https://creativecommons.org/licenses/by-nc/4.0/).
+Credit: SILSO World Data Center, Royal Observatory of Belgium, Brussels.
+Retain that attribution and license link, and indicate changes when adapting
+the data. The MIT License does not apply to this third-party record.
+
+This repository pins the 3,330-row snapshot and date range above rather than
+refreshing from the live source. Analysis filters missing values and applies
+training-fitted normalization in memory; the included source file is not
+rewritten by those steps. See the experiment configurations for the exact
+window and preprocessing settings.
 
 ## Simulated trajectories
 

@@ -54,6 +54,25 @@ def pdf_text(path: Path) -> str:
     return subprocess.check_output(["pdftotext", str(path), "-"], text=True)
 
 
+def publication_pdfs() -> tuple[Path, Path]:
+    """Read the published PDFs in a checkout, or PDFs in a standalone bundle.
+
+    paper/main*.pdf are ignored build products and do not exist after cloning.
+    make paper copies rebuilt PDFs to output/pdf, so this also verifies rebuilds.
+    """
+    published = ROOT / "output" / "pdf"
+    if published.is_dir():
+        for line in (published / "SHA256SUMS").read_text(encoding="utf-8").splitlines():
+            expected, name = line.split(maxsplit=1)
+            path = published / name
+            require(sha256(path) == expected, f"published {name} checksum matches")
+        return (
+            published / "adaptive_shot_aggregation.pdf",
+            published / "adaptive_shot_aggregation_anonymous.pdf",
+        )
+    return PAPER / "main.pdf", PAPER / "main_anon.pdf"
+
+
 def main() -> None:
     manifest = json.loads((RESULTS / "manifest.json").read_text(encoding="utf-8"))
     require(manifest["status"] == "complete-manuscript-evidence-merge",
@@ -235,8 +254,7 @@ def main() -> None:
     require(not any(term in manuscript_sources for term in obsolete_hardware),
             "manuscript excludes the superseded future hardware campaign")
 
-    named_path = PAPER / "main.pdf"
-    anonymous_path = PAPER / "main_anon.pdf"
+    named_path, anonymous_path = publication_pdfs()
     require(pdf_pages(named_path) == 6, "named manuscript has six pages")
     require(pdf_pages(anonymous_path) == 6, "anonymous manuscript has six pages")
     require(pdf_title(named_path) == PAPER_TITLE, "named PDF has the current title")

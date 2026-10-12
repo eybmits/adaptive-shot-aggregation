@@ -4,11 +4,13 @@ FORCE_SOURCE_DATE ?= 1
 TZ ?= UTC
 export SOURCE_DATE_EPOCH FORCE_SOURCE_DATE TZ
 
-.PHONY: help test verify figures hardware paper release arxiv all clean
+.PHONY: help test check verify-data verify figures hardware paper release arxiv all clean
 
 help:
 	@printf '%s\n' \
 	  'make test      Run implementation tests' \
+	  'make check     Run tests and frozen-table checks (Python only)' \
+	  'make verify-data Verify frozen table hashes, row counts, and source manifests' \
 	  'make verify    Verify result hashes, tables, figures, PDFs, and anonymity' \
 	  'make figures   Rebuild all five manuscript figures from source evidence' \
 	  'make hardware  Reanalyze archived IBM records and rebuild Fig. 5' \
@@ -21,8 +23,12 @@ help:
 test:
 	$(PYTHON) -m pytest -q
 
-verify:
+check: test verify-data
+
+verify-data:
 	$(PYTHON) scripts/build_santa_fe_manuscript_results.py --validate-only
+
+verify: verify-data
 	$(PYTHON) scripts/verify_santa_fe_manuscript.py
 
 figures:

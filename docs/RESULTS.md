@@ -21,6 +21,9 @@ Source:
 The corresponding manifest records row counts and SHA256 hashes for every
 table in the paper evidence package.
 
+Santa Fe was screened after the original task outcomes were known. Its intervals
+are exploratory and are not a preregistered confirmation.
+
 The effect is largest when the execution budget contains many shots at fewer
 time steps. Regularized EV is close to Grouped at the primary setting, supporting the
 covariance regularization interpretation of adaptive shot aggregation.

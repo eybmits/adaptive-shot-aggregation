@@ -39,4 +39,6 @@ jobs:
           python -m pip install -r requirements-lock.txt
 
       - name: Rebuild and verify the complete publication artifact
-        run: make all
+        run: |
+          make verify
+          make all
